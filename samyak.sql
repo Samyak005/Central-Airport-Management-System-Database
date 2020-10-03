@@ -1,5 +1,7 @@
+-- Creating the database
 CREATE DATABASE AIRPORT_MANAGEMENT_SYSTEM;
 
+-- Selecting AIRPORT MANAGEMNT SYSTEM As the default database
 USE AIRPORT_MANAGEMENT_SYSTEM;
 
 CREATE TABLE `Route` (
@@ -308,4 +310,36 @@ ALTER TABLE `PNR info deduction` ADD FOREIGN KEY (`PNR number`) REFERENCES `Boar
 ALTER TABLE `PNR info deduction` ADD FOREIGN KEY (`Terminal number`) REFERENCES `Terminal` (`Terminal ID`);
 
 ALTER TABLE `Boarding Pass` ADD FOREIGN KEY (`Route ID`) REFERENCES `Route` (`Route ID`);
+
+INSERT INTO `airport_management_system`.`airline` (`IATA airline designators`, `Company Name`, `Number of aircrafts owned`, `Active`, `Country of Ownership`) VALUES ('6E', 'Indigo Airlines Limited', '0', '1', 'India');
+INSERT INTO `airport_management_system`.`airline` (`IATA airline designators`, `Company Name`, `Number of aircrafts owned`, `Active`, `Country of Ownership`) VALUES ('SG', 'Spicejet Limited', '0', '1', 'India');
+INSERT INTO `airport_management_system`.`airline` (`IATA airline designators`, `Company Name`, `Number of aircrafts owned`, `Active`, `Country of Ownership`) VALUES ('AI', 'Air India Limited', '0', '1', 'India');
+INSERT INTO `airport_management_system`.`airline` (`IATA airline designators`, `Company Name`, `Number of aircrafts owned`, `Active`, `Country of Ownership`) VALUES ('UK', 'Air Vistara', '0', '1', 'India');
+INSERT INTO `airport_management_system`.`airline` (`IATA airline designators`, `Company Name`, `Number of aircrafts owned`, `Active`, `Country of Ownership`) VALUES ('G8', 'Go Airways', '0', '1', 'India');
+
+INSERT INTO `airport_management_system`.`airport` (`IATA airport codes`, `Altitude`, `Time Zone`, `Airport Name`, `City`, `Country`, `Latitude`, `Longitude`) VALUES ('DEL', '225', '5.5', 'Indira Gandhi International Airport', 'Delhi', 'India', '28.7041', '77.1025');
+INSERT INTO `airport_management_system`.`airport` (`IATA airport codes`, `Altitude`, `Time Zone`, `Airport Name`, `City`, `Country`, `Latitude`, `Longitude`) VALUES ('HYD', '542', '5.5', 'Rajiv Gandhi International Airport', 'Hyderabad', 'India', '17.385', '78.4867');
+INSERT INTO `airport_management_system`.`airport` (`IATA airport codes`, `Altitude`, `Time Zone`, `Airport Name`, `City`, `Country`, `Latitude`, `Longitude`) VALUES ('MUM', '14', '5.5', 'Chattrapati Shivaji International Airport', 'Mumbai', 'India', '19.076', '72.8777');
+INSERT INTO `airport_management_system`.`airport` (`IATA airport codes`, `Altitude`, `Time Zone`, `Airport Name`, `City`, `Country`, `Latitude`, `Longitude`) VALUES ('BLR', '920', '5.5', 'KempeGowda International Airport', 'Bangaluru', 'India', '12.9716', '77.5946');
+
+INSERT INTO `airport_management_system`.`runway` (`IATA airport codes`, `Runway ID`, `length_ft`, `width_ft`, `Status`) VALUES ('DEL', '0', '9229', '150.9', 'ACTIVE');
+INSERT INTO `airport_management_system`.`runway` (`IATA airport codes`, `Runway ID`, `length_ft`, `width_ft`, `Status`) VALUES ('HYD', '0', '12162', '148', 'ACTIVE');
+INSERT INTO `airport_management_system`.`runway` (`IATA airport codes`, `Runway ID`, `length_ft`, `width_ft`, `Status`) VALUES ('MUM', '0', '12008', '200', 'ACTIVE');
+INSERT INTO `airport_management_system`.`runway` (`IATA airport codes`, `Runway ID`, `length_ft`, `width_ft`, `Status`) VALUES ('BLR', '0', '13123', '148', 'ACTIVE');
+INSERT INTO `airport_management_system`.`runway` (`IATA airport codes`, `Runway ID`, `length_ft`, `width_ft`, `Status`) VALUES ('DEL', '1', '12500', '150.92', 'ACTIVE');
+INSERT INTO `airport_management_system`.`runway` (`IATA airport codes`, `Runway ID`, `length_ft`, `width_ft`, `Status`) VALUES ('BLR', '1', '13120', '200', 'ACTIVE');
+INSERT INTO `airport_management_system`.`runway` (`IATA airport codes`, `Runway ID`, `length_ft`, `width_ft`, `Status`) VALUES ('MUM', '1', '9810', '148', 'ACTIVE');
+INSERT INTO `airport_management_system`.`runway` (`IATA airport codes`, `Runway ID`, `length_ft`, `width_ft`, `Status`) VALUES ('HYD', '1', '13980', '200', 'ACTIVE');
+INSERT INTO `airport_management_system`.`runway` (`IATA airport codes`, `Runway ID`, `length_ft`, `width_ft`, `Status`) VALUES ('DEL', '2', '14534.121', '196.85', 'ACTIVE');
+
+INSERT INTO `airport_management_system`.`terminal` (`IATA airport codes`, `Terminal ID`, `Airplane Handling capacity`, `Floor Area`) VALUES ('DEL', '1', '450', '34753');
+INSERT INTO `airport_management_system`.`terminal` (`IATA airport codes`, `Terminal ID`, `Airplane Handling capacity`, `Floor Area`) VALUES ('DEL', '2', '280', '54320');
+INSERT INTO `airport_management_system`.`terminal` (`IATA airport codes`, `Terminal ID`, `Airplane Handling capacity`, `Floor Area`) VALUES ('DEL', '3', '800', '76459');
+INSERT INTO `airport_management_system`.`terminal` (`IATA airport codes`, `Terminal ID`, `Airplane Handling capacity`, `Floor Area`) VALUES ('MUM', '1', '325', '21457');
+INSERT INTO `airport_management_system`.`terminal` (`IATA airport codes`, `Terminal ID`, `Airplane Handling capacity`, `Floor Area`) VALUES ('MUM', '2', '341', '23574');
+INSERT INTO `airport_management_system`.`terminal` (`IATA airport codes`, `Terminal ID`, `Airplane Handling capacity`, `Floor Area`) VALUES ('MUM', '3', '560', '87934');
+INSERT INTO `airport_management_system`.`terminal` (`IATA airport codes`, `Terminal ID`, `Airplane Handling capacity`, `Floor Area`) VALUES ('HYD', '1', '560', '23572');
+INSERT INTO `airport_management_system`.`terminal` (`IATA airport codes`, `Terminal ID`, `Airplane Handling capacity`, `Floor Area`) VALUES ('HYD', '2', '960', '46973');
+INSERT INTO `airport_management_system`.`terminal` (`IATA airport codes`, `Terminal ID`, `Airplane Handling capacity`, `Floor Area`) VALUES ('BLR', '1', '650', '23258');
+INSERT INTO `airport_management_system`.`terminal` (`IATA airport codes`, `Terminal ID`, `Airplane Handling capacity`, `Floor Area`) VALUES ('BLR', '2', '860', '143766');
 
