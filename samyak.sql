@@ -38,11 +38,11 @@ CREATE TABLE `boarding_pass` (
   `Barcode number` char(12) PRIMARY KEY,
   `PNR number` char(6) NOT NULL,
   `Seat` varchar(5),
-  `fk_passenger_Aadhar_card_number` int(12) NOT NULL,
-  `fk_route_Route ID` int NOT NULL,
+  `fk_to_passenger_Aadhar_card_number` int(12) NOT NULL,
+  `fk_to_route_Route ID` int NOT NULL,
 
-  FOREIGN KEY (`fk_passenger_Aadhar_card_number`) REFERENCES `Passenger` (`Aadhar_card_number`) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (`fk_route_Route ID`) REFERENCES `Route` (`Route ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`fk_to_passenger_Aadhar_card_number`) REFERENCES `Passenger` (`Aadhar_card_number`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`fk_to_route_Route ID`) REFERENCES `Route` (`Route ID`) ON DELETE CASCADE ON UPDATE CASCADE,
 );
 ----------------------------------------------------------
 
@@ -56,39 +56,36 @@ CREATE TABLE `Passenger` (
   `Last Name` varchar(255),
   `DOB` date,
   `Gender` enum('Male', 'Female', 'Others'),
-  `City` varchar(255),
-  `Building` varchar(255),
   `House Number` varchar(10),
+  `Building` varchar(255),
+  `City` varchar(255),
   `Email-ID` varchar(255) UNIQUE,
   `Senior Citizen` Boolean,
   `Nationality` varchar(255),
 );
 ----------------------------------------------------------
 
-
-Criteria
-- NULL
-- UNIQUENESS
-- kEYS
-- DEFAULT
-- FOREIGN KEy -> on cascade, delete 
 DROP TABLE IF EXISTS 'emer_contact';
 
 CREATE TABLE `emer_contact` (
-  `Name` int,
+  `Name` varchar(255),
   `Phone No` int(10) UNIQUE NOT NULL,
-  `Aadhar_card_number` int(12),
-  PRIMARY KEY (`Name`, `Aadhar_card_number`)
+  `fk_to_passenger_Aadhar_card_number` int(12),
+  PRIMARY KEY (`Name`, `fk_to_Aadhar_card_number`),
 
-  FOREIGN KEY (`Aadhar_card_number`) REFERENCES `Passenger` (`Aadhar_card_number`);
+  FOREIGN KEY (`fk_to_passenger_Aadhar_card_number`) REFERENCES `Passenger` (`Aadhar_card_number`) ON DELETE CASCADE ON UPDATE CASCADE,
 );
 ----------------------------------------------------------
+
+
 
 DROP TABLE IF EXISTS 'luggage';
 
 CREATE TABLE `luggage` (
   `Baggage ID` int PRIMARY KEY,
-  `Barcode number` varchar(12)
+  `fk_to_Barcode number` char(12),
+
+  FOREIGN KEY (`fk_to_Barcode_number`) REFERENCES `boarding_pass` (`Barcode number`) ON DELETE CASCADE ON UPDATE CASCADE,
 );
 ----------------------------------------------------------
 
@@ -96,13 +93,18 @@ DROP TABLE IF EXISTS 'Aircraft';
 
 CREATE TABLE `Aircraft` (
   `registration_num` int PRIMARY KEY,
-  `Manufacturer` varchar(255),
-  `Model` varchar(255),
-  `Distance Travelled` int,
+  `fk_to_capacity_Manufacturer` varchar(255) NOT NULL,
+  `fk_to_capacity_Model` varchar(255) NOT NULL,
+  `Distance Travelled` int DEFAULT 0,
   `Flight ID` varchar(10),
   `Maintanence check date` date,
-  `Owner airline IATA code` varchar(2),
-  KEY (`Manufacturer`, `Model`)
+  `fk_to_airline_owner_airline_IATA_code` char(2),
+  KEY (`Manufacturer`, `Model`),
+
+  FOREIGN KEY (`fk_to_airline_owner_airline_IATA_code`) REFERENCES `Airline` (`IATA airline designators`) ON DELETE SET NULL ON UPDATE CASCADE,
+  FOREIGN KEY (`fk_to_capacity_Model`) REFERENCES `capacity_of_aircraft` (`Model`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`fk_to_capacity_Manufacturer`) REFERENCES `capacity_of_aircraft` (`Manufacturer`) ON DELETE CASCADE ON UPDATE CASCADE,
+
 );
 
 ----------------------------------------------------------
@@ -110,21 +112,22 @@ CREATE TABLE `Aircraft` (
 DROP TABLE IF EXISTS 'capacity_of_aircraft';
 
 CREATE TABLE `capacity_of_aircraft` (
-  `Manufacturer` varchar(255),
-  `Capacity` int,
-  `Model` varchar(255),
-  PRIMARY KEY (`Manufacturer`, `Model`)
+  `Manufacturer` varchar(255) NOT NULL,
+  `Capacity` int NOT NULL,
+  `Model` varchar(255) NOT NULL,
+  PRIMARY KEY (`Manufacturer`, `Model`),
+
 );
 ----------------------------------------------------------
 
 DROP TABLE IF EXISTS 'Airline';
 
 CREATE TABLE `Airline` (
-  `IATA airline designators` varchar(2) PRIMARY KEY,
-  `Company Name` varchar(50),
-  `Number of aircrafts owned` int,
-  `Active` Boolean,
-  `Country of Ownership` varchar(255)
+  `IATA airline designators` char(2) PRIMARY KEY,
+  `Company Name` varchar(50) NOT NULL,
+  `num_aircrafts_owned` int DEFAULT 0,
+  `is_active` Boolean DEFAULT TRUE,
+  `country_of_ownership` varchar(255)
 );
 
 ----------------------------------------------------------
@@ -133,15 +136,17 @@ DROP TABLE IF EXISTS 'airline_crew';
 
 CREATE TABLE `airline_crew` (
   `Aadhar_card_number` int(12) PRIMARY KEY,
-  `First Name` varchar(255),
+  `First Name` varchar(255) NOT NULL,
   `Middle Name` varchar(255),
   `Last Name` varchar(255),
-  `Number of years of Experience` int,
+  `Number of years of Experience` int DEFAULT 0,
   `Salary` int,
   `Nationality` varchar(255),
   `DOB` date,
-  `Gender` varchar(6),
-  `Employer IATA airline designators` varchar(2)
+  `Gender` enum('Male', 'Female', 'Others'),
+  `fk_to_airline_employer_IATA_code` char(2)
+
+  FOREIGN KEY (`fk_to_airline_employer_IATA_code`) REFERENCES `Airline` (`IATA airline designators`) ON DELETE SET NULL ON UPDATE CASCADE,
 );
 
 ----------------------------------------------------------
@@ -149,7 +154,9 @@ CREATE TABLE `airline_crew` (
 DROP TABLE IF EXISTS 'flight_crew';
 
 CREATE TABLE `flight_crew` (
-  `Aadhar_card_number` int(12) PRIMARY KEY
+  `fk_to_airline_crew_Aadhar_card_number` int(12) PRIMARY KEY,
+  FOREIGN KEY (`fk_to_airline_crew_Aadhar_card_number`) REFERENCES `airline_crew` (`Aadhar_card_number`) ON DELETE CASCADE ON UPDATE CASCADE,
+
 );
 
 ----------------------------------------------------------
@@ -157,10 +164,11 @@ CREATE TABLE `flight_crew` (
 DROP TABLE IF EXISTS 'Pilot';
 
 CREATE TABLE `Pilot` (
-  `Aadhar_card_number` int(12),
-  `Pilot license number` int(12),
+  `fk_to_flight_crew_Aadhar_card_number` int(12) PRIMARY KEY NOT NULL,
+  `Pilot license number` int(12) UNIQUE NOT NULL,
   `Number of flying hours` int,
-  PRIMARY KEY (`Aadhar_card_number`, `Pilot license number`)
+
+  FOREIGN KEY (`fk_to_flight_crew_Aadhar_card_number`) REFERENCES `filght_crew` (`fk_to_airline_crew_Aadhar_card_number`) ON DELETE CASCADE ON UPDATE CASCADE,
 );
 
 ----------------------------------------------------------
@@ -168,8 +176,11 @@ CREATE TABLE `Pilot` (
 DROP TABLE IF EXISTS 'flight_attendant';
 
 CREATE TABLE `flight_attendant` (
-  `Aadhar_card_number` int(12) PRIMARY KEY,
-  `Training/Education` varchar(255)
+  `fk_to_flight_crew_Aadhar_card_number` int(12) PRIMARY KEY,
+  `Training/Education` varchar(255),
+
+  FOREIGN KEY (`fk_to_flight_crew_Aadhar_card_number`) REFERENCES `filght_crew` (`fk_to_airline_crew_Aadhar_card_number`) ON DELETE CASCADE ON UPDATE CASCADE,
+
 );
 
 ----------------------------------------------------------
@@ -177,10 +188,12 @@ CREATE TABLE `flight_attendant` (
 DROP TABLE IF EXISTS 'flight_engineer';
 
 CREATE TABLE `flight_engineer` (
-  `Aadhar_card_number` int(12) PRIMARY KEY,
+  `fk_to_flight_crew_Aadhar_card_number` int(12) PRIMARY KEY,
   `Education` varchar(255),
   `Manufacturer` varchar(255),
-  `plane id` int
+  `Model` varchar(255),
+
+  FOREIGN KEY (`fk_to_flight_crew_Aadhar_card_number`) REFERENCES `filght_crew` (`fk_to_airline_crew_Aadhar_card_number`) ON DELETE CASCADE ON UPDATE CASCADE,
 );
 
 
@@ -189,9 +202,12 @@ CREATE TABLE `flight_engineer` (
 DROP TABLE IF EXISTS 'flight_crew_serves_on_route';
 
 CREATE TABLE `flight_crew_serves_on_route` (
-  `Aadhar_card_number` int(12),
-  `Route ID` int,
+  `fk_to_flight_crew_Aadhar_card_number` int(12),
+  `fk_to_route_Route ID` int,
   PRIMARY KEY (`Aadhar_card_number`, `Route ID`)
+
+  FOREIGN KEY (`fk_to_flight_crew_Aadhar_card_number`) REFERENCES `filght_crew` (`fk_to_airline_crew_Aadhar_card_number`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`fk_to_route_Route ID`) REFERENCES `Route` (`Route ID`) ON DELETE CASCADE ON UPDATE CASCADE,
 );
 
 ----------------------------------------------------------
@@ -199,8 +215,10 @@ CREATE TABLE `flight_crew_serves_on_route` (
 DROP TABLE IF EXISTS 'On-ground';
 
 CREATE TABLE `On-ground` (
-  `Aadhar_card_number` int(12) PRIMARY KEY,
-  `Job title` varchar(255)
+  `fk_to_airline_crew_Aadhar_card_number` int(12) PRIMARY KEY,
+  `Job title` varchar(255),
+  FOREIGN KEY (`fk_to_airline_crew_Aadhar_card_number`) REFERENCES `airline_crew` (`Aadhar_card_number`) ON DELETE CASCADE ON UPDATE CASCADE,
+
 );
 
 ----------------------------------------------------------
@@ -210,7 +228,7 @@ DROP TABLE IF EXISTS 'Airport';
 CREATE TABLE `Airport` (
   `IATA airport codes` varchar(3) PRIMARY KEY,
   `Altitude` float,
-  `Time Zone` float,
+  `Time Zone` time,
   `Airport Name` varchar(255),
   `City` varchar(255),
   `Country` varchar(255),
@@ -223,12 +241,14 @@ CREATE TABLE `Airport` (
 DROP TABLE IF EXISTS 'Runway';
 
 CREATE TABLE `Runway` (
-  `IATA airport codes` varchar(3),
+  `fk_to_airport_IATA_airport_codes` char(3),
   `Runway ID` int,
   `length_ft` float,
   `width_ft` float,
-  `Status` varchar(255),
-  PRIMARY KEY (`IATA airport codes`, `Runway ID`)
+  `Status` enum('Assigned', 'Available', 'Disfunctional') DEFAULT 'Available',
+  PRIMARY KEY (`fk_to_airport_IATA_airport_codes`, `Runway ID`),
+
+  FOREIGN KEY (`fk_to_airport_IATA_airport_codes`) REFERENCES `Airport` (`IATA airport codes`) ON DELETE CASCADE ON UPDATE CASCADE,
 );
 
 ----------------------------------------------------------
@@ -236,37 +256,51 @@ CREATE TABLE `Runway` (
 DROP TABLE IF EXISTS 'Terminal';
 
 CREATE TABLE `Terminal` (
-  `IATA airport codes` varchar(3),
+  `fk_to_airport_IATA_airport_codes` char(3),
   `Terminal ID` int,
   `Airplane Handling capacity` int,
   `Floor Area` float,
-  PRIMARY KEY (`IATA airport codes`, `Terminal ID`)
+  PRIMARY KEY (`fk_to_airport_IATA_airport_codes`, `Terminal ID`),
+
+  FOREIGN KEY (`fk_to_airport_IATA_airport_codes`) REFERENCES `Airport` (`IATA airport codes`) ON DELETE CASCADE ON UPDATE CASCADE,
+
 );
 
 
 ----------------------------------------------------------
 
+DROP TABLE IF EXISTS 'Airport Employees/CREWS';
 
 CREATE TABLE `Airport Employees/CREWS` (
-  `IATA airport code of employing airport` varchar(3),
   `Aadhar_card_number` int(12) PRIMARY KEY,
-  `First Name` varchar(255),
+  `fk_to_airport_IATA_code_of_employing_airport` char(3),
+  `First Name` varchar(255) NOT NULL,
   `Middle Name` varchar(255),
   `Last Name` varchar(255),
-  `Experience` int,
+  `Experience` int DEFAULT 0,
   `Salary` int,
   `Nationality` varchar(255),
   `DOB` date,
-  `Gender` varchar(6),
-  `Supervisor Aadhar_card_number` int(12)
+  `Gender` enum('Male', 'Female', 'Others'),
+  `sup_Aadhar_card_number` int(12),
+
+
+FOREIGN KEY (`fk_to_airport_IATA_code_of_employing_airport`) REFERENCES `Airport` (`IATA airport codes`) ON DELETE CASCADE ON UPDATE CASCADE,
+FOREIGN KEY (`sup_Aadhar_card_number`) REFERENCES `Airport Employees/CREWS` (`Aadhar_card_number`) ON DELETE SET NULL ON UPDATE CASCADE,
+
 );
 
 
 ----------------------------------------------------------
 
+DROP TABLE IF EXISTS 'mo_executives';
+
 CREATE TABLE `mo_executives` (
-  `Aadhar_card_number` int(12) PRIMARY KEY,
-  `Job title` varchar(255)
+  `fk_to_airport_crew_aadhar_card_number` int(12) PRIMARY KEY,
+  `Job title` varchar(255),
+
+  FOREIGN KEY (`fk_to_airport_crew_aadhar_card_number`) REFERENCES `Airport Employees/CREWS` (`Aadhar_card_number`) ON DELETE CASCADE ON UPDATE CASCADE,
+
 );
 
 
@@ -275,9 +309,12 @@ CREATE TABLE `mo_executives` (
 DROP TABLE IF EXISTS 'Security';
 
 CREATE TABLE `Security` (
-  `Aadhar_card_number` int(12) PRIMARY KEY,
+  `fk_to_airport_crew_aadhar_card_number` int(12) PRIMARY KEY,
   `Designation` varchar(255),
-  `Security ID number` int
+  `Security ID number` int UNIQUE,
+
+  FOREIGN KEY (`fk_to_airport_crew_aadhar_card_number`) REFERENCES `Airport Employees/CREWS` (`Aadhar_card_number`) ON DELETE CASCADE ON UPDATE CASCADE,
+
 );
 
 
@@ -286,26 +323,40 @@ CREATE TABLE `Security` (
 DROP TABLE IF EXISTS 'air_traffic_controller';
 
 CREATE TABLE `air_traffic_controller` (
-  `Aadhar_card_number` int(12) PRIMARY KEY,
+  `fk_to_airport_crew_aadhar_card_number` int(12) PRIMARY KEY,
   `Current communication Frequency` float,
-  `Training/Education` varchar(255)
+  `Training/Education` varchar(255),
+
+  FOREIGN KEY (`fk_to_airport_crew_aadhar_card_number`) REFERENCES `Airport Employees/CREWS` (`Aadhar_card_number`) ON DELETE CASCADE ON UPDATE CASCADE,
+
 );
 
 
 ----------------------------------------------------------
 
-CREATE TABLE `crew_has_worked_togther` (
+DROP TABLE IF EXISTS 'crew_has_worked_together';
+
+CREATE TABLE `crew_has_worked_together` (
   `Pilot captain Aadhar_card_number` int(12),
   `Pilot first officer Aadhar_card_number` int(12),
   `flight_attendant Aadhar_card_number` int(12),
   `flight_engineer Aadhar_card_number` int(12),
-  `Avg competence rating` int,
+  `Avg_competence_rating` float,
+  CHECK (`Avg_competence_rating` >= 0 AND `Avg_competence_rating` <=10),
   `Number of Languages spoken overall` int,
   PRIMARY KEY (`Pilot captain Aadhar_card_number`, `Pilot first officer Aadhar_card_number`, `flight_attendant Aadhar_card_number`, `flight_engineer Aadhar_card_number`)
+
+  FOREIGN KEY(`Pilot captain Aadhar_card_number`) REFERENCES `Pilot` (`fk_to_flight_crew_Aadhar_card_number`)  ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY(`Pilot first officer Aadhar_card_number`) REFERENCES `Pilot` (`fk_to_flight_crew_Aadhar_card_number`)  ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY(`flight_attendant Aadhar_card_number`) REFERENCES `flight_attendant` (`fk_to_flight_crew_Aadhar_card_number`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY(`flight_engineer Aadhar_card_number`) REFERENCES `flight_engineer` (`fk_to_flight_crew_Aadhar_card_number`) ON DELETE CASCADE ON UPDATE CASCADE,
+
 );
 
 
 ----------------------------------------------------------
+
+DROP TABLE IF EXISTS 'filght_crew_feedback';
 
 CREATE TABLE `flight_crew_feedback` (
   `Pilot captain Aadhar_card_number` int(12),
@@ -314,6 +365,12 @@ CREATE TABLE `flight_crew_feedback` (
   `flight_engineer Aadhar_card_number` int(12),
   `Feedback given by the passengers for the crew` varchar(255),
   PRIMARY KEY (`Pilot captain Aadhar_card_number`, `Pilot first officer Aadhar_card_number`, `flight_attendant Aadhar_card_number`, `flight_engineer Aadhar_card_number`, `Feedback given by the passengers for the crew`)
+
+  FOREIGN KEY(`Pilot captain Aadhar_card_number`) REFERENCES `Pilot` (`fk_to_flight_crew_Aadhar_card_number`)  ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY(`Pilot first officer Aadhar_card_number`) REFERENCES `Pilot` (`fk_to_flight_crew_Aadhar_card_number`)  ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY(`flight_attendant Aadhar_card_number`) REFERENCES `flight_attendant` (`fk_to_flight_crew_Aadhar_card_number`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY(`flight_engineer Aadhar_card_number`) REFERENCES `flight_engineer` (`fk_to_flight_crew_Aadhar_card_number`) ON DELETE CASCADE ON UPDATE CASCADE,
+
 );
 
 ----------------------------------------------------------
@@ -321,9 +378,11 @@ CREATE TABLE `flight_crew_feedback` (
 DROP TABLE IF EXISTS 'boarding_pass special services';
 
 CREATE TABLE `boarding_pass special services` (
-  `Barcode number` varchar(12),
-  `Special services` varchar(255),
-  PRIMARY KEY (`Barcode number`, `Special services`)
+  `fk_Barcode number` varchar(12),
+  `Special services` enum('Wheelchair', 'Disability Assistance', 'XL seats', 'Priority Boarding'),
+  PRIMARY KEY (`Barcode number`, `Special services`),
+  FOREIGN KEY (`fk_Barcode number`) REFERENCES `boarding_pass` (`Barcode number`) ON DELETE CASCADE ON UPDATE CASCADE,
+
 );
 
 ----------------------------------------------------------
@@ -331,9 +390,11 @@ CREATE TABLE `boarding_pass special services` (
 DROP TABLE IF EXISTS 'Languages spoken by airline employee';
 
 CREATE TABLE `Languages spoken by airline employee` (
-  `Aadhar_card_number` int(12),
+  `fk_Aadhar_card_number` int(12),
   `Language_name` varchar(255),
-  PRIMARY KEY (`Aadhar_card_number`, `Language_name`)
+  PRIMARY KEY (`fk_Aadhar_card_number`, `Language_name`),
+  FOREIGN KEY (`fk_Aadhar_card_number`) REFERENCES `airline_crew` (`Aadhar_card_number`) ON DELETE CASCADE ON UPDATE CASCADE,
+
 );
 
 ----------------------------------------------------------
@@ -341,9 +402,13 @@ CREATE TABLE `Languages spoken by airline employee` (
 DROP TABLE IF EXISTS 'stopover_airports_on_route';
 
 CREATE TABLE `stopover_airports_on_route` (
-  `Route ID` int,
-  `IATA code of stopover airport` varchar(3),
-  PRIMARY KEY (`Route ID`, `IATA code of stopover airport`)
+  `fk_route_id` int,
+  `fk_iata_stopover_airport` varchar(3),
+  PRIMARY KEY (`Route ID`, `IATA code of stopover airport`),
+
+  FOREIGN KEY (`fk_route_id`) REFERENCES `Route` (`Route ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`fk_iata_stopover_airport`) REFERENCES `Airport` (`IATA airport codes`) ON DELETE CASCADE ON UPDATE CASCADE,
+
 );
 
 ----------------------------------------------------------
@@ -351,10 +416,14 @@ CREATE TABLE `stopover_airports_on_route` (
 DROP TABLE IF EXISTS 'PNR info deduction';
 
 CREATE TABLE `PNR info deduction` (
-  `PNR number` varchar(6) PRIMARY KEY,
-  `Scheduled Boarding Time` timestamp,
-  `Terminal number` int,
-  `class of travel` varchar(255)
+  `fk_PNR_number` char(6) PRIMARY KEY,
+  `Scheduled Boarding Time` time,
+  `fk_terminal_num` int,
+  `class_of_travel` enum('Economy', 'Business'),
+
+  FOREIGN KEY (`fk_PNR_number`) REFERENCES `boarding_pass` (`PNR number`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`fk_terminal_num`) REFERENCES `Terminal` (`Terminal ID`)  ON DELETE SET NULL ON UPDATE CASCADE,
+
 );
 
 ----------------------------------------------------------
@@ -362,81 +431,6 @@ CREATE TABLE `PNR info deduction` (
 ----------------------------------------------------------
 ----------------------------------------------------------
 ----------------------------------------------------------
-
-
-
-ALTER TABLE `Runway` ADD FOREIGN KEY (`IATA airport codes`) REFERENCES `Airport` (`IATA airport codes`);
-
-ALTER TABLE `Terminal` ADD FOREIGN KEY (`IATA airport codes`) REFERENCES `Airport` (`IATA airport codes`);
-
-
-
-ALTER TABLE `luggage` ADD FOREIGN KEY (`Barcode number`) REFERENCES `boarding_pass` (`Barcode number`);
-
-
-ALTER TABLE `airline_crew` ADD FOREIGN KEY (`Employer IATA airline designators`) REFERENCES `Airline` (`IATA airline designators`);
-
-ALTER TABLE `Aircraft` ADD FOREIGN KEY (`Owner airline IATA code`) REFERENCES `Airline` (`IATA airline designators`);
-
-ALTER TABLE `Airport Employees/CREWS` ADD FOREIGN KEY (`IATA airport code of employing airport`) REFERENCES `Airport` (`IATA airport codes`);
-
-ALTER TABLE `Airport Employees/CREWS` ADD FOREIGN KEY (`Supervisor Aadhar_card_number`) REFERENCES `Airport Employees/CREWS` (`Aadhar_card_number`);
-
-ALTER TABLE `flight_crew_serves_on_route` ADD FOREIGN KEY (`Aadhar_card_number`) REFERENCES `airline_crew` (`Aadhar_card_number`);
-
-ALTER TABLE `flight_crew_serves_on_route` ADD FOREIGN KEY (`Route ID`) REFERENCES `Route` (`Route ID`);
-
-ALTER TABLE `On-ground` ADD FOREIGN KEY (`Aadhar_card_number`) REFERENCES `airline_crew` (`Aadhar_card_number`);
-
-ALTER TABLE `flight_crew` ADD FOREIGN KEY (`Aadhar_card_number`) REFERENCES `airline_crew` (`Aadhar_card_number`);
-
-ALTER TABLE `mo_executives` ADD FOREIGN KEY (`Aadhar_card_number`) REFERENCES `Airport Employees/CREWS` (`Aadhar_card_number`);
-
-ALTER TABLE `Security` ADD FOREIGN KEY (`Aadhar_card_number`) REFERENCES `Airport Employees/CREWS` (`Aadhar_card_number`);
-
-ALTER TABLE `air_traffic_controller` ADD FOREIGN KEY (`Aadhar_card_number`) REFERENCES `Airport Employees/CREWS` (`Aadhar_card_number`);
-
-ALTER TABLE `Pilot` ADD FOREIGN KEY (`Aadhar_card_number`) REFERENCES `flight_crew` (`Aadhar_card_number`);
-
-ALTER TABLE `flight_attendant` ADD FOREIGN KEY (`Aadhar_card_number`) REFERENCES `flight_crew` (`Aadhar_card_number`);
-
-ALTER TABLE `flight_engineer` ADD FOREIGN KEY (`Aadhar_card_number`) REFERENCES `flight_crew` (`Aadhar_card_number`);
-
-ALTER TABLE `crew_has_worked_togther` ADD FOREIGN KEY (`Pilot captain Aadhar_card_number`) REFERENCES `Pilot` (`Aadhar_card_number`);
-
-ALTER TABLE `crew_has_worked_togther` ADD FOREIGN KEY (`Pilot first officer Aadhar_card_number`) REFERENCES `Pilot` (`Aadhar_card_number`);
-
-ALTER TABLE `crew_has_worked_togther` ADD FOREIGN KEY (`flight_attendant Aadhar_card_number`) REFERENCES `flight_attendant` (`Aadhar_card_number`);
-
-ALTER TABLE `crew_has_worked_togther` ADD FOREIGN KEY (`flight_engineer Aadhar_card_number`) REFERENCES `flight_engineer` (`Aadhar_card_number`);
-
-ALTER TABLE `boarding_pass special services` ADD FOREIGN KEY (`Barcode number`) REFERENCES `boarding_pass` (`Barcode number`);
-
-ALTER TABLE `Languages spoken by airline employee` ADD FOREIGN KEY (`Aadhar_card_number`) REFERENCES `airline_crew` (`Aadhar_card_number`);
-
-ALTER TABLE `stopover_airports_on_route` ADD FOREIGN KEY (`Route ID`) REFERENCES `Route` (`Route ID`);
-
-ALTER TABLE `capacity_of_aircraft` ADD FOREIGN KEY (`Model`) REFERENCES `Aircraft` (`Model`);
-
-ALTER TABLE `capacity_of_aircraft` ADD FOREIGN KEY (`Manufacturer`) REFERENCES `Aircraft` (`Manufacturer`);
-
-ALTER TABLE `flight_crew_feedback` ADD FOREIGN KEY (`Pilot captain Aadhar_card_number`) REFERENCES `Pilot` (`Aadhar_card_number`);
-
-ALTER TABLE `flight_crew_feedback` ADD FOREIGN KEY (`Pilot first officer Aadhar_card_number`) REFERENCES `Pilot` (`Aadhar_card_number`);
-
-ALTER TABLE `flight_crew_feedback` ADD FOREIGN KEY (`flight_attendant Aadhar_card_number`) REFERENCES `flight_attendant` (`Aadhar_card_number`);
-
-ALTER TABLE `flight_crew_feedback` ADD FOREIGN KEY (`flight_engineer Aadhar_card_number`) REFERENCES `flight_engineer` (`Aadhar_card_number`);
-
-
-
-ALTER TABLE `stopover_airports_on_route` ADD FOREIGN KEY (`IATA code of stopover airport`) REFERENCES `Airport` (`IATA airport codes`);
-
-ALTER TABLE `PNR info deduction` ADD FOREIGN KEY (`PNR number`) REFERENCES `boarding_pass` (`PNR number`);
-
-ALTER TABLE `PNR info deduction` ADD FOREIGN KEY (`Terminal number`) REFERENCES `Terminal` (`Terminal ID`);
-
-
 
 INSERT INTO `airport_management_system`.`airline` (`IATA airline designators`, `Company Name`, `Number of aircrafts owned`, `Active`, `Country of Ownership`) VALUES ('6E', 'Indigo Airlines Limited', '0', '1', 'India');
 INSERT INTO `airport_management_system`.`airline` (`IATA airline designators`, `Company Name`, `Number of aircrafts owned`, `Active`, `Country of Ownership`) VALUES ('SG', 'Spicejet Limited', '0', '1', 'India');
@@ -540,6 +534,5 @@ INSERT INTO `airport_management_system`.`languages spoken by airline employee` (
 INSERT INTO `airport_management_system`.`languages spoken by airline employee` (`Aadhar_card_number`, `Language_name`) VALUES ('9.10746E+11', 'English');
 INSERT INTO `airport_management_system`.`languages spoken by airline employee` (`Aadhar_card_number`, `Language_name`) VALUES ('7.27603E+11', 'English');
 INSERT INTO `airport_management_system`.`languages spoken by airline employee` (`Aadhar_card_number`, `Language_name`) VALUES ('9.84117E+11', 'English'); DEFAULT 'NA' NOT NULL NOT NULL  
-  FOREIGN KEY (`Route ID`) REFERENCES `Route` (`Route ID`);
 
 

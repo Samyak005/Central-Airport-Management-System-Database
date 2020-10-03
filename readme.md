@@ -15,3 +15,7 @@ mysql -h 127.0.0.1 -u root --port=5005 -p < samyak.sql
 
 
 # 1.6. Executing SQL Statements Read from a File or Program
+
+# 1.6. Executing SQL Statements Read from a File or Program
+
+# 1.6. Executing SQL Statements Read from a File or Program
