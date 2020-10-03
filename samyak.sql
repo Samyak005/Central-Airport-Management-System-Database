@@ -26,7 +26,7 @@ CREATE TABLE `capacity_of_aircraft` (
   `Manufacturer` varchar(255) NOT NULL,
   `Model` varchar(255) NOT NULL,
   `Capacity` int NOT NULL,
-  PRIMARY KEY (`Model`,`Manufacturer` )
+  constraint capacityKey PRIMARY KEY (`Model`,`Manufacturer` )
 
 );
 -- -- ----------------------------------------------------------
@@ -41,21 +41,15 @@ CREATE TABLE `Aircraft` (
   `Flight ID` varchar(10),
   `Maintanence check date` date,
   `fk_to_airline_owner_airline_IATA_code` char(2),
-  KEY (`fk_to_capacity_Model`, `fk_to_capacity_Manufacturer` ),
+  -- KEY (`fk_to_capacity_Model`, `fk_to_capacity_Manufacturer` ),
 
-  -- CONSTRAINT '12' FOREIGN KEY (`fk_to_capacity_Model`,`fk_to_capacity_Manufacturer`) REFERENCES `capacity_of_aircraft` (`Model`,`Manufacturer`) ON DELETE CASCADE ON UPDATE CASCADE,
-  -- CONSTRAINT '11' FOREIGN KEY (`fk_to_capacity_Manufacturer`) REFERENCES `capacity_of_aircraft` (`Manufacturer`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`fk_to_capacity_Model`,`fk_to_capacity_Manufacturer`) REFERENCES `capacity_of_aircraft` (`Model`,`Manufacturer`) ON DELETE CASCADE ON UPDATE CASCADE,
+  -- CONSTRAINT fd FOREIGN KEY (`fk_to_capacity_Manufacturer`) REFERENCES `capacity_of_aircraft` (`Model`,`Manufacturer`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`fk_to_airline_owner_airline_IATA_code`) REFERENCES `Airline` (`IATA airline designators`) ON DELETE SET NULL ON UPDATE CASCADE
   -- FOREIGN KEY (`fk_to_capacity_Model`,`fk_to_capacity_Manufacturer`) REFERENCES `capacity_of_aircraft` (`Model`,`Manufacturer`) ;
+	-- FOREIGN KEY (`fk_to_capacity_Model`, `fk_to_capacity_Manufacturer`) REFERENCES `capacity_of_aircraft` (`Model`,`Manufacturer`) ON DELETE CASCADE ON UPDATE CASCADE
 
 );
-
-alter table `Aircraft`
-FOREIGN KEY (`fk_to_capacity_Model`,`fk_to_capacity_Manufacturer`) REFERENCES `capacity_of_aircraft` (`Model`,`Manufacturer`) ;
-
--- alter table `Aircraft`
---      foreign key (`fk_to_capacity_Model`,`fk_to_capacity_Manufacturer`)
---      references `capacity_of_aircraft` (`Model`,`Manufacturer`);
 
 -- -- ----------------------------------------------------------
 -- ----------------------------------------------------------
@@ -124,11 +118,11 @@ CREATE TABLE `Route` (
   `fk_to_aircraft_registration_num` int,
   `Status` enum('Departed', 'Boarding','On_route','Delayed','Arrived','Checking','Not_applicable') NOT NULL DEFAULT 'Not_applicable',
 
-  CONSTRAINT `1` FOREIGN KEY (`fk_to_airport_dest_iata_code`) REFERENCES `Airport` (`IATA airport codes`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `2` FOREIGN KEY (`fk_to_airport_src_iata_code`) REFERENCES `Airport` (`IATA airport codes`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `3` FOREIGN KEY (`fk_to_aircraft_registration_num`) REFERENCES `Aircraft` (`registration_num`) ON DELETE SET NULL ON UPDATE CASCADE
-  CONSTRAINT `4` FOREIGN KEY (`fk_to_runway_Landing runway ID`) REFERENCES `Runway` (`Runway ID`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `5` FOREIGN KEY (`fk_to_runway_Take off runway id`) REFERENCES `Runway` (`Runway ID`) ON DELETE SET NULL ON UPDATE CASCADE
+  CONSTRAINT aa FOREIGN KEY (`fk_to_airport_dest_iata_code`) REFERENCES `Airport` (`IATA airport codes`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT ab FOREIGN KEY (`fk_to_airport_src_iata_code`) REFERENCES `Airport` (`IATA airport codes`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT ac FOREIGN KEY (`fk_to_aircraft_registration_num`) REFERENCES `Aircraft` (`registration_num`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT ad FOREIGN KEY (`fk_to_airport_dest_iata_code`,`fk_to_runway_Landing runway ID`) REFERENCES `Runway` (`fk_to_airport_IATA_airport_codes`, `Runway ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT ae FOREIGN KEY (`fk_to_airport_src_iata_code`,`fk_to_runway_Take off runway id`) REFERENCES `Runway` (`fk_to_airport_IATA_airport_codes`, `Runway ID`) ON DELETE CASCADE ON UPDATE CASCADE
 
 );
 -- -- ----------------------------------------------------------
@@ -175,7 +169,7 @@ CREATE TABLE `emer_contact` (
   `Name` varchar(255),
   `Phone No` int(10) UNIQUE NOT NULL,
   `fk_to_passenger_Aadhar_card_number` int(12),
-  PRIMARY KEY (`Name`, `fk_to_Aadhar_card_number`),
+  PRIMARY KEY (`Name`, `fk_to_passenger_Aadhar_card_number`),
 
   FOREIGN KEY (`fk_to_passenger_Aadhar_card_number`) REFERENCES `Passenger` (`Aadhar_card_number`) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -189,7 +183,7 @@ CREATE TABLE `luggage` (
   `Baggage ID` int PRIMARY KEY,
   `fk_to_Barcode number` char(12),
 
-  FOREIGN KEY (`fk_to_Barcode_number`) REFERENCES `boarding_pass` (`Barcode number`) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (`fk_to_Barcode number`) REFERENCES `boarding_pass` (`Barcode number`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 
@@ -207,7 +201,7 @@ CREATE TABLE `airline_crew` (
   `Nationality` varchar(255),
   `DOB` date,
   `Gender` enum('Male', 'Female', 'Others'),
-  `fk_to_airline_employer_IATA_code` char(2)
+  `fk_to_airline_employer_IATA_code` char(2),
 
   FOREIGN KEY (`fk_to_airline_employer_IATA_code`) REFERENCES `Airline` (`IATA airline designators`) ON DELETE SET NULL ON UPDATE CASCADE
 );
@@ -231,7 +225,7 @@ CREATE TABLE `Pilot` (
   `Pilot license number` int(12) UNIQUE NOT NULL,
   `Number of flying hours` int,
 
-  FOREIGN KEY (`fk_to_flight_crew_Aadhar_card_number`) REFERENCES `filght_crew` (`fk_to_airline_crew_Aadhar_card_number`) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (`fk_to_flight_crew_Aadhar_card_number`) REFERENCES `flight_crew` (`fk_to_airline_crew_Aadhar_card_number`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- --------------------------------------------------------
@@ -242,7 +236,7 @@ CREATE TABLE `flight_attendant` (
   `fk_to_flight_crew_Aadhar_card_number` int(12) PRIMARY KEY,
   `Training/Education` varchar(255),
 
-  FOREIGN KEY (`fk_to_flight_crew_Aadhar_card_number`) REFERENCES `filght_crew` (`fk_to_airline_crew_Aadhar_card_number`) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (`fk_to_flight_crew_Aadhar_card_number`) REFERENCES `flight_crew` (`fk_to_airline_crew_Aadhar_card_number`) ON DELETE CASCADE ON UPDATE CASCADE
 
 );
 
@@ -256,7 +250,7 @@ CREATE TABLE `flight_engineer` (
   `Manufacturer` varchar(255),
   `Model` varchar(255),
 
-  FOREIGN KEY (`fk_to_flight_crew_Aadhar_card_number`) REFERENCES `filght_crew` (`fk_to_airline_crew_Aadhar_card_number`) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (`fk_to_flight_crew_Aadhar_card_number`) REFERENCES `flight_crew` (`fk_to_airline_crew_Aadhar_card_number`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 
@@ -267,9 +261,9 @@ DROP TABLE IF EXISTS `flight_crew_serves_on_route`;
 CREATE TABLE `flight_crew_serves_on_route` (
   `fk_to_flight_crew_Aadhar_card_number` int(12),
   `fk_to_route_Route ID` int,
-  PRIMARY KEY (`Aadhar_card_number`, `Route ID`)
+  PRIMARY KEY (`fk_to_flight_crew_Aadhar_card_number`, `fk_to_route_Route ID`),
 
-  FOREIGN KEY (`fk_to_flight_crew_Aadhar_card_number`) REFERENCES `filght_crew` (`fk_to_airline_crew_Aadhar_card_number`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`fk_to_flight_crew_Aadhar_card_number`) REFERENCES `flight_crew` (`fk_to_airline_crew_Aadhar_card_number`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`fk_to_route_Route ID`) REFERENCES `Route` (`Route ID`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -361,7 +355,7 @@ CREATE TABLE `crew_has_worked_together` (
   `Avg_competence_rating` float,
   CHECK (`Avg_competence_rating` >= 0 AND `Avg_competence_rating` <=10),
   `Number of Languages spoken overall` int,
-  PRIMARY KEY (`Pilot captain Aadhar_card_number`, `Pilot first officer Aadhar_card_number`, `flight_attendant Aadhar_card_number`, `flight_engineer Aadhar_card_number`)
+  PRIMARY KEY (`Pilot captain Aadhar_card_number`, `Pilot first officer Aadhar_card_number`, `flight_attendant Aadhar_card_number`, `flight_engineer Aadhar_card_number`),
 
   FOREIGN KEY(`Pilot captain Aadhar_card_number`) REFERENCES `Pilot` (`fk_to_flight_crew_Aadhar_card_number`)  ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY(`Pilot first officer Aadhar_card_number`) REFERENCES `Pilot` (`fk_to_flight_crew_Aadhar_card_number`)  ON DELETE CASCADE ON UPDATE CASCADE,
@@ -381,7 +375,7 @@ CREATE TABLE `flight_crew_feedback` (
   `flight_attendant Aadhar_card_number` int(12),
   `flight_engineer Aadhar_card_number` int(12),
   `Feedback given by the passengers for the crew` varchar(255),
-  PRIMARY KEY (`Pilot captain Aadhar_card_number`, `Pilot first officer Aadhar_card_number`, `flight_attendant Aadhar_card_number`, `flight_engineer Aadhar_card_number`, `Feedback given by the passengers for the crew`)
+  PRIMARY KEY (`Pilot captain Aadhar_card_number`, `Pilot first officer Aadhar_card_number`, `flight_attendant Aadhar_card_number`, `flight_engineer Aadhar_card_number`, `Feedback given by the passengers for the crew`),
 
   FOREIGN KEY(`Pilot captain Aadhar_card_number`) REFERENCES `Pilot` (`fk_to_flight_crew_Aadhar_card_number`)  ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY(`Pilot first officer Aadhar_card_number`) REFERENCES `Pilot` (`fk_to_flight_crew_Aadhar_card_number`)  ON DELETE CASCADE ON UPDATE CASCADE,
@@ -397,7 +391,7 @@ DROP TABLE IF EXISTS `boarding_pass special services`;
 CREATE TABLE `boarding_pass special services` (
   `fk_Barcode number` varchar(12),
   `Special services` enum('Wheelchair', 'Disability Assistance', 'XL seats', 'Priority Boarding'),
-  PRIMARY KEY (`Barcode number`, `Special services`),
+  PRIMARY KEY (`fk_Barcode number`, `Special services`),
   FOREIGN KEY (`fk_Barcode number`) REFERENCES `boarding_pass` (`Barcode number`) ON DELETE CASCADE ON UPDATE CASCADE
 
 );
@@ -421,7 +415,7 @@ DROP TABLE IF EXISTS `stopover_airports_on_route`;
 CREATE TABLE `stopover_airports_on_route` (
   `fk_route_id` int,
   `fk_iata_stopover_airport` varchar(3),
-  PRIMARY KEY (`Route ID`, `IATA code of stopover airport`),
+  PRIMARY KEY (`fk_route_id`, `fk_iata_stopover_airport`),
 
   FOREIGN KEY (`fk_route_id`) REFERENCES `Route` (`Route ID`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`fk_iata_stopover_airport`) REFERENCES `Airport` (`IATA airport codes`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -438,7 +432,7 @@ CREATE TABLE `PNR info deduction` (
   `fk_terminal_num` int,
   `class_of_travel` enum('Economy', 'Business'),
 
-  FOREIGN KEY (`fk_PNR_number`) REFERENCES `boarding_pass` (`PNR number`) ON DELETE CASCADE ON UPDATE CASCADE,
+  -- FOREIGN KEY (`fk_PNR_number`) REFERENCES `boarding_pass` (`PNR number`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`fk_terminal_num`) REFERENCES `Terminal` (`Terminal ID`)  ON DELETE SET NULL ON UPDATE CASCADE
 
 );
