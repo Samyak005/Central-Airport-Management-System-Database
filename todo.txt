@@ -2,12 +2,12 @@
 - Add restriction last maintenace date for aircraft
 - Add timezone restriction
 - Latitude restriction, longitude restriction
--
--
--
--
--
--
+- add restricted operations for diff people
+- Emergency contact to be added to passenger
+- Luggage added with boarding pass
+- Special service during boarding pass
+- Employee languages spoken
+- Stopover airport while adding route
 -
 -
 -

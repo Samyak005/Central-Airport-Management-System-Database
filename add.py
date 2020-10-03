@@ -33,17 +33,19 @@ def add_route(cur, con):
     print('Enter details of the new route:')
 
     attr['Route ID'] = input('Route ID: ')
-    attr['fk_to_airport_src_iata_code'] = input('fk_to_airport_src_iata_code: ')
-    attr['fk_to_airport_dest_iata_code'] = input('fk_to_airport_dest_iata_code: ')
-    attr['Date'] = input('Date: ')
-    attr['Scheduled arrival'] = input('Scheduled arrival: ')
-    attr['Scheduled Departure'] = input('Scheduled Departure: ')
-    attr['Time duration'] = input('Time duration: ')
-    attr['fk_to_runway_Take off runway id'] = input('fk_to_runway_Take off runway id: ')
-    attr['Distance Travelled'] = input('Distance Travelled: ')
-    attr['fk_to_runway_Landing runway ID'] = input('fk_to_runway_Landing runway ID: ')
-    attr['fk_to_aircraft_registration_num'] = input('fk_to_aircraft_registration_num: ')
-    attr['Status'] = input('Status: ')
+    attr['fk_to_airport_src_iata_code'] = input('source airport iata code: ')
+    attr['fk_to_airport_dest_iata_code'] = input('Destination airport iata code: ')
+    attr['Date'] = input('Date: [YYYY-MM-DD] (Press enter for today\'s date')
+    if attr['Date'] == '':
+        attr['Date'] = datetime.now().strftime('%Y-%m-%d')
+    attr['Scheduled arrival'] = empty_to_null(input('Scheduled arrival (Press enter if information not available): [HH:MM]'))
+    attr['Scheduled Departure'] = empty_to_null(input('Scheduled Departure: [HH:MM (Press enter if information not available):'))
+    attr['Time duration'] = empty_to_null(input('Time duration (Press enter if information not available): [HH:MM]'))
+    attr['fk_to_runway_Take off runway id'] = empty_to_null(input('Take off runway id (Press enter if information not available):'))
+    attr['Distance Travelled'] = empty_to_null(input('Distance Travelled (Press enter if information not available):'))
+    attr['fk_to_runway_Landing runway ID'] = empty_to_null(input('Landing runway ID (Press enter if information not available):'))
+    attr['fk_to_aircraft_registration_num'] = empty_to_null(input('aircraft registration number (Press enter if information not available):'))
+    attr['Status'] = input('Status: [Departed, Boarding, On_route, Delayed, Arrived, Checking, Not_applicable]')
 
 def add_boarding_pass(cur, con):
     attr['Barcode number'] = input('Barcode number: ')
@@ -103,7 +105,9 @@ def add_emer_contact(cur, con):
         return
     
     attr['Phone No'] = input('Phone No: ')
-    attr['fk_to_passenger_Aadhar_card_number'] = input('fk_to_passenger_Aadhar_card_number: ')
+    attr['fk_to_passenger_\
+        Aadhar_card_number'] = \
+        input('Aadhar card_number: ')
  
  def add_luggage(cur, con):
     
@@ -118,4 +122,3 @@ def add_emer_contact(cur, con):
     attr['fk_to_capacity_Manufacturer'] = input('fk_to_capacity_Manufacturer: ')
     attr['fk_to_capacity_Manufacturer'] = input('fk_to_capacity_Manufacturer: ')
     
-

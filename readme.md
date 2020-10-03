@@ -16,3 +16,18 @@ mysql -h 127.0.0.1 -u root --port=5005 -p < samyak.sql
 https://dba.stackexchange.com/a/42541
 
 # 1.6. Executing SQL Statements Read from a File or Program
+
+
+***fetchone()*** retrieves a single item, when you know the result set contains a single row. 
+***fetchall()*** retrieves all the items, when you know the result set contains a limited number of rows that can fit comfortably into memory. 
+***fetchmany()*** is the general-purpose method when you cannot predict the size of the result set: you keep calling it and looping through the returned items, until there are no more results to process
+
+
+# iterating over the result of a query
+https://stackoverflow.com/questions/28530508/select-query-in-pymysql
+
+# incorporating pandas
+https://stackoverflow.com/questions/47328402/how-to-store-mysql-query-result-into-pandas-dataframe-with-pymysql
+
+#
+https://stackoverflow.com/questions/39163776/how-to-get-rows-affected-in-a-update-statement-by-pymsql

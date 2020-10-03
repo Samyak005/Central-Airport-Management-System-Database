@@ -10,27 +10,22 @@ def add_display():
     print("Add to the table:")
     i = 0
     tables_add = [
-        "Prisoners", "Jobs", "Staff", "Offences", "Appeals", "Visits",
-        "Visitors", "Emergency Contacts", "Go back"
+        "Airline",
+        "Passenger", 
+        "Aircraft",
+        "Airport",
+        "Runway",
+        "Terminal",
+        "Route",
+        "Boarding Pass",
+        "Airline Employees",
+        "Airport Employees",
+        "Feedback and rating"
     ]
 
     while i < len(tables_add):
         i += 1
         print(str(i) + ". " + tables_add[i - 1])
-
-
-def option3():
-    """
-    Function to implement option 2
-    """
-    print("Not implemented")
-
-
-def option4():
-    """
-    Function to implement option 3
-    """
-    print("Not implemented")
 
 
 def hireAnEmployee():
@@ -111,10 +106,11 @@ while (1):
         #Establish a connection to the MySQL database. Accepts several arguments:
         #Constructor for creating a connection to the database.
 
+        # # Connect to the database
         con = pymysql.connect(host='localhost', #host – Host where the database server is located
                               user=username,  #Username to log in as
                               password=password, #Password to use.
-                              db='AIRPORT_MANAGEMENT_SYSTEM', #Database to use, None to not use a particular one.
+                              db='airport_db', #Database to use, None to not use a particular one.
                               port=5005, #MySQL port to use
                               cursorclass=pymysql.cursors.DictCursor) # Custom cursor class to use.
        
@@ -138,7 +134,7 @@ while (1):
             while (1):
                 tmp = sp.call('clear', shell=True)
                 # Here taking example of Employee Mini-world
-                print("1. Option 1")  # Hire an Employee
+                print("1. Add new information")  # Hire an Employee
                 print("2. Option 2")  # Fire an Employee
                 print("3. Option 3")  # Promote Employee
                 print("4. Option 4")  # Employee Statistics
@@ -148,15 +144,74 @@ while (1):
                 tmp = sp.call('clear', shell=True)
                 if ch == 5:
                     break
-                elif ch == '6':
+                elif ch == 6:
                     raise SystemExit
                 else:
                     dispatch(ch)
                     tmp = input("Enter any key to CONTINUE>")
 
-    except:
+    except Exception as e:
         tmp = sp.call('clear', shell=True)
         print(
             "Connection Refused: Either username or password is incorrect or user doesn't have access to database"
         )
+        print(">>>", e)
         tmp = input("Enter any key to CONTINUE>")
+
+
+
+
+# ### SAMPLE CODE  https://github.com/PyMySQL/PyMySQL
+# import pymysql.cursors
+
+# # Connect to the database
+# connection = pymysql.connect(host='localhost',
+#                              user='user',
+#                              password='passwd',
+#                              db='db',
+#                              charset='utf8mb4',
+#                              cursorclass=pymysql.cursors.DictCursor)
+
+# try:
+#     with connection.cursor() as cursor:
+#         # Create a new record
+#         sql = "INSERT INTO `users` (`email`, `password`) VALUES (%s, %s)"
+#         cursor.execute(sql, ('webmaster@python.org', 'very-secret'))
+
+#     # connection is not autocommit by default. So you must commit to save
+#     # your changes.
+#     connection.commit()
+
+#     with connection.cursor() as cursor:
+#         # Read a single record
+#         sql = "SELECT `id`, `password` FROM `users` WHERE `email`=%s"
+#         cursor.execute(sql, ('webmaster@python.org',))
+#         result = cursor.fetchone()
+#         print(result)
+# finally:
+#     connection.close()
+
+# # -----------------------------------------------------------------------------
+
+# # sample queries
+# import datetime
+# import mysql.connector
+
+# cnx = mysql.connector.connect(user='scott', database='employees')
+# cursor = cnx.cursor()
+
+# query = ("SELECT first_name, last_name, hire_date FROM employees "
+# "WHERE hire_date BETWEEN %s AND %s")
+
+# hire_start = datetime.date(1999, 1, 1)
+
+# hire_end = datetime.date(1999, 12, 31)
+
+# cursor.execute(query, (hire_start, hire_end))
+
+# for (first_name, last_name, hire_date) in cursor:
+#     print("{}, {} was hired on {:%d %b %Y}".format(
+#         last_name, first_name, hire_date))
+
+# cursor.close()
+# cnx.close()
