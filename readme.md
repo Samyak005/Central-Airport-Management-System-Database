@@ -10,4 +10,7 @@ Connecting to a MySQL server requires a username and password. You may also need
 
 The arguments to mysql include -h localhost to connect to the MySQL server running on the local host, -u root to connect as the MySQL root user, and -p to tell mysql to prompt for a password:
 
+mysql -h 127.0.0.1 -u root --port=5005 -p 
+mysql -h 127.0.0.1 -u root --port=5005 -p < samyak.sql
+
 # 1.6. Executing SQL Statements Read from a File or Program
