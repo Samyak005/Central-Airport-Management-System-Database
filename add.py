@@ -82,4 +82,37 @@ def add_passenger(cur, con):
     attr['Senior Citizen'] = input('Senior Citizen: ')
     attr['Nationality'] = input('Nationality: ')
     
+def add_emer_contact(cur, con):
+
+    name = input('Name*: ').split(' ')
+    if len(name) >= 3:
+        attr['first_name'] = name[0]
+        attr['middle_name'] = ' '.join(name[1:-1])
+        attr['last_name'] = name[-1]
+    elif len(name) == 2:
+        attr['first_name'] = name[0]
+        attr['middle_name'] = ''
+        attr['last_name'] = name[1]
+    elif len(name) == 1:
+        attr['first_name'] = name[0]
+        attr['middle_name'] = ''
+        attr['last_name'] = ''
+    else:
+        print('Error: Please enter the prisoner\'s name')
+        input('Press any key to continue.')
+        return
     
+    attr['Phone No'] = input('Phone No: ')
+    attr['fk_to_passenger_Aadhar_card_number'] = input('fk_to_passenger_Aadhar_card_number: ')
+ 
+ def add_luggage(cur, con):
+    
+    attr['Baggage ID'] = input('Baggage ID: ')
+    attr['fk_to_Barcode number'] = input('fk_to_Barcode number: ')
+ 
+ def add_luggage(cur, con):
+    
+    attr['Baggage ID'] = input('Baggage ID: ')
+    attr['fk_to_Barcode number'] = input('fk_to_Barcode number: ')
+ 
+
