@@ -8,7 +8,7 @@
 - Special service during boarding pass
 - Employee languages spoken
 - Stopover airport while adding route
--
+- airport capapcity hardcoded or should user be given choice
 -
 -
 -

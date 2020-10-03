@@ -28,7 +28,6 @@ CREATE TABLE `capacity_of_aircraft` (
   `Model` varchar(255) NOT NULL,
   `Capacity` int NOT NULL,
   constraint capacityKey PRIMARY KEY (`Model`,`Manufacturer` )
-
 );
 -- -- ----------------------------------------------------------
 

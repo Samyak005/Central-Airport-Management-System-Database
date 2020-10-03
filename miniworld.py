@@ -3,7 +3,27 @@ import pymysql
 import pymysql.cursors
 
 
-def add_display():
+def add_airline(cur, con):
+    print("inside add_airline function")
+
+add_funcs_dict = {
+        "Airline":add_airline
+        # "Passenger":add_passenger,
+        # "Aircraft":add_aircraft,
+        # "Airport":add_airport,
+        # "Runway":add_runway,
+        # "Terminal":add_terminal,
+        # "Route":add_route,
+        # "Boarding Pass":add_boarding_pass,
+        # "Airline Employees":add_airline_employee,
+        # "Airport Employees":add_airport_employee,
+        # "Feedback and rating":add_feedback
+}
+
+
+
+
+def add_display(cur, con):
     """
     Function to implement option 1
     """
@@ -26,6 +46,10 @@ def add_display():
     while i < len(tables_add):
         i += 1
         print(str(i) + ". " + tables_add[i - 1])
+
+    choice_to_add=int(input("enter number to add starting from 1"))
+    add_funcs_dict[tables_add[choice_to_add-1]](cur, con)
+
 
 
 def hireAnEmployee():
@@ -71,13 +95,13 @@ def hireAnEmployee():
     return
 
 
-def dispatch(ch):
+def dispatch(ch,cur, con):
     """
     Function that maps helper functions to option entered
     """
 
     if (ch == 1):
-        add_display()
+        add_display(cur, con)
     elif (ch == 2):
         option3()
     elif (ch == 3):
@@ -147,7 +171,7 @@ while (1):
                 elif ch == 6:
                     raise SystemExit
                 else:
-                    dispatch(ch)
+                    dispatch(ch,cur, con)
                     tmp = input("Enter any key to CONTINUE>")
 
     except Exception as e:

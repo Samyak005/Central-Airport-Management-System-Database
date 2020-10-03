@@ -105,9 +105,8 @@ def add_emer_contact(cur, con):
         return
     
     attr['Phone No'] = input('Phone No: ')
-    attr['fk_to_passenger_\
-        Aadhar_card_number'] = \
-        input('Aadhar card_number: ')
+    attr['fk_to_passenger_Aadhar_card_number'] = \
+        input('Aadhar card number: ')
  
  def add_luggage(cur, con):
     
