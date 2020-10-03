@@ -3,64 +3,75 @@ CREATE DATABASE airport_db;
 USE airport_db;
 ----------------------------------------------------------
 
+DROP TABLE IF EXISTS 'Route';
+
+CREATE TABLE `Route` (
+  `Route ID` int PRIMARY KEY,
+  `fk_to_airport_src_iata_code` char(3) NOT NULL,
+  `fk_to_airport_dest_iata_code` char(3) NOT NULL,
+  `Date` DATE NOT NULL, --YYYY-MM-DD
+
+  `Scheduled arrival` time,  --hh:mm:ss
+  `Scheduled Departure` time,
+  `Time duration` time,
+  `fk_to_runway_Take off runway id` int,
+  `Distance Travelled` int,
+  `fk_to_runway_Landing runway ID` int,
+  `fk_to_aircraft_registration_num` int,
+  `Status` enum('Departed', 'Boarding','On_route','Delayed','Arrived','Checking','Not_applicable') NOT NULL DEFAULT 'Not_applicable',
+
+  FOREIGN KEY (`fk_to_airport_dest_iata_code`) REFERENCES `Airport` (`IATA airport codes`) ON DELETE SET CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`fk_to_airport_src_iata_code`) REFERENCES `Airport` (`IATA airport codes`) ON DELETE SET CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`fk_to_aircraft_registration_num`) REFERENCES `Aircraft` (`registration_num`) ON DELETE SET NULL ON UPDATE CASCADE,
+  FOREIGN KEY (`fk_to_runway_Landing runway ID`) REFERENCES `Runway` (`Runway ID`) ON DELETE SET NULL ON UPDATE CASCADE,
+  FOREIGN KEY (`fk_to_runway_Take off runway id`) REFERENCES `Runway` (`Runway ID`) ON DELETE SET NULL ON UPDATE CASCADE,
+
+);
+----------------------------------------------------------
+
+
+
+
+DROP TABLE IF EXISTS 'boarding_pass';
+
+CREATE TABLE `boarding_pass` (
+  `Barcode number` char(12) PRIMARY KEY,
+  `PNR number` char(6) NOT NULL,
+  `Seat` varchar(5),
+  `fk_passenger_Aadhar_card_number` int(12) NOT NULL,
+  `fk_route_Route ID` int NOT NULL,
+
+  FOREIGN KEY (`fk_passenger_Aadhar_card_number`) REFERENCES `Passenger` (`Aadhar_card_number`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`fk_route_Route ID`) REFERENCES `Route` (`Route ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+);
+----------------------------------------------------------
+
+
+DROP TABLE IF EXISTS 'Passenger';
+
+CREATE TABLE `Passenger` (
+  `Aadhar_card_number` int(12) PRIMARY KEY,
+  `First Name` varchar(255) NOT NULL,
+  `Middle Name` varchar(255),
+  `Last Name` varchar(255),
+  `DOB` date,
+  `Gender` enum('Male', 'Female', 'Others'),
+  `City` varchar(255),
+  `Building` varchar(255),
+  `House Number` varchar(10),
+  `Email-ID` varchar(255) UNIQUE,
+  `Senior Citizen` Boolean,
+  `Nationality` varchar(255),
+);
+----------------------------------------------------------
+
+
 Criteria
 - NULL
 - UNIQUENESS
 - kEYS
 - DEFAULT
 - FOREIGN KEy -> on cascade, delete 
-
-
-
-
-
-DROP TABLE IF EXISTS 'Route';
-
-CREATE TABLE `Route` (
-  `Route ID` int PRIMARY KEY,
-  `Source Airport IATA code` char(3) NOT NULL,
-  `Destination Airport IATA code` char(3) NOT NULL,
-  `Date` DATE NOT NULL,
-  `Scheduled arrival` timestamp,
-  `Scheduled Departure` timestamp,
-  `Time duration` time,
-  `Take off runway id` int NOT NULL,
-  `Distance Travelled` int,
-  `Landing runway ID` int,
-  `Registration number` int,
-  `Status` varchar(255)
-);
-----------------------------------------------------------
-
-DROP TABLE IF EXISTS 'boarding_pass';
-
-CREATE TABLE `boarding_pass` (
-  `Barcode number` varchar(12) PRIMARY KEY,
-  `PNR number` varchar(6),
-  `Seat` varchar(5),
-  `Aadhar_card_number` int(12),
-  `Route ID` int
-);
-----------------------------------------------------------
-
-DROP TABLE IF EXISTS 'Passenger';
-
-CREATE TABLE `Passenger` (
-  `First Name` varchar(255),
-  `Middle Name` varchar(255),
-  `Last Name` varchar(255),
-  `Aadhar_card_number` int(12) PRIMARY KEY,
-  `Gender` varchar(6),
-  `Email-ID` varchar(255),
-  `City` varchar(255),
-  `Building` varchar(255),
-  `House Number` varchar(10),
-  `DOB` date,
-  `Senior Citizen` Boolean,
-  `Nationality` varchar(255)
-);
-----------------------------------------------------------
-
 DROP TABLE IF EXISTS 'emer_contact';
 
 CREATE TABLE `emer_contact` (
@@ -68,6 +79,8 @@ CREATE TABLE `emer_contact` (
   `Phone No` int(10) UNIQUE NOT NULL,
   `Aadhar_card_number` int(12),
   PRIMARY KEY (`Name`, `Aadhar_card_number`)
+
+  FOREIGN KEY (`Aadhar_card_number`) REFERENCES `Passenger` (`Aadhar_card_number`);
 );
 ----------------------------------------------------------
 
@@ -82,7 +95,7 @@ CREATE TABLE `luggage` (
 DROP TABLE IF EXISTS 'Aircraft';
 
 CREATE TABLE `Aircraft` (
-  `Registration number` int PRIMARY KEY,
+  `registration_num` int PRIMARY KEY,
   `Manufacturer` varchar(255),
   `Model` varchar(255),
   `Distance Travelled` int,
@@ -350,21 +363,16 @@ CREATE TABLE `PNR info deduction` (
 ----------------------------------------------------------
 ----------------------------------------------------------
 
-ALTER TABLE `emer_contact` ADD FOREIGN KEY (`Aadhar_card_number`) REFERENCES `Passenger` (`Aadhar_card_number`);
+
 
 ALTER TABLE `Runway` ADD FOREIGN KEY (`IATA airport codes`) REFERENCES `Airport` (`IATA airport codes`);
 
 ALTER TABLE `Terminal` ADD FOREIGN KEY (`IATA airport codes`) REFERENCES `Airport` (`IATA airport codes`);
 
-ALTER TABLE `boarding_pass` ADD FOREIGN KEY (`Aadhar_card_number`) REFERENCES `Passenger` (`Aadhar_card_number`);
+
 
 ALTER TABLE `luggage` ADD FOREIGN KEY (`Barcode number`) REFERENCES `boarding_pass` (`Barcode number`);
 
-ALTER TABLE `Route` ADD FOREIGN KEY (`Destination Airport IATA code`) REFERENCES `Airport` (`IATA airport codes`);
-
-ALTER TABLE `Route` ADD FOREIGN KEY (`Source Airport IATA code`) REFERENCES `Airport` (`IATA airport codes`);
-
-ALTER TABLE `Route` ADD FOREIGN KEY (`Registration number`) REFERENCES `Aircraft` (`Registration number`);
 
 ALTER TABLE `airline_crew` ADD FOREIGN KEY (`Employer IATA airline designators`) REFERENCES `Airline` (`IATA airline designators`);
 
@@ -420,9 +428,7 @@ ALTER TABLE `flight_crew_feedback` ADD FOREIGN KEY (`flight_attendant Aadhar_car
 
 ALTER TABLE `flight_crew_feedback` ADD FOREIGN KEY (`flight_engineer Aadhar_card_number`) REFERENCES `flight_engineer` (`Aadhar_card_number`);
 
-ALTER TABLE `Route` ADD FOREIGN KEY (`Landing runway ID`) REFERENCES `Runway` (`Runway ID`);
 
-ALTER TABLE `Route` ADD FOREIGN KEY (`Take off runway id`) REFERENCES `Runway` (`Runway ID`);
 
 ALTER TABLE `stopover_airports_on_route` ADD FOREIGN KEY (`IATA code of stopover airport`) REFERENCES `Airport` (`IATA airport codes`);
 
@@ -430,7 +436,7 @@ ALTER TABLE `PNR info deduction` ADD FOREIGN KEY (`PNR number`) REFERENCES `boar
 
 ALTER TABLE `PNR info deduction` ADD FOREIGN KEY (`Terminal number`) REFERENCES `Terminal` (`Terminal ID`);
 
-ALTER TABLE `boarding_pass` ADD FOREIGN KEY (`Route ID`) REFERENCES `Route` (`Route ID`);
+
 
 INSERT INTO `airport_management_system`.`airline` (`IATA airline designators`, `Company Name`, `Number of aircrafts owned`, `Active`, `Country of Ownership`) VALUES ('6E', 'Indigo Airlines Limited', '0', '1', 'India');
 INSERT INTO `airport_management_system`.`airline` (`IATA airline designators`, `Company Name`, `Number of aircrafts owned`, `Active`, `Country of Ownership`) VALUES ('SG', 'Spicejet Limited', '0', '1', 'India');
@@ -533,6 +539,7 @@ INSERT INTO `airport_management_system`.`languages spoken by airline employee` (
 INSERT INTO `airport_management_system`.`languages spoken by airline employee` (`Aadhar_card_number`, `Language_name`) VALUES ('8.01202E+11', 'English');
 INSERT INTO `airport_management_system`.`languages spoken by airline employee` (`Aadhar_card_number`, `Language_name`) VALUES ('9.10746E+11', 'English');
 INSERT INTO `airport_management_system`.`languages spoken by airline employee` (`Aadhar_card_number`, `Language_name`) VALUES ('7.27603E+11', 'English');
-INSERT INTO `airport_management_system`.`languages spoken by airline employee` (`Aadhar_card_number`, `Language_name`) VALUES ('9.84117E+11', 'English');
+INSERT INTO `airport_management_system`.`languages spoken by airline employee` (`Aadhar_card_number`, `Language_name`) VALUES ('9.84117E+11', 'English'); DEFAULT 'NA' NOT NULL NOT NULL  
+  FOREIGN KEY (`Route ID`) REFERENCES `Route` (`Route ID`);
 
 
