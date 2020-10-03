@@ -1,4 +1,4 @@
-DROP DATABASE airport_db;
+DROP DATABASE IF EXISTS airport_db;
 
 CREATE DATABASE airport_db;
 
