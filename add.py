@@ -110,9 +110,12 @@ def add_emer_contact(cur, con):
     attr['Baggage ID'] = input('Baggage ID: ')
     attr['fk_to_Barcode number'] = input('fk_to_Barcode number: ')
  
- def add_luggage(cur, con):
+ def add_aircraft(cur, con):
     
-    attr['Baggage ID'] = input('Baggage ID: ')
-    attr['fk_to_Barcode number'] = input('fk_to_Barcode number: ')
- 
+    attr['registration_num'] = input('registration_num: ')
+    attr['fk_to_capacity_Manufacturer'] = input('fk_to_capacity_Manufacturer: ')
+    attr['fk_to_capacity_Manufacturer'] = input('fk_to_capacity_Manufacturer: ')
+    attr['fk_to_capacity_Manufacturer'] = input('fk_to_capacity_Manufacturer: ')
+    attr['fk_to_capacity_Manufacturer'] = input('fk_to_capacity_Manufacturer: ')
+    
 

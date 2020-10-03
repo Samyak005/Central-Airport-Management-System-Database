@@ -13,5 +13,6 @@ The arguments to mysql include -h localhost to connect to the MySQL server runni
 mysql -h 127.0.0.1 -u root --port=5005 -p 
 mysql -h 127.0.0.1 -u root --port=5005 -p < samyak.sql
 
+https://dba.stackexchange.com/a/42541
 
 # 1.6. Executing SQL Statements Read from a File or Program
