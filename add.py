@@ -4,6 +4,8 @@ import pymysql.cursors
 
 from datetime import datetime
 
+error_flag = 0
+
 def part():
     print("-----------------------------------------------------------------")
     return
@@ -23,14 +25,6 @@ def expand_keys(d):
     if s[-2:] == ', ':
         return s[:-2]
     return s
-
-
-def quote(s):
-    if s == 'NULL':
-        return s
-    else:
-        return '"' + s + '"'
-
 
 def empty_to_null(s):
     if s == '':
@@ -78,9 +72,16 @@ def add_luggage(cur, con,barcode_number):
 
     print("query str is %s->",query_str)
 
-    cur.execute(query_str)
+    try:
+        cur.execute(query_str)
+        return 0
 
-    con.commit()
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return -1
 
 def add_emer_contact(cur,con,aadhar_relative):
 
@@ -101,10 +102,17 @@ def add_emer_contact(cur,con,aadhar_relative):
 
     print("query str is %s->",query_str)
 
-    cur.execute(query_str)
-
-    con.commit()
- 
+    try:
+        cur.execute(query_str)
+        return 0
+    
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return -1
+    
 def add_airline(cur, con):
     print("inside add_airline function")
     table_name="`Airline`"
@@ -119,23 +127,33 @@ def add_airline(cur, con):
     attr['num_aircrafts_owned'] = input('Enter number of aircrafts currently owned by the airline: ')
 
     tmp= input('Enter 1 if airline is active, 0 otherwise :')
-    attr['is_active']=tmp
+
     if tmp==1:
-        attr['is_active']=tmp
-     
+        attr['is_active'] = True
+    elif tmp==0:
+        attr['is_active'] = False
     
     attr['country_of_ownership'] = input('Enter country of ownership of airline')
 
     keys_str,values_str=get_query_atoms(attr)
-    print(keys_str)
+
+    print('Table Name:' + keys_str)
     print(values_str)
+    
     query_str='INSERT INTO '+table_name+" ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
 
     print("query str is %s->",query_str)
 
-    cur.execute(query_str)
-
-    con.commit()
+    try:
+        cur.execute(query_str)
+        con.commit()
+    
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return
 
 def add_aircraft(cur, con):
     print("inside add_airline function")
@@ -149,7 +167,7 @@ def add_aircraft(cur, con):
     attr['fk_to_capacity_Model']=input("Enter model of aircraft")
     attr['Distance Travelled']=input("Enter distance travelled")
     attr['Flight ID']=input("Enter Flight ID")
-    attr['Maintanence check date']=input("Enter maintanence check date")
+    attr['Maintanence check date']=input("Enter maintanence check date: [YYYY-MM-DD]")
     attr['fk_to_airline_owner_airline_IATA_code']=input("Enter IATA code of owner airline")
 
     keys_str,values_str=get_query_atoms(attr)
@@ -159,9 +177,16 @@ def add_aircraft(cur, con):
 
     print("query str is %s->",query_str)
 
-    cur.execute(query_str)
+    try:
+        cur.execute(query_str)
+        con.commit()
 
-    con.commit()
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return
 
 
 def add_passenger(cur, con):
@@ -196,14 +221,14 @@ def add_passenger(cur, con):
 
 
 
-    attr["DOB"]=input("Enter Date of birth in format DDMMYYYY")
-    attr["Gender"]=input("Enter 1-Male 2-Female 3-Others")
+    attr["DOB"]=input("Enter Date of birth in format YYYY-MM-DD")
+    attr["Gender"]=input("Enter \n1. Male \n2. Female \n3. Others\n")
 
-    if attr['Gender'] is 1 :
+    if attr['Gender'] == 1 :
         attr['Gender']= 'Male'
-    elif attr['Gender'] is 2 :
+    elif attr['Gender'] == 2 :
         attr['Gender']= 'Female'
-    elif attr['Gender'] is 3 :
+    elif attr['Gender'] == 3 :
         attr['Gender']= 'Others'
 
 
@@ -211,7 +236,7 @@ def add_passenger(cur, con):
     attr["Building"]=input("Enter building number of residence")
     attr["City"]=input("Enter city of residence")
     attr["Email-ID"]=input("Enter email-ID")
-    attr["Senior Citizen"]=input("Enter 0-non senior citizen 1-senior citizen")
+    attr["Senior Citizen"]=input("Enter 0. non senior citizen\n 1. senior citizen\n")
     attr["Nationality"]=input("Enter nationality of passenger eg.Indian")
 
 
@@ -220,7 +245,8 @@ def add_passenger(cur, con):
         print("Only upto 3 contacts allowed")
     else:
         for i in range(num_emer_contacts):
-            add_emer_contact(cur,con,attr["Aadhar_card_number"])
+            if add_emer_contact(cur,con,attr["Aadhar_card_number"]) == -1:
+                return
 
     keys_str,values_str=get_query_atoms(attr)
     print(keys_str)
@@ -229,9 +255,16 @@ def add_passenger(cur, con):
 
     print("query str is %s->",query_str)
 
-    cur.execute(query_str)
-
-    con.commit()
+    try:
+        cur.execute(query_str)
+        con.commit()
+    
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return
 
 
 def add_airport(cur, con):
@@ -270,9 +303,16 @@ def add_airport(cur, con):
 
     print("query str is %s->",query_str)
 
-    cur.execute(query_str)
-
-    con.commit()
+    try:
+        cur.execute(query_str)
+        con.commit()
+    
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return
 
 
 def add_runway(cur, con):
@@ -288,7 +328,7 @@ def add_runway(cur, con):
     attr["width_ft"]=input("Enter width in feet")
 
     ################DISPLAY A MENU HERE########################################
-    stat_choice=int(input("Enter status 1-assigned 2-available 3-disfunctional"))
+    stat_choice=int(input("Enter status 1. assigned\n 2. available\n 3. disfunctional\n"))
 
     attr["Status"]=""
     if stat_choice==1:
@@ -308,9 +348,16 @@ def add_runway(cur, con):
 
     print("query str is %s->",query_str)
 
-    cur.execute(query_str)
+    try:
+        cur.execute(query_str)
+        con.commit()
 
-    con.commit()
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return
 
 def add_terminal(cur, con):
     print("inside add_terminal function")
@@ -332,9 +379,16 @@ def add_terminal(cur, con):
 
     print("query str is %s->",query_str)
 
-    cur.execute(query_str)
-
-    con.commit()
+    try:
+        cur.execute(query_str)
+        con.commit()
+    
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return
 
 def add_route(cur, con,pnr_of_boarding_pass):
 
@@ -399,7 +453,6 @@ def add_pnr_info_deduction():
 
     cur.execute(query_str)
 
-    con.commit()
 
 def add_special_services(cur, con,barcode_number,special_service_to_add):
     print("inside special_services")
@@ -420,7 +473,6 @@ def add_special_services(cur, con,barcode_number,special_service_to_add):
 
     cur.execute(query_str)
 
-    con.commit()
 
 def add_boarding_pass_details(cur, con):
     print("inside add_boarding pass function")
@@ -438,7 +490,8 @@ def add_boarding_pass_details(cur, con):
     #############################################################################################
     num_luggages=int(input("Enter number of luggages you want to link to this boarding pass"))
     for i in range(num_luggages):
-        add_luggage(cur,con,attr["Barcode number"])
+        if add_luggage(cur,con,attr["Barcode number"]) == -1:
+            return
 
     ##########################################################################################
     add_more_details=int(input('''
@@ -447,7 +500,8 @@ def add_boarding_pass_details(cur, con):
     Press 0 if you have already added these details for another boarding pass on the same PNR'''))
 
     if add_more_details==1:
-        add_luggage(cur,con,attr["fk_PNR_number"])
+        if add_luggage(cur,con,attr["fk_PNR_number"]) == -1:
+            return
 
     #########################################################################################
     #############################################################################################
@@ -501,8 +555,6 @@ def add_on_ground_emp(cur,con,aadhar_num):
 
     cur.execute(query_str)
 
-    con.commit()
-
 
 def add_pilot(cur,con,aadhar_num):
     
@@ -525,8 +577,6 @@ def add_pilot(cur,con,aadhar_num):
 
     cur.execute(query_str)
 
-    con.commit()
-
 def add_flight_attendant(cur,con,aadhar_num):
     
     print("inside flight_attendant")
@@ -546,8 +596,6 @@ def add_flight_attendant(cur,con,aadhar_num):
     print("query str is %s->",query_str)
 
     cur.execute(query_str)
-
-    con.commit()
 
 def add_flight_engineer(cur,con,aadhar_num):
     
@@ -570,8 +618,6 @@ def add_flight_engineer(cur,con,aadhar_num):
     print("query str is %s->",query_str)
 
     cur.execute(query_str)
-
-    con.commit()
 
 def add_flight_crew(cur,con,aadhar_num):
     
@@ -609,8 +655,6 @@ def add_flight_crew(cur,con,aadhar_num):
     print("query str is %s->",query_str)
 
     cur.execute(query_str)
-
-    con.commit()
 
 
 def add_airline_crew(cur,con):
@@ -704,8 +748,6 @@ def add_air_traffic_controller(cur,con,aadhar_num):
 
     cur.execute(query_str)
 
-    con.commit()
-
 def add_mo_executives(cur,con,aadhar_num):
     
     print("inside mo_executives")
@@ -724,8 +766,6 @@ def add_mo_executives(cur,con,aadhar_num):
     print("query str is %s->",query_str)
 
     cur.execute(query_str)
-
-    con.commit()
 
 def add_security(cur,con,aadhar_num):
     
@@ -746,8 +786,6 @@ def add_security(cur,con,aadhar_num):
     print("query str is %s->",query_str)
 
     cur.execute(query_str)
-
-    con.commit()
 
 
 def add_airport_crew(cur,con):
@@ -820,7 +858,9 @@ def add_airport_crew(cur,con):
 
     print("query str is %s->",query_str)
 
-    cur.execute(query_str)
+    try:
+        cur.execute(query_str)
+        con.commit()
 
-    con.commit()
-
+    except:
+        

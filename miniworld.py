@@ -5,16 +5,16 @@ import pymysql.cursors
 from add import *
 
 add_funcs_dict = {
-        "Airline":add_airline,
-        "Passenger":add_passenger,
-        "Aircraft":add_aircraft,
-        "Airport":add_airport,
-        "Runway":add_runway,
-        "Terminal":add_terminal,
-        "Route":add_route,
-        "Boarding Pass":add_boarding_pass_details,
-        "Airline Employees":add_airline_crew,
-        "Airport Employees":add_airport_crew
+        "Airline":add_airline,#
+        "Passenger":add_passenger,#
+        "Aircraft":add_aircraft,#
+        "Airport":add_airport,#
+        "Runway":add_runway,#
+        "Terminal":add_terminal,#
+        "Route":add_route,#
+        "Boarding Pass":add_boarding_pass_details,#
+        "Airline Employees":add_airline_crew,#
+        "Airport Employees":add_airport_crew#
         # "Feedback and rating":add_feedback
 }
 
