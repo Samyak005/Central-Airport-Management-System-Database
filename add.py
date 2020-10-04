@@ -59,6 +59,52 @@ def get_query_atoms(attr):
 
     return (keys_str,values_str)
 
+
+    
+def add_luggage(cur, con,barcode_number):
+    print("inside luggage")
+    table_name="`luggage`"
+
+    attr = {}
+    print('Enter details of the new luggage:')
+
+    attr["Baggage ID"]=input("Enter stuff")
+    attr["fk_to_Barcode number"]=barcode_number
+
+    keys_str,values_str=get_query_atoms(attr)
+    print(keys_str)
+    print(values_str)
+    query_str='INSERT INTO '+table_name+" ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
+
+    print("query str is %s->",query_str)
+
+    cur.execute(query_str)
+
+    con.commit()
+
+def add_emer_contact(cur,con,aadhar_relative):
+
+    print("inside emer_contact_func")
+    table_name="`emer_contact`"
+
+    attr = {}
+    print('Enter details of the emer_contact entry:')
+    attr['fk_to_passenger_Aadhar_card_number'] = aadhar_relative
+    attr["name"] = input('Name*: ')  
+    
+    attr['Phone No'] = input('Phone No: ')
+
+    keys_str,values_str=get_query_atoms(attr)
+    print(keys_str)
+    print(values_str)
+    query_str='INSERT INTO '+table_name+" ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
+
+    print("query str is %s->",query_str)
+
+    cur.execute(query_str)
+
+    con.commit()
+ 
 def add_airline(cur, con):
     print("inside add_airline function")
     table_name="`Airline`"
@@ -73,9 +119,9 @@ def add_airline(cur, con):
     attr['num_aircrafts_owned'] = input('Enter number of aircrafts currently owned by the airline: ')
 
     tmp= input('Enter 1 if airline is active, 0 otherwise :')
-    attr['is_active']=False
-    if t==1:
-        attr['is_active']=True
+    attr['is_active']=tmp
+    if tmp==1:
+        attr['is_active']=tmp
      
     
     attr['country_of_ownership'] = input('Enter country of ownership of airline')
@@ -116,7 +162,6 @@ def add_aircraft(cur, con):
     cur.execute(query_str)
 
     con.commit()
-
 
 
 def add_passenger(cur, con):
@@ -208,12 +253,12 @@ def add_airport(cur, con):
     attr["Country"]=input("Enter country where airport is situated")
 
     attr["Latitude"]=input("Enter latitude")
-    if attr['Latitude']>90 or attr['Latitude']<-90:
+    if float(attr['Latitude'])>90 or float(attr['Latitude'])<-90:
         print("ERROR : Invalid latitudes")
         return
 
     attr["Longitude"]=input("Enter longitude")
-    if attr['Longitude']>180 or attr['Longitude']<-180:
+    if float(attr['Longitude'])>180 or float(attr['Longitude'])<-180:
         print("ERROR : Invalid longitudes")
         return
 
@@ -248,9 +293,9 @@ def add_runway(cur, con):
     attr["Status"]=""
     if stat_choice==1:
         attr["Status"]='Assigned'
-    else if stat_choice==2:
+    elif stat_choice==2:
         attr["Status"]='Available'
-    else if stat_choice==3:
+    elif stat_choice==3:
         attr["Status"]='Disfunctional'
     
     ######################################################
@@ -291,7 +336,6 @@ def add_terminal(cur, con):
 
     con.commit()
 
-
 def add_route(cur, con,pnr_of_boarding_pass):
 
     print("inside add_terminal function")
@@ -329,6 +373,8 @@ def add_route(cur, con,pnr_of_boarding_pass):
 
     con.commit()
 
+
+#################################################################################################
 def add_pnr_info_deduction():
     table_name="`PNR info deduction`"
 
@@ -355,6 +401,26 @@ def add_pnr_info_deduction():
 
     con.commit()
 
+def add_special_services(cur, con,barcode_number,special_service_to_add):
+    print("inside special_services")
+    table_name="`special_services`"
+
+    attr = {}
+    print('Enter details of the new special_services:')
+
+    attr["fk_Barcode number"]=barcode_number
+    attr["Special services"]=special_service_to_add
+
+    keys_str,values_str=get_query_atoms(attr)
+    print(keys_str)
+    print(values_str)
+    query_str='INSERT INTO '+table_name+" ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
+
+    print("query str is %s->",query_str)
+
+    cur.execute(query_str)
+
+    con.commit()
 
 def add_boarding_pass_details(cur, con):
     print("inside add_boarding pass function")
@@ -395,7 +461,7 @@ def add_boarding_pass_details(cur, con):
     ss_str=input("Enter special services\nEg: enter AC for Wheelchair and XL seats")
     for i in range(len(ss_str)):
         add_ss=ss_dict[ss_str[i]]
-        add_special_services(cur,con,],add_ss)
+        add_special_services(cur,con,add_ss)
 
     ##########################################################################################
 
@@ -413,60 +479,18 @@ def add_boarding_pass_details(cur, con):
     cur.execute(query_str)
 
     con.commit()
+
+#######################################################################################
+
+def add_on_ground_emp(cur,con,aadhar_num):
     
-def add_luggage(cur, con,barcode_number):
-    print("inside luggage")
-    table_name="`luggage`"
-
-    attr = {}
-    print('Enter details of the new luggage:')
-
-    attr["Baggage ID"]=input("Enter stuff")
-    attr["fk_to_Barcode number"]=barcode_number
-
-       keys_str,values_str=get_query_atoms(attr)
-    print(keys_str)
-    print(values_str)
-    query_str='INSERT INTO '+table_name+" ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
-
-    print("query str is %s->",query_str)
-
-    cur.execute(query_str)
-
-    con.commit()
-
-def add_special_services(cur, con,barcode_number,special_service_to_add):
-    print("inside special_services")
-    table_name="`special_services`"
-
-    attr = {}
-    print('Enter details of the new special_services:')
-
-    attr["fk_Barcode number"]=barcode_number
-    attr["Special services"]=special_service_to_add
-
-    keys_str,values_str=get_query_atoms(attr)
-    print(keys_str)
-    print(values_str)
-    query_str='INSERT INTO '+table_name+" ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
-
-    print("query str is %s->",query_str)
-
-    cur.execute(query_str)
-
-    con.commit()
-
-def add_emer_contact(cur,con,aadhar_relative):
-
-    print("inside emer_contact_func")
+    print("inside add_on_ground_emp")
     table_name="`emer_contact`"
 
     attr = {}
-    print('Enter details of the emer_contact entry:')
-    attr['fk_to_passenger_Aadhar_card_number'] = aadhar_relative
-    attr["name"] = input('Name*: ')  
-    
-    attr['Phone No'] = input('Phone No: ')
+    print('Enter details of the add_on_ground_emp:')
+    attr['fk_to_airline_crew_Aadhar_card_number'] = aadhar_num
+    attr['Job title'] = input("Inout stuff")
 
     keys_str,values_str=get_query_atoms(attr)
     print(keys_str)
@@ -478,7 +502,115 @@ def add_emer_contact(cur,con,aadhar_relative):
     cur.execute(query_str)
 
     con.commit()
- 
+
+
+def add_pilot(cur,con,aadhar_num):
+    
+    print("inside Pilot")
+    table_name="`Pilot`"
+
+    attr = {}
+    print('Enter details of the Pilot:')
+    attr['fk_to_flight_crew_Aadhar_card_number'] = aadhar_num
+    attr["Pilot license number"]=input("Enter stuff")
+    attr["Number of flying hours"]=input("Enter stuff")    
+
+    #########################################################################
+    keys_str,values_str=get_query_atoms(attr)
+    print(keys_str)
+    print(values_str)
+    query_str='INSERT INTO '+table_name+" ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
+
+    print("query str is %s->",query_str)
+
+    cur.execute(query_str)
+
+    con.commit()
+
+def add_flight_attendant(cur,con,aadhar_num):
+    
+    print("inside flight_attendant")
+    table_name="`flight_attendant`"
+
+    attr = {}
+    print('Enter details of the flight_attendant:')
+    attr['fk_to_flight_crew_Aadhar_card_number'] = aadhar_num
+    attr["Training/Education"]=input("Enter stuff")
+
+    #########################################################################
+    keys_str,values_str=get_query_atoms(attr)
+    print(keys_str)
+    print(values_str)
+    query_str='INSERT INTO '+table_name+" ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
+
+    print("query str is %s->",query_str)
+
+    cur.execute(query_str)
+
+    con.commit()
+
+def add_flight_engineer(cur,con,aadhar_num):
+    
+    print("inside flight_engineer")
+    table_name="`flight_engineer`"
+
+    attr = {}
+    print('Enter details of the flight_engineer:')
+    attr['fk_to_flight_crew_Aadhar_card_number'] = aadhar_num
+    attr["Education"]=input("Enter stuff")
+    attr["Manufacturer"]=input("Enter manufacturer of plane he specializes in")    
+    attr["Model"]=input("Enter model of plane he specializes in")    
+
+    #########################################################################
+    keys_str,values_str=get_query_atoms(attr)
+    print(keys_str)
+    print(values_str)
+    query_str='INSERT INTO '+table_name+" ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
+
+    print("query str is %s->",query_str)
+
+    cur.execute(query_str)
+
+    con.commit()
+
+def add_flight_crew(cur,con,aadhar_num):
+    
+    print("inside flight_crew")
+    table_name="`flight_crew`"
+
+    attr = {}
+    print('Enter details of the flight_crew:')
+    attr['fk_to_airline_crew_Aadhar_card_number'] = aadhar_num
+    
+
+    #########################################################################
+    print('''
+    Press 1 to add pilot
+    \n
+    Press 2 to add flight attendant
+    \n
+    Press 3 to add flight engineer''')
+
+    emp_class=int(input())
+
+    if emp_class==1:
+        add_pilot(cur,con,attr["fk_to_airline_crew_Aadhar_card_number"])
+    elif emp_class==2:
+        add_flight_attendant(cur,con,attr["fk_to_airline_crew_Aadhar_card_number"])
+    else:
+        add_flight_engineer(cur,con,attr["fk_to_airline_crew_Aadhar_card_number"])
+
+    #########################################################################
+    keys_str,values_str=get_query_atoms(attr)
+    print(keys_str)
+    print(values_str)
+    query_str='INSERT INTO '+table_name+" ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
+
+    print("query str is %s->",query_str)
+
+    cur.execute(query_str)
+
+    con.commit()
 
 
 def add_airline_crew(cur,con):
@@ -550,15 +682,18 @@ def add_airline_crew(cur,con):
     con.commit()
  
 
-def add_on_ground_emp(cur,con,aadhar_num):
+#########################################################################################################
+
+def add_air_traffic_controller(cur,con,aadhar_num):
     
-    print("inside add_on_ground_emp")
-    table_name="`emer_contact`"
+    print("inside air_traffic_controller")
+    table_name="`air_traffic_controller`"
 
     attr = {}
-    print('Enter details of the add_on_ground_emp:')
+    print('Enter details of the air_traffic_controller:')
     attr['fk_to_airline_crew_Aadhar_card_number'] = aadhar_num
-    attr['Job title'] = input("Inout stuff")
+    attr['Current communication Frequency'] = input("Enter stuff")
+    attr['Training/Education'] = input("Enter stuff")
 
     keys_str,values_str=get_query_atoms(attr)
     print(keys_str)
@@ -571,34 +706,16 @@ def add_on_ground_emp(cur,con,aadhar_num):
 
     con.commit()
 
-def add_flight_crew(cur,con,aadhar_num):
+def add_mo_executives(cur,con,aadhar_num):
     
-    print("inside flight_crew")
-    table_name="`flight_crew`"
+    print("inside mo_executives")
+    table_name="`mo_executives`"
 
     attr = {}
-    print('Enter details of the flight_crew:')
+    print('Enter details of the mo_executives:')
     attr['fk_to_airline_crew_Aadhar_card_number'] = aadhar_num
-    
+    attr['Job title'] = input("Enter stuff")
 
-    #########################################################################
-    print('''
-    Press 1 to add pilot
-    \n
-    Press 2 to add flight attendant
-    \n
-    Press 3 to add flight engineer''')
-
-    emp_class=int(input())
-
-    if emp_class==1:
-        add_pilot(cur,con,attr["fk_to_airline_crew_Aadhar_card_number"])
-    else if emp_class=2:
-        add_flight_attendant(cur,con,attr["fk_to_airline_crew_Aadhar_card_number"])
-    else:
-        add_flight_engineer(cur,con,attr["fk_to_airline_crew_Aadhar_card_number"])
-
-    #########################################################################
     keys_str,values_str=get_query_atoms(attr)
     print(keys_str)
     print(values_str)
@@ -610,64 +727,17 @@ def add_flight_crew(cur,con,aadhar_num):
 
     con.commit()
 
-def add_pilot(cur,con,aadhar_num):
+def add_security(cur,con,aadhar_num):
     
-    print("inside Pilot")
-    table_name="`Pilot`"
+    print("inside security")
+    table_name="`security`"
 
     attr = {}
-    print('Enter details of the Pilot:')
-    attr['fk_to_flight_crew_Aadhar_card_number'] = aadhar_num
-    attr["Pilot license number"]=input("Enter stuff")
-    attr["Number of flying hours"]=input("Enter stuff")    
+    print('Enter details of the security:')
+    attr['fk_to_airline_crew_Aadhar_card_number'] = aadhar_num
+    attr['Designation'] = input("Enter stuff")
+    attr['Security ID number'] = input("Enter stuff")
 
-    #########################################################################
-    keys_str,values_str=get_query_atoms(attr)
-    print(keys_str)
-    print(values_str)
-    query_str='INSERT INTO '+table_name+" ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
-
-    print("query str is %s->",query_str)
-
-    cur.execute(query_str)
-
-    con.commit()
-
-def add_flight_attendant(cur,con,aadhar_num):
-    
-    print("inside flight_attendant")
-    table_name="`flight_attendant`"
-
-    attr = {}
-    print('Enter details of the flight_attendant:')
-    attr['fk_to_flight_crew_Aadhar_card_number'] = aadhar_num
-    attr["Training/Education"]=input("Enter stuff")
-
-    #########################################################################
-    keys_str,values_str=get_query_atoms(attr)
-    print(keys_str)
-    print(values_str)
-    query_str='INSERT INTO '+table_name+" ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
-
-    print("query str is %s->",query_str)
-
-    cur.execute(query_str)
-
-    con.commit()
-
-def add_flight_engineer(cur,con,aadhar_num):
-    
-    print("inside flight_engineer")
-    table_name="`flight_engineer`"
-
-    attr = {}
-    print('Enter details of the flight_engineer:')
-    attr['fk_to_flight_crew_Aadhar_card_number'] = aadhar_num
-    attr["Education"]=input("Enter stuff")
-    attr["Manufacturer"]=input("Enter manufacturer of plane he specializes in")    
-    attr["Model"]=input("Enter model of plane he specializes in")    
-
-    #########################################################################
     keys_str,values_str=get_query_atoms(attr)
     print(keys_str)
     print(values_str)
@@ -734,7 +804,7 @@ def add_airport_crew(cur,con):
 
     if emp_class==1:
         add_air_traffic_controller(cur,con,attr["Aadhar_card_number"])
-    else if emp_class==2:
+    elif emp_class==2:
         add_mo_executives(cur,con,attr["Aadhar_card_number"])
     else:
         add_security(cur,con,attr["Aadhar_card_number"])
@@ -754,68 +824,3 @@ def add_airport_crew(cur,con):
 
     con.commit()
 
-
-def add_air_traffic_controller(cur,con,aadhar_num):
-    
-    print("inside air_traffic_controller")
-    table_name="`air_traffic_controller`"
-
-    attr = {}
-    print('Enter details of the air_traffic_controller:')
-    attr['fk_to_airline_crew_Aadhar_card_number'] = aadhar_num
-    attr['Current communication Frequency'] = input("Enter stuff")
-    attr['Training/Education'] = input("Enter stuff")
-
-    keys_str,values_str=get_query_atoms(attr)
-    print(keys_str)
-    print(values_str)
-    query_str='INSERT INTO '+table_name+" ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
-
-    print("query str is %s->",query_str)
-
-    cur.execute(query_str)
-
-    con.commit()
-
-def add_mo_executives(cur,con,aadhar_num):
-    
-    print("inside mo_executives")
-    table_name="`mo_executives`"
-
-    attr = {}
-    print('Enter details of the mo_executives:')
-    attr['fk_to_airline_crew_Aadhar_card_number'] = aadhar_num
-    attr['Job title'] = input("Enter stuff")
-
-    keys_str,values_str=get_query_atoms(attr)
-    print(keys_str)
-    print(values_str)
-    query_str='INSERT INTO '+table_name+" ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
-
-    print("query str is %s->",query_str)
-
-    cur.execute(query_str)
-
-    con.commit()
-
-def add_security(cur,con,aadhar_num):
-    
-    print("inside security")
-    table_name="`security`"
-
-    attr = {}
-    print('Enter details of the security:')
-    attr['fk_to_airline_crew_Aadhar_card_number'] = aadhar_num
-    attr['Designation'] = input("Enter stuff")
-    attr['Security ID number'] = input("Enter stuff")
-
-    keys_str,values_str=get_query_atoms(attr)
-    print(keys_str)
-    print(values_str)
-    query_str='INSERT INTO '+table_name+" ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
-
-    print("query str is %s->",query_str)
-
-    cur.execute(query_str)
-
-    con.commit()
