@@ -25,7 +25,7 @@ def add_display(cur, con):
     """
     Function to implement option 1
     """
-    print("Add to the table:")
+    print("Add to the table:\n")
     i = 0
     tables_add = [
         "Airline", #
@@ -37,8 +37,8 @@ def add_display(cur, con):
         "Route", 
         "Boarding Pass", #
         "Airline Employees",
-        "Airport Employees",
-        "Feedback and rating"
+        "Airport Employees"
+        #"Feedback and rating"
     ]
 
     while i < len(tables_add):
@@ -46,52 +46,39 @@ def add_display(cur, con):
         print(str(i) + ". " + tables_add[i - 1])
 
     choice_to_add=int(input("enter number to add starting from 1"))
-    add_funcs_dict[tables_add[choice_to_add-1]](cur, con)
+    if choice_to_add > 10 or choice_to_add < 1:
+        print("Invalid number. Please try again\n")
+        return
+    else:
+        add_funcs_dict[tables_add[choice_to_add-1]](cur, con)
 
+def read_display(cur,con):
+    print("View table:\n")
+    i=0
 
+    tables_view = [
+        "Airline", #
+        "Passenger", #
+        "Aircraft", #
+        "Airport", #
+        "Runway", #
+        "Terminal", #
+        "Route", 
+        "Boarding Pass", #
+        "Airline Employees",
+        "Airport Employees"
+        #"Feedback and rating"
+    ]
 
-def hireAnEmployee():
-    """
-    This is a sample function implemented for the refrence.
-    This example is related to the Employee Database.
-    In addition to taking input, you are required to handle domain errors as well
-    For example: the SSN should be only 9 characters long
-    Sex should be only M or F
-    If you choose to take Super_SSN, you need to make sure the foreign key constraint is satisfied
-    HINT: Instead of handling all these errors yourself, you can make use of except clause to print the error returned to you by MySQL
-    """
-    try:
-        # Takes emplyee details as input
-        row = {}
-        print("Enter new employee's details: ")
-        name = (input("Name (Fname Minit Lname): ")).split(' ')
-        row["Fname"] = name[0]
-        row["Minit"] = name[1]
-        row["Lname"] = name[2]
-        row["Ssn"] = input("SSN: ")
-        row["Bdate"] = input("Birth Date (YYYY-MM-DD): ")
-        row["Address"] = input("Address: ")
-        row["Sex"] = input("Sex: ")
-        row["Salary"] = float(input("Salary: "))
-        row["Dno"] = int(input("Dno: "))
+    while i < len(tables_add):
+        i += 1
+        print(str(i) + ". " + tables_add[i - 1])
 
-        query = "INSERT INTO EMPLOYEE(Fname, Minit, Lname, Ssn, Bdate, Address, Sex, Salary, Dno) VALUES('%s', '%c', '%s', '%s', '%s', '%s', '%c', %f, %d)" % (
-            row["Fname"], row["Minit"], row["Lname"], row["Ssn"], row["Bdate"],
-            row["Address"], row["Sex"], row["Salary"], row["Dno"])
-
-        print(query)
-        cur.execute(query)
-        con.commit()
-
-        print("Inserted Into Database")
-
-    except Exception as e:
-        con.rollback()
-        print("Failed to insert into database")
-        print(">>>>>>>>>>>>>", e)
-
-    return
-
+    if choice_to_add > 10 or choice_to_add < 1:
+        print("Invalid number. Please try again\n")
+        return
+    else:
+        add_funcs_dict[tables_add[choice_to_add-1]](cur, con)
 
 def dispatch(ch,cur, con):
     """
@@ -101,7 +88,7 @@ def dispatch(ch,cur, con):
     if (ch == 1):
         add_display(cur, con)
     elif (ch == 2):
-        option3()
+        view_dispaly(cur, con)
     elif (ch == 3):
         option3()
     elif (ch == 4):

@@ -21,3 +21,4 @@
 - Update pilot flying hrs with every journey
 - at least 5 queries & 3 updates 
 - Remeber to write distinct keyword
+- Add languages spoken by employees

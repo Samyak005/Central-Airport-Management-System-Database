@@ -4,8 +4,6 @@ import pymysql.cursors
 
 from datetime import datetime
 
-error_flag = 0
-
 def part():
     print("-----------------------------------------------------------------")
     return
@@ -16,21 +14,6 @@ def part2():
 def part3():
     print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
     return
-
-def expand_keys(d):
-    s = ''
-    for key in d.keys():
-        s = s + key + ', '
-
-    if s[-2:] == ', ':
-        return s[:-2]
-    return s
-
-def empty_to_null(s):
-    if s == '':
-        return 'NULL'
-    else:
-        return s
 
 def get_query_atoms(attr):
     keys_str=""
@@ -62,7 +45,7 @@ def add_luggage(cur, con,barcode_number):
     attr = {}
     print('Enter details of the new luggage:')
 
-    attr["Baggage ID"]=input("Enter stuff")
+    attr["Baggage ID"]=input("Baggage ID")
     attr["fk_to_Barcode number"]=barcode_number
 
     keys_str,values_str=get_query_atoms(attr)
@@ -156,11 +139,11 @@ def add_airline(cur, con):
         return
 
 def add_aircraft(cur, con):
-    print("inside add_airline function")
+    print("inside add_aircraft function")
     table_name="`Aircraft`"
 
     attr = {}
-    print('Enter details of the new airline:')
+    print('Enter details of the new aircraft:')
 
     attr['registration_num'] =input("Enter registration number of aircraft")
     attr['fk_to_capacity_Manufacturer']=input("Enter manufacturer of aircraft")
@@ -194,7 +177,7 @@ def add_passenger(cur, con):
     table_name="`Passenger`"
 
     attr = {}
-    print('Enter details of the new airline:')
+    print('Enter details of the new passenger:')
 
     attr["Aadhar_card_number"]=input("Enter aadhar card number 12 digit number")
 
@@ -390,10 +373,10 @@ def add_terminal(cur, con):
         input('Press any key to continue.')
         return
 
-def add_route(cur, con,pnr_of_boarding_pass):
+def add_route(cur, con):
 
-    print("inside add_terminal function")
-    table_name="`Terminal`"
+    print("inside add_Route function")
+    table_name="`Route`"
 
     attr = {}
     print('Enter details of the new route:')
@@ -407,13 +390,13 @@ def add_route(cur, con,pnr_of_boarding_pass):
         attr['Date'] = datetime.now().strftime('%Y-%m-%d')
 
 
-    attr['Scheduled arrival'] = empty_to_null(input('Scheduled arrival (Press enter if information not available): [HH:MM]'))
-    attr['Scheduled Departure'] = empty_to_null(input('Scheduled Departure: [HH:MM (Press enter if information not available):'))
-    attr['Time duration'] = empty_to_null(input('Time duration (Press enter if information not available): [HH:MM]'))
-    attr['fk_to_runway_Take off runway id'] = empty_to_null(input('Take off runway id (Press enter if information not available):'))
-    attr['Distance Travelled'] = empty_to_null(input('Distance Travelled (Press enter if information not available):'))
-    attr['fk_to_runway_Landing runway ID'] = empty_to_null(input('Landing runway ID (Press enter if information not available):'))
-    attr['fk_to_aircraft_registration_num'] = empty_to_null(input('aircraft registration number (Press enter if information not available):'))
+    attr['Scheduled arrival'] = input('Scheduled arrival (Press enter if information not available): [HH:MM]')
+    attr['Scheduled Departure'] = input('Scheduled Departure: [HH:MM (Press enter if information not available):')
+    attr['Time duration'] = input('Time duration (Press enter if information not available): [HH:MM]')
+    attr['fk_to_runway_Take off runway id'] = input('Take off runway id (Press enter if information not available):')
+    attr['Distance Travelled'] = input('Distance Travelled (Press enter if information not available):')
+    attr['fk_to_runway_Landing runway ID'] = input('Landing runway ID (Press enter if information not available):')
+    attr['fk_to_aircraft_registration_num'] = input('aircraft registration number (Press enter if information not available):')
     attr['Status'] = input('Status: [Departed, Boarding, On_route, Delayed, Arrived, Checking, Not_applicable]')
     
     keys_str,values_str=get_query_atoms(attr)
@@ -423,13 +406,20 @@ def add_route(cur, con,pnr_of_boarding_pass):
 
     print("query str is %s->",query_str)
 
-    cur.execute(query_str)
-
-    con.commit()
+    try:
+        cur.execute(query_str)
+        con.commit()
+    
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return
 
 
 #################################################################################################
-def add_pnr_info_deduction():
+def add_pnr_info_deduction(cur, con,pnr_of_boarding_pass):
     table_name="`PNR info deduction`"
 
     attr = {}
@@ -451,7 +441,17 @@ def add_pnr_info_deduction():
 
     print("query str is %s->",query_str)
 
-    cur.execute(query_str)
+    try:
+        cur.execute(query_str)
+        return 0
+    
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return -1
+
 
 
 def add_special_services(cur, con,barcode_number,special_service_to_add):
@@ -471,7 +471,17 @@ def add_special_services(cur, con,barcode_number,special_service_to_add):
 
     print("query str is %s->",query_str)
 
-    cur.execute(query_str)
+    try:
+        cur.execute(query_str)
+        return 0
+    
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return -1
+
 
 
 def add_boarding_pass_details(cur, con):
@@ -500,12 +510,12 @@ def add_boarding_pass_details(cur, con):
     Press 0 if you have already added these details for another boarding pass on the same PNR'''))
 
     if add_more_details==1:
-        if add_luggage(cur,con,attr["fk_PNR_number"]) == -1:
+        if add_pnr_info_deduction(cur,con,attr["fk_PNR_number"]) == -1:
             return
 
     #########################################################################################
     #############################################################################################
-    print("List of available special services that can be added are")
+    print("List of available special services that can be added are \nA. Wheelchair \nB. Disability Assistance \nC. XL seats \nD. Priority Boarding\n")
     ss_dict={
         "A":"Wheelchair",
         "B":"Disability Assistance",
@@ -515,14 +525,11 @@ def add_boarding_pass_details(cur, con):
     ss_str=input("Enter special services\nEg: enter AC for Wheelchair and XL seats")
     for i in range(len(ss_str)):
         add_ss=ss_dict[ss_str[i]]
-        add_special_services(cur,con,add_ss)
+        if add_special_services(cur,con,attr["Barcode number"],add_ss) == -1:
+            return
 
     ##########################################################################################
 
-
-
-    
-        
     keys_str,values_str=get_query_atoms(attr)
     print(keys_str)
     print(values_str)
@@ -530,21 +537,29 @@ def add_boarding_pass_details(cur, con):
 
     print("query str is %s->",query_str)
 
-    cur.execute(query_str)
+    try:
+        cur.execute(query_str)
+        con.commit()
+    
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return
 
-    con.commit()
-
+    
 #######################################################################################
 
 def add_on_ground_emp(cur,con,aadhar_num):
     
     print("inside add_on_ground_emp")
-    table_name="`emer_contact`"
+    table_name="`On-ground`"
 
     attr = {}
     print('Enter details of the add_on_ground_emp:')
     attr['fk_to_airline_crew_Aadhar_card_number'] = aadhar_num
-    attr['Job title'] = input("Inout stuff")
+    attr['Job title'] = input("Job title: ")
 
     keys_str,values_str=get_query_atoms(attr)
     print(keys_str)
@@ -553,7 +568,16 @@ def add_on_ground_emp(cur,con,aadhar_num):
 
     print("query str is %s->",query_str)
 
-    cur.execute(query_str)
+    try:
+        cur.execute(query_str)
+        return 0
+    
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return -1
 
 
 def add_pilot(cur,con,aadhar_num):
@@ -564,8 +588,8 @@ def add_pilot(cur,con,aadhar_num):
     attr = {}
     print('Enter details of the Pilot:')
     attr['fk_to_flight_crew_Aadhar_card_number'] = aadhar_num
-    attr["Pilot license number"]=input("Enter stuff")
-    attr["Number of flying hours"]=input("Enter stuff")    
+    attr["Pilot license number"]=input("Enter Pilot license number")
+    attr["Number of flying hours"]=input("Enter number of flying hours")    
 
     #########################################################################
     keys_str,values_str=get_query_atoms(attr)
@@ -575,7 +599,16 @@ def add_pilot(cur,con,aadhar_num):
 
     print("query str is %s->",query_str)
 
-    cur.execute(query_str)
+    try:
+        cur.execute(query_str)
+        return 0
+    
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return -1
 
 def add_flight_attendant(cur,con,aadhar_num):
     
@@ -585,7 +618,7 @@ def add_flight_attendant(cur,con,aadhar_num):
     attr = {}
     print('Enter details of the flight_attendant:')
     attr['fk_to_flight_crew_Aadhar_card_number'] = aadhar_num
-    attr["Training/Education"]=input("Enter stuff")
+    attr["Training/Education"]=input("Enter Training: ")
 
     #########################################################################
     keys_str,values_str=get_query_atoms(attr)
@@ -595,7 +628,16 @@ def add_flight_attendant(cur,con,aadhar_num):
 
     print("query str is %s->",query_str)
 
-    cur.execute(query_str)
+    try:
+        cur.execute(query_str)
+        return 0
+    
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return -1
 
 def add_flight_engineer(cur,con,aadhar_num):
     
@@ -605,9 +647,9 @@ def add_flight_engineer(cur,con,aadhar_num):
     attr = {}
     print('Enter details of the flight_engineer:')
     attr['fk_to_flight_crew_Aadhar_card_number'] = aadhar_num
-    attr["Education"]=input("Enter stuff")
-    attr["Manufacturer"]=input("Enter manufacturer of plane he specializes in")    
-    attr["Model"]=input("Enter model of plane he specializes in")    
+    attr["Education"]=input("Enter Education: ")
+    attr["Manufacturer"]=input("Enter manufacturer of plane he specializes in: ")    
+    attr["Model"]=input("Enter model of plane he specializes in: ")    
 
     #########################################################################
     keys_str,values_str=get_query_atoms(attr)
@@ -617,7 +659,16 @@ def add_flight_engineer(cur,con,aadhar_num):
 
     print("query str is %s->",query_str)
 
-    cur.execute(query_str)
+    try:
+        cur.execute(query_str)
+        return 0
+    
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return -1
 
 def add_flight_crew(cur,con,aadhar_num):
     
@@ -640,11 +691,14 @@ def add_flight_crew(cur,con,aadhar_num):
     emp_class=int(input())
 
     if emp_class==1:
-        add_pilot(cur,con,attr["fk_to_airline_crew_Aadhar_card_number"])
+        if add_pilot(cur,con,attr["fk_to_airline_crew_Aadhar_card_number"]) == -1:
+            return -1
     elif emp_class==2:
-        add_flight_attendant(cur,con,attr["fk_to_airline_crew_Aadhar_card_number"])
+        if add_flight_attendant(cur,con,attr["fk_to_airline_crew_Aadhar_card_number"]) == -1:
+            return -1
     else:
-        add_flight_engineer(cur,con,attr["fk_to_airline_crew_Aadhar_card_number"])
+        if add_flight_engineer(cur,con,attr["fk_to_airline_crew_Aadhar_card_number"]) == -1:
+            return -1
 
     #########################################################################
     keys_str,values_str=get_query_atoms(attr)
@@ -654,7 +708,16 @@ def add_flight_crew(cur,con,aadhar_num):
 
     print("query str is %s->",query_str)
 
-    cur.execute(query_str)
+    try:
+        cur.execute(query_str)
+        return 0
+    
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return -1
 
 
 def add_airline_crew(cur,con):
@@ -665,7 +728,7 @@ def add_airline_crew(cur,con):
     attr = {}
     print('Enter details of the airline_crew entry:')
    
-    attr["Aadhar_card_number"]=input("Inout stuff")
+    attr["Aadhar_card_number"]=input("Aadhar_card_number: ")
 
 
     tmp_name=input("Enter name")
@@ -689,12 +752,12 @@ def add_airline_crew(cur,con):
         input('Press any key to continue.')
         return
 
-    attr["Number of years of Experience"]=input("Inout stuff")
-    attr["Salary"]=input("Inout stuff")
-    attr["Nationality"]=input("Inout stuff")
-    attr["DOB"]=input("Inout stuff")
-    attr["Gender"]=input("Inout stuff")
-    attr["fk_to_airline_employer_IATA_code"]=input("Inout stuff")
+    attr["Number of years of Experience"]=input("Number of years of Experience: ")
+    attr["Salary"]=input("Salary: ")
+    attr["Nationality"]=input("Nationality: ")
+    attr["DOB"]=input("DOB: [YYYY-MM-DD]")
+    attr["Gender"]=input("Gender: [Male, Female, Others]")
+    attr["fk_to_airline_employer_IATA_code"]=input("Airline employer IATA code:")
 
     
     #############################################################################
@@ -706,9 +769,11 @@ def add_airline_crew(cur,con):
     emp_class=int(input())
 
     if emp_class==1:
-        add_on_ground_emp(cur,con,attr["Aadhar_card_number"])
+        if add_on_ground_emp(cur,con,attr["Aadhar_card_number"]) == -1:
+            return
     else:
-        add_flight_crew(cur,con,attr["Aadhar_card_number"])
+        if add_flight_crew(cur,con,attr["Aadhar_card_number"]) == -1:
+            return
 
 
     #########################################################################
@@ -721,9 +786,18 @@ def add_airline_crew(cur,con):
 
     print("query str is %s->",query_str)
 
-    cur.execute(query_str)
+    try:
+        cur.execute(query_str)
+        con.commit()
+    
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return
 
-    con.commit()
+    
  
 
 #########################################################################################################
@@ -736,8 +810,8 @@ def add_air_traffic_controller(cur,con,aadhar_num):
     attr = {}
     print('Enter details of the air_traffic_controller:')
     attr['fk_to_airline_crew_Aadhar_card_number'] = aadhar_num
-    attr['Current communication Frequency'] = input("Enter stuff")
-    attr['Training/Education'] = input("Enter stuff")
+    attr['Current communication Frequency'] = input("Current communication Frequency: ")
+    attr['Training/Education'] = input("Training/Education: ")
 
     keys_str,values_str=get_query_atoms(attr)
     print(keys_str)
@@ -746,7 +820,18 @@ def add_air_traffic_controller(cur,con,aadhar_num):
 
     print("query str is %s->",query_str)
 
-    cur.execute(query_str)
+    try:
+        cur.execute(query_str)
+        return 0
+    
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return -1
+
+    
 
 def add_mo_executives(cur,con,aadhar_num):
     
@@ -756,7 +841,7 @@ def add_mo_executives(cur,con,aadhar_num):
     attr = {}
     print('Enter details of the mo_executives:')
     attr['fk_to_airline_crew_Aadhar_card_number'] = aadhar_num
-    attr['Job title'] = input("Enter stuff")
+    attr['Job title'] = input("Job title: ")
 
     keys_str,values_str=get_query_atoms(attr)
     print(keys_str)
@@ -765,18 +850,27 @@ def add_mo_executives(cur,con,aadhar_num):
 
     print("query str is %s->",query_str)
 
-    cur.execute(query_str)
+    try:
+        cur.execute(query_str)
+        return 0
+    
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return -1
 
 def add_security(cur,con,aadhar_num):
     
     print("inside security")
-    table_name="`security`"
+    table_name="`Security`"
 
     attr = {}
     print('Enter details of the security:')
     attr['fk_to_airline_crew_Aadhar_card_number'] = aadhar_num
-    attr['Designation'] = input("Enter stuff")
-    attr['Security ID number'] = input("Enter stuff")
+    attr['Designation'] = input("Designation: ")
+    attr['Security ID number'] = input("Security ID number: ")
 
     keys_str,values_str=get_query_atoms(attr)
     print(keys_str)
@@ -785,9 +879,18 @@ def add_security(cur,con,aadhar_num):
 
     print("query str is %s->",query_str)
 
-    cur.execute(query_str)
+    try:
+        cur.execute(query_str)
+        return 0
+    
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return -1
 
-
+    
 def add_airport_crew(cur,con):
         
     print("inside airport_crew")
@@ -796,10 +899,10 @@ def add_airport_crew(cur,con):
     attr = {}
     print('Enter details of the airport_crew entry:')
    
-    attr["Aadhar_card_number"]=input("Inout stuff")
+    attr["Aadhar_card_number"]=input("Aadhar card number: ")
 
 
-    tmp_name=input("Enter name")
+    tmp_name=input("Enter name: ")
 
     name_list= tmp_name.split(' ')
 
@@ -820,13 +923,13 @@ def add_airport_crew(cur,con):
         input('Press any key to continue.')
         return
 
-    attr["Experience"]=input("Inout stuff")
-    attr["Salary"]=input("Inout stuff")
-    attr["Nationality"]=input("Inout stuff")
-    attr["DOB"]=input("Inout stuff")
-    attr["Gender"]=input("Inout stuff")
-    attr["fk_to_airport_IATA_code_of_employing_airport"]=input("Inout stuff")
-    attr["sup_Aadhar_card_number"]=input("Inout stuff")
+    attr["Experience"]=input("Experience")
+    attr["Salary"]=input("Salary")
+    attr["Nationality"]=input("Nationality")
+    attr["DOB"]=input("DOB: [YYYY-MM-DD]")
+    attr["Gender"]=input("Gender")
+    attr["fk_to_airport_IATA_code_of_employing_airport"]=input("airport IATA code of employing airport")
+    attr["sup_Aadhar_card_number"]=input("Supervisior's Aadhar card number:")
 
 
     
@@ -841,11 +944,14 @@ def add_airport_crew(cur,con):
     emp_class=int(input())
 
     if emp_class==1:
-        add_air_traffic_controller(cur,con,attr["Aadhar_card_number"])
+        if add_air_traffic_controller(cur,con,attr["Aadhar_card_number"]) == -1:
+            return
     elif emp_class==2:
-        add_mo_executives(cur,con,attr["Aadhar_card_number"])
+        if add_mo_executives(cur,con,attr["Aadhar_card_number"]) == -1:
+            return
     else:
-        add_security(cur,con,attr["Aadhar_card_number"])
+        if add_security(cur,con,attr["Aadhar_card_number"]) == -1:
+            return
 
 
     #########################################################################
@@ -862,5 +968,787 @@ def add_airport_crew(cur,con):
         cur.execute(query_str)
         con.commit()
 
-    except:
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return
+    print("inside security")
+    table_name="`Security`"
+
+    attr = {}
+    print('Enter details of the security:')
+    attr['fk_to_airline_crew_Aadhar_card_number'] = aadhar_num
+    attr['Designation'] = input("Designation: ")
+    attr['Security ID number'] = input("Security ID number: ")
+
+    keys_str,values_str=get_query_atoms(attr)
+    print(keys_str)
+    print(values_str)
+    query_str='INSERT INTO '+table_name+" ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
+
+    print("query str is %s->",query_str)
+
+    try:
+        cur.execute(query_str)
+        return 0
+    
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return -1
+
+    
+def add_airport_crew(cur,con):
+        
+    print("inside airport_crew")
+    table_name="`Airport Employees/CREWS`"
+
+    attr = {}
+    print('Enter details of the airport_crew entry:')
+   
+    attr["Aadhar_card_number"]=input("Aadhar card number: ")
+
+
+    tmp_name=input("Enter name: ")
+
+    name_list= tmp_name.split(' ')
+
+    if len(tmp_name) >= 3:
+        attr['First Name'] = tmp_name[0]
+        attr['Middle Name'] = ' '.join(tmp_name[1:-1])
+        attr['Last Name'] = tmp_name[-1]
+    elif len(tmp_name) == 2:
+        attr['First Name'] = tmp_name[0]
+        attr['Middle Name'] = ''
+        attr['Last Name'] = tmp_name[1]
+    elif len(tmp_name) == 1:
+        attr['First Name'] = tmp_name[0]
+        attr['Middle Name'] = ''
+        attr['Last Name'] = ''
+    else:
+        print('Error: Incorrect format of name entered')
+        input('Press any key to continue.')
+        return
+
+    attr["Experience"]=input("Experience")
+    attr["Salary"]=input("Salary")
+    attr["Nationality"]=input("Nationality")
+    attr["DOB"]=input("DOB: [YYYY-MM-DD]")
+    attr["Gender"]=input("Gender")
+    attr["fk_to_airport_IATA_code_of_employing_airport"]=input("airport IATA code of employing airport")
+    attr["sup_Aadhar_card_number"]=input("Supervisior's Aadhar card number:")
+
+
+    
+    #############################################################################
+    print('''
+    Press 1 if employee is Air traffic controller
+    \n
+    Press 2 if employee is part of Management
+    \n
+    Press 3 if employee is part of Security''')
+
+    emp_class=int(input())
+
+    if emp_class==1:
+        if add_air_traffic_controller(cur,con,attr["Aadhar_card_number"]) == -1:
+            return
+    elif emp_class==2:
+        if add_mo_executives(cur,con,attr["Aadhar_card_number"]) == -1:
+            return
+    else:
+        if add_security(cur,con,attr["Aadhar_card_number"]) == -1:
+            return
+
+
+    #########################################################################
+
+
+    keys_str,values_str=get_query_atoms(attr)
+    print(keys_str)
+    print(values_str)
+    query_str='INSERT INTO '+table_name+" ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
+
+    print("query str is %s->",query_str)
+
+    try:
+        cur.execute(query_str)
+        con.commit()
+
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return
+    print("inside security")
+    table_name="`Security`"
+
+    attr = {}
+    print('Enter details of the security:')
+    attr['fk_to_airline_crew_Aadhar_card_number'] = aadhar_num
+    attr['Designation'] = input("Designation: ")
+    attr['Security ID number'] = input("Security ID number: ")
+
+    keys_str,values_str=get_query_atoms(attr)
+    print(keys_str)
+    print(values_str)
+    query_str='INSERT INTO '+table_name+" ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
+
+    print("query str is %s->",query_str)
+
+    try:
+        cur.execute(query_str)
+        return 0
+    
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return -1
+
+    
+def add_airport_crew(cur,con):
+        
+    print("inside airport_crew")
+    table_name="`Airport Employees/CREWS`"
+
+    attr = {}
+    print('Enter details of the airport_crew entry:')
+   
+    attr["Aadhar_card_number"]=input("Aadhar card number: ")
+
+
+    tmp_name=input("Enter name: ")
+
+    name_list= tmp_name.split(' ')
+
+    if len(tmp_name) >= 3:
+        attr['First Name'] = tmp_name[0]
+        attr['Middle Name'] = ' '.join(tmp_name[1:-1])
+        attr['Last Name'] = tmp_name[-1]
+    elif len(tmp_name) == 2:
+        attr['First Name'] = tmp_name[0]
+        attr['Middle Name'] = ''
+        attr['Last Name'] = tmp_name[1]
+    elif len(tmp_name) == 1:
+        attr['First Name'] = tmp_name[0]
+        attr['Middle Name'] = ''
+        attr['Last Name'] = ''
+    else:
+        print('Error: Incorrect format of name entered')
+        input('Press any key to continue.')
+        return
+
+    attr["Experience"]=input("Experience")
+    attr["Salary"]=input("Salary")
+    attr["Nationality"]=input("Nationality")
+    attr["DOB"]=input("DOB: [YYYY-MM-DD]")
+    attr["Gender"]=input("Gender")
+    attr["fk_to_airport_IATA_code_of_employing_airport"]=input("airport IATA code of employing airport")
+    attr["sup_Aadhar_card_number"]=input("Supervisior's Aadhar card number:")
+
+
+    
+    #############################################################################
+    print('''
+    Press 1 if employee is Air traffic controller
+    \n
+    Press 2 if employee is part of Management
+    \n
+    Press 3 if employee is part of Security''')
+
+    emp_class=int(input())
+
+    if emp_class==1:
+        if add_air_traffic_controller(cur,con,attr["Aadhar_card_number"]) == -1:
+            return
+    elif emp_class==2:
+        if add_mo_executives(cur,con,attr["Aadhar_card_number"]) == -1:
+            return
+    else:
+        if add_security(cur,con,attr["Aadhar_card_number"]) == -1:
+            return
+
+
+    #########################################################################
+
+
+    keys_str,values_str=get_query_atoms(attr)
+    print(keys_str)
+    print(values_str)
+    query_str='INSERT INTO '+table_name+" ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
+
+    print("query str is %s->",query_str)
+
+    try:
+        cur.execute(query_str)
+        con.commit()
+
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return
+    print("inside security")
+    table_name="`Security`"
+
+    attr = {}
+    print('Enter details of the security:')
+    attr['fk_to_airline_crew_Aadhar_card_number'] = aadhar_num
+    attr['Designation'] = input("Designation: ")
+    attr['Security ID number'] = input("Security ID number: ")
+
+    keys_str,values_str=get_query_atoms(attr)
+    print(keys_str)
+    print(values_str)
+    query_str='INSERT INTO '+table_name+" ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
+
+    print("query str is %s->",query_str)
+
+    try:
+        cur.execute(query_str)
+        return 0
+    
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return -1
+
+    
+def add_airport_crew(cur,con):
+        
+    print("inside airport_crew")
+    table_name="`Airport Employees/CREWS`"
+
+    attr = {}
+    print('Enter details of the airport_crew entry:')
+   
+    attr["Aadhar_card_number"]=input("Aadhar card number: ")
+
+
+    tmp_name=input("Enter name: ")
+
+    name_list= tmp_name.split(' ')
+
+    if len(tmp_name) >= 3:
+        attr['First Name'] = tmp_name[0]
+        attr['Middle Name'] = ' '.join(tmp_name[1:-1])
+        attr['Last Name'] = tmp_name[-1]
+    elif len(tmp_name) == 2:
+        attr['First Name'] = tmp_name[0]
+        attr['Middle Name'] = ''
+        attr['Last Name'] = tmp_name[1]
+    elif len(tmp_name) == 1:
+        attr['First Name'] = tmp_name[0]
+        attr['Middle Name'] = ''
+        attr['Last Name'] = ''
+    else:
+        print('Error: Incorrect format of name entered')
+        input('Press any key to continue.')
+        return
+
+    attr["Experience"]=input("Experience")
+    attr["Salary"]=input("Salary")
+    attr["Nationality"]=input("Nationality")
+    attr["DOB"]=input("DOB: [YYYY-MM-DD]")
+    attr["Gender"]=input("Gender")
+    attr["fk_to_airport_IATA_code_of_employing_airport"]=input("airport IATA code of employing airport")
+    attr["sup_Aadhar_card_number"]=input("Supervisior's Aadhar card number:")
+
+
+    
+    #############################################################################
+    print('''
+    Press 1 if employee is Air traffic controller
+    \n
+    Press 2 if employee is part of Management
+    \n
+    Press 3 if employee is part of Security''')
+
+    emp_class=int(input())
+
+    if emp_class==1:
+        if add_air_traffic_controller(cur,con,attr["Aadhar_card_number"]) == -1:
+            return
+    elif emp_class==2:
+        if add_mo_executives(cur,con,attr["Aadhar_card_number"]) == -1:
+            return
+    else:
+        if add_security(cur,con,attr["Aadhar_card_number"]) == -1:
+            return
+
+
+    #########################################################################
+
+
+    keys_str,values_str=get_query_atoms(attr)
+    print(keys_str)
+    print(values_str)
+    query_str='INSERT INTO '+table_name+" ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
+
+    print("query str is %s->",query_str)
+
+    try:
+        cur.execute(query_str)
+        con.commit()
+
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return
+    print("inside security")
+    table_name="`Security`"
+
+    attr = {}
+    print('Enter details of the security:')
+    attr['fk_to_airline_crew_Aadhar_card_number'] = aadhar_num
+    attr['Designation'] = input("Designation: ")
+    attr['Security ID number'] = input("Security ID number: ")
+
+    keys_str,values_str=get_query_atoms(attr)
+    print(keys_str)
+    print(values_str)
+    query_str='INSERT INTO '+table_name+" ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
+
+    print("query str is %s->",query_str)
+
+    try:
+        cur.execute(query_str)
+        return 0
+    
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return -1
+
+    
+def add_airport_crew(cur,con):
+        
+    print("inside airport_crew")
+    table_name="`Airport Employees/CREWS`"
+
+    attr = {}
+    print('Enter details of the airport_crew entry:')
+   
+    attr["Aadhar_card_number"]=input("Aadhar card number: ")
+
+
+    tmp_name=input("Enter name: ")
+
+    name_list= tmp_name.split(' ')
+
+    if len(tmp_name) >= 3:
+        attr['First Name'] = tmp_name[0]
+        attr['Middle Name'] = ' '.join(tmp_name[1:-1])
+        attr['Last Name'] = tmp_name[-1]
+    elif len(tmp_name) == 2:
+        attr['First Name'] = tmp_name[0]
+        attr['Middle Name'] = ''
+        attr['Last Name'] = tmp_name[1]
+    elif len(tmp_name) == 1:
+        attr['First Name'] = tmp_name[0]
+        attr['Middle Name'] = ''
+        attr['Last Name'] = ''
+    else:
+        print('Error: Incorrect format of name entered')
+        input('Press any key to continue.')
+        return
+
+    attr["Experience"]=input("Experience")
+    attr["Salary"]=input("Salary")
+    attr["Nationality"]=input("Nationality")
+    attr["DOB"]=input("DOB: [YYYY-MM-DD]")
+    attr["Gender"]=input("Gender")
+    attr["fk_to_airport_IATA_code_of_employing_airport"]=input("airport IATA code of employing airport")
+    attr["sup_Aadhar_card_number"]=input("Supervisior's Aadhar card number:")
+
+
+    
+    #############################################################################
+    print('''
+    Press 1 if employee is Air traffic controller
+    \n
+    Press 2 if employee is part of Management
+    \n
+    Press 3 if employee is part of Security''')
+
+    emp_class=int(input())
+
+    if emp_class==1:
+        if add_air_traffic_controller(cur,con,attr["Aadhar_card_number"]) == -1:
+            return
+    elif emp_class==2:
+        if add_mo_executives(cur,con,attr["Aadhar_card_number"]) == -1:
+            return
+    else:
+        if add_security(cur,con,attr["Aadhar_card_number"]) == -1:
+            return
+
+
+    #########################################################################
+
+
+    keys_str,values_str=get_query_atoms(attr)
+    print(keys_str)
+    print(values_str)
+    query_str='INSERT INTO '+table_name+" ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
+
+    print("query str is %s->",query_str)
+
+    try:
+        cur.execute(query_str)
+        con.commit()
+
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return
+    print("inside security")
+    table_name="`Security`"
+
+    attr = {}
+    print('Enter details of the security:')
+    attr['fk_to_airline_crew_Aadhar_card_number'] = aadhar_num
+    attr['Designation'] = input("Designation: ")
+    attr['Security ID number'] = input("Security ID number: ")
+
+    keys_str,values_str=get_query_atoms(attr)
+    print(keys_str)
+    print(values_str)
+    query_str='INSERT INTO '+table_name+" ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
+
+    print("query str is %s->",query_str)
+
+    try:
+        cur.execute(query_str)
+        return 0
+    
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return -1
+
+    
+def add_airport_crew(cur,con):
+        
+    print("inside airport_crew")
+    table_name="`Airport Employees/CREWS`"
+
+    attr = {}
+    print('Enter details of the airport_crew entry:')
+   
+    attr["Aadhar_card_number"]=input("Aadhar card number: ")
+
+
+    tmp_name=input("Enter name: ")
+
+    name_list= tmp_name.split(' ')
+
+    if len(tmp_name) >= 3:
+        attr['First Name'] = tmp_name[0]
+        attr['Middle Name'] = ' '.join(tmp_name[1:-1])
+        attr['Last Name'] = tmp_name[-1]
+    elif len(tmp_name) == 2:
+        attr['First Name'] = tmp_name[0]
+        attr['Middle Name'] = ''
+        attr['Last Name'] = tmp_name[1]
+    elif len(tmp_name) == 1:
+        attr['First Name'] = tmp_name[0]
+        attr['Middle Name'] = ''
+        attr['Last Name'] = ''
+    else:
+        print('Error: Incorrect format of name entered')
+        input('Press any key to continue.')
+        return
+
+    attr["Experience"]=input("Experience")
+    attr["Salary"]=input("Salary")
+    attr["Nationality"]=input("Nationality")
+    attr["DOB"]=input("DOB: [YYYY-MM-DD]")
+    attr["Gender"]=input("Gender")
+    attr["fk_to_airport_IATA_code_of_employing_airport"]=input("airport IATA code of employing airport")
+    attr["sup_Aadhar_card_number"]=input("Supervisior's Aadhar card number:")
+
+
+    
+    #############################################################################
+    print('''
+    Press 1 if employee is Air traffic controller
+    \n
+    Press 2 if employee is part of Management
+    \n
+    Press 3 if employee is part of Security''')
+
+    emp_class=int(input())
+
+    if emp_class==1:
+        if add_air_traffic_controller(cur,con,attr["Aadhar_card_number"]) == -1:
+            return
+    elif emp_class==2:
+        if add_mo_executives(cur,con,attr["Aadhar_card_number"]) == -1:
+            return
+    else:
+        if add_security(cur,con,attr["Aadhar_card_number"]) == -1:
+            return
+
+
+    #########################################################################
+
+
+    keys_str,values_str=get_query_atoms(attr)
+    print(keys_str)
+    print(values_str)
+    query_str='INSERT INTO '+table_name+" ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
+
+    print("query str is %s->",query_str)
+
+    try:
+        cur.execute(query_str)
+        con.commit()
+
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return
+    print("inside security")
+    table_name="`Security`"
+
+    attr = {}
+    print('Enter details of the security:')
+    attr['fk_to_airline_crew_Aadhar_card_number'] = aadhar_num
+    attr['Designation'] = input("Designation: ")
+    attr['Security ID number'] = input("Security ID number: ")
+
+    keys_str,values_str=get_query_atoms(attr)
+    print(keys_str)
+    print(values_str)
+    query_str='INSERT INTO '+table_name+" ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
+
+    print("query str is %s->",query_str)
+
+    try:
+        cur.execute(query_str)
+        return 0
+    
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return -1
+
+    
+def add_airport_crew(cur,con):
+        
+    print("inside airport_crew")
+    table_name="`Airport Employees/CREWS`"
+
+    attr = {}
+    print('Enter details of the airport_crew entry:')
+   
+    attr["Aadhar_card_number"]=input("Aadhar card number: ")
+
+
+    tmp_name=input("Enter name: ")
+
+    name_list= tmp_name.split(' ')
+
+    if len(tmp_name) >= 3:
+        attr['First Name'] = tmp_name[0]
+        attr['Middle Name'] = ' '.join(tmp_name[1:-1])
+        attr['Last Name'] = tmp_name[-1]
+    elif len(tmp_name) == 2:
+        attr['First Name'] = tmp_name[0]
+        attr['Middle Name'] = ''
+        attr['Last Name'] = tmp_name[1]
+    elif len(tmp_name) == 1:
+        attr['First Name'] = tmp_name[0]
+        attr['Middle Name'] = ''
+        attr['Last Name'] = ''
+    else:
+        print('Error: Incorrect format of name entered')
+        input('Press any key to continue.')
+        return
+
+    attr["Experience"]=input("Experience")
+    attr["Salary"]=input("Salary")
+    attr["Nationality"]=input("Nationality")
+    attr["DOB"]=input("DOB: [YYYY-MM-DD]")
+    attr["Gender"]=input("Gender")
+    attr["fk_to_airport_IATA_code_of_employing_airport"]=input("airport IATA code of employing airport")
+    attr["sup_Aadhar_card_number"]=input("Supervisior's Aadhar card number:")
+
+
+    
+    #############################################################################
+    print('''
+    Press 1 if employee is Air traffic controller
+    \n
+    Press 2 if employee is part of Management
+    \n
+    Press 3 if employee is part of Security''')
+
+    emp_class=int(input())
+
+    if emp_class==1:
+        if add_air_traffic_controller(cur,con,attr["Aadhar_card_number"]) == -1:
+            return
+    elif emp_class==2:
+        if add_mo_executives(cur,con,attr["Aadhar_card_number"]) == -1:
+            return
+    else:
+        if add_security(cur,con,attr["Aadhar_card_number"]) == -1:
+            return
+
+
+    #########################################################################
+
+
+    keys_str,values_str=get_query_atoms(attr)
+    print(keys_str)
+    print(values_str)
+    query_str='INSERT INTO '+table_name+" ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
+
+    print("query str is %s->",query_str)
+
+    try:
+        cur.execute(query_str)
+        con.commit()
+
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return
+    print("inside security")
+    table_name="`Security`"
+
+    attr = {}
+    print('Enter details of the security:')
+    attr['fk_to_airline_crew_Aadhar_card_number'] = aadhar_num
+    attr['Designation'] = input("Designation: ")
+    attr['Security ID number'] = input("Security ID number: ")
+
+    keys_str,values_str=get_query_atoms(attr)
+    print(keys_str)
+    print(values_str)
+    query_str='INSERT INTO '+table_name+" ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
+
+    print("query str is %s->",query_str)
+
+    try:
+        cur.execute(query_str)
+        return 0
+    
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return -1
+
+    
+def add_airport_crew(cur,con):
+        
+    print("inside airport_crew")
+    table_name="`Airport Employees/CREWS`"
+
+    attr = {}
+    print('Enter details of the airport_crew entry:')
+   
+    attr["Aadhar_card_number"]=input("Aadhar card number: ")
+
+
+    tmp_name=input("Enter name: ")
+
+    name_list= tmp_name.split(' ')
+
+    if len(tmp_name) >= 3:
+        attr['First Name'] = tmp_name[0]
+        attr['Middle Name'] = ' '.join(tmp_name[1:-1])
+        attr['Last Name'] = tmp_name[-1]
+    elif len(tmp_name) == 2:
+        attr['First Name'] = tmp_name[0]
+        attr['Middle Name'] = ''
+        attr['Last Name'] = tmp_name[1]
+    elif len(tmp_name) == 1:
+        attr['First Name'] = tmp_name[0]
+        attr['Middle Name'] = ''
+        attr['Last Name'] = ''
+    else:
+        print('Error: Incorrect format of name entered')
+        input('Press any key to continue.')
+        return
+
+    attr["Experience"]=input("Experience")
+    attr["Salary"]=input("Salary")
+    attr["Nationality"]=input("Nationality")
+    attr["DOB"]=input("DOB: [YYYY-MM-DD]")
+    attr["Gender"]=input("Gender")
+    attr["fk_to_airport_IATA_code_of_employing_airport"]=input("airport IATA code of employing airport")
+    attr["sup_Aadhar_card_number"]=input("Supervisior's Aadhar card number:")
+
+
+    
+    #############################################################################
+    print('''
+    Press 1 if employee is Air traffic controller
+    \n
+    Press 2 if employee is part of Management
+    \n
+    Press 3 if employee is part of Security''')
+
+    emp_class=int(input())
+
+    if emp_class==1:
+        if add_air_traffic_controller(cur,con,attr["Aadhar_card_number"]) == -1:
+            return
+    elif emp_class==2:
+        if add_mo_executives(cur,con,attr["Aadhar_card_number"]) == -1:
+            return
+    else:
+        if add_security(cur,con,attr["Aadhar_card_number"]) == -1:
+            return
+
+
+    #########################################################################
+
+
+    keys_str,values_str=get_query_atoms(attr)
+    print(keys_str)
+    print(values_str)
+    query_str='INSERT INTO '+table_name+" ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
+
+    print("query str is %s->",query_str)
+
+    try:
+        cur.execute(query_str)
+        con.commit()
+
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return
         
