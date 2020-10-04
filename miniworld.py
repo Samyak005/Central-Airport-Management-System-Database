@@ -37,7 +37,7 @@ def add_display(cur, con):
         "Runway", #
         "Terminal", #
         "Route", 
-        "Boarding Pass",
+        "Boarding Pass", #
         "Airline Employees",
         "Airport Employees",
         "Feedback and rating"

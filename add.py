@@ -98,14 +98,14 @@ def add_aircraft(cur, con):
     attr = {}
     print('Enter details of the new airline:')
 
-    attr[`registration_num`] =input("")
-    attr[`fk_to_capacity_Manufacturer`]=input("")
-    attr[`fk_to_capacity_Model`]=input("")
-    attr[`Distance Travelled`]=input("")
-    attr[`Flight ID`]=input("")
-    attr[`Maintanence check date`]=input("")
-    attr[`fk_to_airline_owner_airline_IATA_code`]=input("")
-    
+    attr['registration_num'] =input("Enter registration number of aircraft")
+    attr['fk_to_capacity_Manufacturer']=input("Enter manufacturer of aircraft")
+    attr['fk_to_capacity_Model']=input("Enter model of aircraft")
+    attr['Distance Travelled']=input("Enter distance travelled")
+    attr['Flight ID']=input("Enter Flight ID")
+    attr['Maintanence check date']=input("Enter maintanence check date")
+    attr['fk_to_airline_owner_airline_IATA_code']=input("Enter IATA code of owner airline")
+
     keys_str,values_str=get_query_atoms(attr)
     print(keys_str)
     print(values_str)
@@ -126,7 +126,7 @@ def add_passenger(cur, con):
     attr = {}
     print('Enter details of the new airline:')
 
-    attr["Aadhar_card_number"]=input("iNPUT THIS ")
+    attr["Aadhar_card_number"]=input("Enter aadhar card number 12 digit number")
 
     tmp_name=input("Enter name")
 
@@ -151,25 +151,31 @@ def add_passenger(cur, con):
 
 
 
-    attr["DOB"]=input("iNPUT THIS ")
-    attr["Gender"]=input("iNPUT THIS ")
-    attr["House Number"]=input("iNPUT THIS ")
-    attr["Building"]=input("iNPUT THIS ")
-    attr["City"]=input("iNPUT THIS ")
-    attr["Email-ID"]=input("iNPUT THIS ")
-    attr["Senior Citizen"]=input("iNPUT THIS ")
-    attr["Nationality"]=input("iNPUT THIS ")
+    attr["DOB"]=input("Enter Date of birth in format DDMMYYYY")
+    attr["Gender"]=input("Enter 1-Male 2-Female 3-Others")
+
+    if attr['Gender'] is 1 :
+        attr['Gender']= 'Male'
+    elif attr['Gender'] is 2 :
+         attr['Gender']= 'Female'
+    elif attr['Gender'] is 3 :
+         attr['Gender']= 'Others'
 
 
+    attr["House Number"]=input("Enter house number of residence")
+    attr["Building"]=input("Enter building number of residence")
+    attr["City"]=input("Enter city of residence")
+    attr["Email-ID"]=input("Enter email-ID")
+    attr["Senior Citizen"]=input("Enter 0-non senior citizen 1-senior citizen")
+    attr["Nationality"]=input("Enter nationality of passenger eg.Indian")
 
 
-    tmp= input('Enter 1 if airline is active, 0 otherwise :')
-    attr['is_active']=False
-    if t==1:
-        attr['is_active']=True
-     
-    
-    attr['country_of_ownership'] = input('Enter country of ownership of airline')
+    num_emer_contacts=int(input("Enter number of emergency contacts you want to add between 0 and 3"))
+    if num_eme_contacts>3:
+        print("Only upto 3 contacts allowed")
+    else:
+        for i in range(num_emer_contacts):
+            add_emer_contact(cur,con,attr["Aadhar_card_number"])
 
     keys_str,values_str=get_query_atoms(attr)
     print(keys_str)
@@ -190,23 +196,23 @@ def add_airport(cur, con):
     attr = {}
     print('Enter details of the new airport:')
 
-    attr["IATA airport codes"]=input(" Input 3 character IATA code * ")
-    attr["Altitude"]=input(" Input in metres ")
+    attr["IATA airport codes"]=input(" Enter 3 character IATA code * ")
+    attr["Altitude"]=input(" Enter in metres ")
 
     ######################################################
-    attr["Time Zone"]=input(" Input in +hh:mm or -hh:mm format , note mm has to be between 0 and 60 and divisible by 15, hh between +12 and -12 ")
+    attr["Time Zone"]=input(" Enter in +hh:mm or -hh:mm format , note mm has to be between 0 and 60 and divisible by 15, hh between +12 and -12 ")
     ########################################################
 
-    attr["Airport Name"]=input(" Input stuff ")
-    attr["City"]=input(" Input stuff ")
-    attr["Country"]=input(" Input stuff ")
+    attr["Airport Name"]=input("Enter name of airport")
+    attr["City"]=input("Enter city where airport is situated")
+    attr["Country"]=input("Enter country where airport is situated")
 
-    attr["Latitude"]=input(" Input stuff ")
+    attr["Latitude"]=input("Enter latitude")
     if attr['Latitude']>90 or attr['Latitude']<-90:
         print("ERROR : Invalid latitudes")
         return
 
-    attr["Longitude"]=input(" Input stuff ")
+    attr["Longitude"]=input("Enter longitude")
     if attr['Longitude']>180 or attr['Longitude']<-180:
         print("ERROR : Invalid longitudes")
         return
@@ -231,13 +237,13 @@ def add_runway(cur, con):
     attr = {}
     print('Enter details of the new runway:')
 
-    attr["fk_to_airport_IATA_airport_codes"]=input("Input stuff")
-    attr["Runway ID"]=input("Input stuff")
-    attr["length_ft"]=input("Input stuff")
-    attr["width_ft"]=input("Input stuff")
+    attr["fk_to_airport_IATA_airport_codes"]=input("Enter IATA airport code of corresponding airport")
+    attr["Runway ID"]=input("Enter runway ID")
+    attr["length_ft"]=input("Enter length in feet")
+    attr["width_ft"]=input("Enter width in feet")
 
     ################DISPLAY A MENU HERE########################################
-    stat_choice=int(input("Input stuff"))
+    stat_choice=int(input("Enter status 1-assigned 2-available 3-disfunctional"))
 
     attr["Status"]=""
     if stat_choice==1:
@@ -268,10 +274,10 @@ def add_terminal(cur, con):
     attr = {}
     print('Enter details of the new terminal:')
 
-    attr["fk_to_airport_IATA_airport_codes"]=input("Input stuff")
-    attr["Terminal ID"]=input("Input stuff")
-    attr["Airplane Handling capacity"]=input("Input stuff")
-    attr["Floor Area"]=input("Input stuff")
+    attr["fk_to_airport_IATA_airport_codes"]=input("Enter IATA code of corresponding airport")
+    attr["Terminal ID"]=input("Enter Terminal ID")
+    attr["Airplane Handling capacity"]=input("Enter airplane handling capacity")
+    attr["Floor Area"]=input("Enter floor area")
 
         
     keys_str,values_str=get_query_atoms(attr)
@@ -331,11 +337,11 @@ def add_pnr_info_deduction():
 
     #########################################################################################
     attr["PNR_number"]=pnr_of_boarding_pass
-    attr["fk_to_route_Route ID"]=input("Input stuff")
+    attr["fk_to_route_Route ID"]=input("Enter Route ID")
     attr["Scheduled Boarding Time"]=input("Enter schdeuled boarding time allotted to you based \
             on your seat, class of travel, if you are senior citizen/VIP etc.")
-    attr["class_of_travel"]=input("Input stuff")
-    attr["fk_to_airport_src_iata_code"]=input("Input stuff")
+    attr["class_of_travel"]=input("Enter Travel class business/economy")
+    attr["fk_to_airport_src_iata_code"]=input("Enter source airport IATA code")
 
     ########################################################################
     keys_str,values_str=get_query_atoms(attr)
@@ -358,9 +364,9 @@ def add_boarding_pass_details(cur, con):
     print('Enter details of the Boarding pass entry:')
 
     attr["Barcode number"]=input("Enter 12 char boarding pass barcode number")
-    attr["fk_PNR_number"]=input("Enter ONR number to which boarding pass belongs")
-    attr["Seat"]=input("Input stuff")
-    attr["fk_to_passenger_Aadhar_card_number"]=input("Input stuff")
+    attr["fk_PNR_number"]=input("Enter PNR number to which boarding pass belongs")
+    attr["Seat"]=input("Enter seat")
+    attr["fk_to_passenger_Aadhar_card_number"]=input("Enter 12 digit Aadhar Card Number")
 
     ##########################################################################################
     add_more_details=int(input('''
@@ -369,7 +375,7 @@ def add_boarding_pass_details(cur, con):
     Press 0 if you have already added these details for another boarding pass on the same PNR'''))
 
     if add_more_details==1:
-        add_pnr_info_deduction()
+        add_pnr_info_deduction(cur,con,attr["fk_PNR_number"])
 
     #########################################################################################
         
@@ -385,29 +391,28 @@ def add_boarding_pass_details(cur, con):
     con.commit()
     
 
-# def add_emer_contact(cur, con):
+def add_emer_contact(cur,con,aadhar_relative):
 
-#     name = input('Name*: ').split(' ')
-#     if len(name) >= 3:
-#         attr['first_name'] = name[0]
-#         attr['middle_name'] = ' '.join(name[1:-1])
-#         attr['last_name'] = name[-1]
-#     elif len(name) == 2:
-#         attr['first_name'] = name[0]
-#         attr['middle_name'] = ''
-#         attr['last_name'] = name[1]
-#     elif len(name) == 1:
-#         attr['first_name'] = name[0]
-#         attr['middle_name'] = ''
-#         attr['last_name'] = ''
-#     else:
-#         print('Error: Please enter the prisoner\'s name')
-#         input('Press any key to continue.')
-#         return
+    print("inside emer_contact_func")
+    table_name="`emer_contact`"
+
+    attr = {}
+    print('Enter details of the emer_contact entry:')
+    attr['fk_to_passenger_Aadhar_card_number'] = aadhar_relative
+    attr["name"] = input('Name*: ')  
     
-#     attr['Phone No'] = input('Phone No: ')
-#     attr['fk_to_passenger_Aadhar_card_number'] = \
-#         input('Aadhar card number: ')
+    attr['Phone No'] = input('Phone No: ')
+
+    keys_str,values_str=get_query_atoms(attr)
+    print(keys_str)
+    print(values_str)
+    query_str='INSERT INTO '+table_name+" ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
+
+    print("query str is %s->",query_str)
+
+    cur.execute(query_str)
+
+    con.commit()
  
 #  def add_luggage(cur, con):
     
