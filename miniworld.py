@@ -14,7 +14,7 @@ add_funcs_dict = {
         # "Runway":add_runway,
         # "Terminal":add_terminal,
         # "Route":add_route,
-        # "Boarding Pass":add_boarding_pass,
+        # "Boarding Pass":add_boarding_pass_details,
         # "Airline Employees":add_airline_employee,
         # "Airport Employees":add_airport_employee,
         # "Feedback and rating":add_feedback
@@ -36,7 +36,7 @@ def add_display(cur, con):
         "Airport", #
         "Runway", #
         "Terminal", #
-        "Route",
+        "Route", 
         "Boarding Pass",
         "Airline Employees",
         "Airport Employees",

@@ -286,31 +286,103 @@ def add_terminal(cur, con):
     con.commit()
 
 
-# def add_route(cur, con):
-#     attr = {}
-#     print('Enter details of the new route:')
+def add_route(cur, con,pnr_of_boarding_pass):
 
-#     attr['Route ID'] = input('Route ID: ')
-#     attr['fk_to_airport_src_iata_code'] = input('source airport iata code: ')
-#     attr['fk_to_airport_dest_iata_code'] = input('Destination airport iata code: ')
-#     attr['Date'] = input('Date: [YYYY-MM-DD] (Press enter for today\'s date')
-#     if attr['Date'] == '':
-#         attr['Date'] = datetime.now().strftime('%Y-%m-%d')
-#     attr['Scheduled arrival'] = empty_to_null(input('Scheduled arrival (Press enter if information not available): [HH:MM]'))
-#     attr['Scheduled Departure'] = empty_to_null(input('Scheduled Departure: [HH:MM (Press enter if information not available):'))
-#     attr['Time duration'] = empty_to_null(input('Time duration (Press enter if information not available): [HH:MM]'))
-#     attr['fk_to_runway_Take off runway id'] = empty_to_null(input('Take off runway id (Press enter if information not available):'))
-#     attr['Distance Travelled'] = empty_to_null(input('Distance Travelled (Press enter if information not available):'))
-#     attr['fk_to_runway_Landing runway ID'] = empty_to_null(input('Landing runway ID (Press enter if information not available):'))
-#     attr['fk_to_aircraft_registration_num'] = empty_to_null(input('aircraft registration number (Press enter if information not available):'))
-#     attr['Status'] = input('Status: [Departed, Boarding, On_route, Delayed, Arrived, Checking, Not_applicable]')
+    print("inside add_terminal function")
+    table_name="`Terminal`"
 
-# def add_boarding_pass(cur, con):
-#     attr['Barcode number'] = input('Barcode number: ')
-#     attr['PNR number'] = input('PNR number: ')
-#     attr['Seat'] = input('Seat: ')
-#     attr['fk_to_passenger_Aadhar_card_number'] = input('fk_to_passenger_Aadhar_card_number: ')
-#     attr['fk_to_route_Route ID'] = input('fk_to_route_Route ID: ')
+    attr = {}
+    print('Enter details of the new route:')
+
+    attr['Route ID'] = input('Route ID: ')
+    attr['fk_to_airport_src_iata_code'] = input('source airport iata code: ')
+    attr['fk_to_airport_dest_iata_code'] = input('Destination airport iata code: ')
+    attr['Date'] = input('Date: [YYYY-MM-DD] (Press enter for today\'s date')
+
+    if attr['Date'] == '':
+        attr['Date'] = datetime.now().strftime('%Y-%m-%d')
+
+
+    attr['Scheduled arrival'] = empty_to_null(input('Scheduled arrival (Press enter if information not available): [HH:MM]'))
+    attr['Scheduled Departure'] = empty_to_null(input('Scheduled Departure: [HH:MM (Press enter if information not available):'))
+    attr['Time duration'] = empty_to_null(input('Time duration (Press enter if information not available): [HH:MM]'))
+    attr['fk_to_runway_Take off runway id'] = empty_to_null(input('Take off runway id (Press enter if information not available):'))
+    attr['Distance Travelled'] = empty_to_null(input('Distance Travelled (Press enter if information not available):'))
+    attr['fk_to_runway_Landing runway ID'] = empty_to_null(input('Landing runway ID (Press enter if information not available):'))
+    attr['fk_to_aircraft_registration_num'] = empty_to_null(input('aircraft registration number (Press enter if information not available):'))
+    attr['Status'] = input('Status: [Departed, Boarding, On_route, Delayed, Arrived, Checking, Not_applicable]')
+    
+    keys_str,values_str=get_query_atoms(attr)
+    print(keys_str)
+    print(values_str)
+    query_str='INSERT INTO '+table_name+" ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
+
+    print("query str is %s->",query_str)
+
+    cur.execute(query_str)
+
+    con.commit()
+
+def add_pnr_info_deduction():
+    table_name="`PNR info deduction`"
+
+    attr = {}
+    print('Enter details of the PNR info deduction:')
+
+    #########################################################################################
+    attr["PNR_number"]=pnr_of_boarding_pass
+    attr["fk_to_route_Route ID"]=input("Input stuff")
+    attr["Scheduled Boarding Time"]=input("Enter schdeuled boarding time allotted to you based \
+            on your seat, class of travel, if you are senior citizen/VIP etc.")
+    attr["class_of_travel"]=input("Input stuff")
+    attr["fk_to_airport_src_iata_code"]=input("Input stuff")
+
+    ########################################################################
+    keys_str,values_str=get_query_atoms(attr)
+    print(keys_str)
+    print(values_str)
+    query_str='INSERT INTO '+table_name+" ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
+
+    print("query str is %s->",query_str)
+
+    cur.execute(query_str)
+
+    con.commit()
+
+
+def add_boarding_pass_details(cur, con):
+    print("inside add_boarding pass function")
+    table_name="`boarding_pass`"
+
+    attr = {}
+    print('Enter details of the Boarding pass entry:')
+
+    attr["Barcode number"]=input("Enter 12 char boarding pass barcode number")
+    attr["fk_PNR_number"]=input("Enter ONR number to which boarding pass belongs")
+    attr["Seat"]=input("Input stuff")
+    attr["fk_to_passenger_Aadhar_card_number"]=input("Input stuff")
+
+    ##########################################################################################
+    add_more_details=int(input('''
+    Press 1 if you want to add additional details like class_of_travel, Src airport etc.,
+    \n
+    Press 0 if you have already added these details for another boarding pass on the same PNR'''))
+
+    if add_more_details==1:
+        add_pnr_info_deduction()
+
+    #########################################################################################
+        
+    keys_str,values_str=get_query_atoms(attr)
+    print(keys_str)
+    print(values_str)
+    query_str='INSERT INTO '+table_name+" ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
+
+    print("query str is %s->",query_str)
+
+    cur.execute(query_str)
+
+    con.commit()
     
 
 # def add_emer_contact(cur, con):
@@ -342,11 +414,3 @@ def add_terminal(cur, con):
 #     attr['Baggage ID'] = input('Baggage ID: ')
 #     attr['fk_to_Barcode number'] = input('fk_to_Barcode number: ')
  
-#  def add_aircraft(cur, con):
-    
-#     attr['registration_num'] = input('registration_num: ')
-#     attr['fk_to_capacity_Manufacturer'] = input('fk_to_capacity_Manufacturer: ')
-#     attr['fk_to_capacity_Manufacturer'] = input('fk_to_capacity_Manufacturer: ')
-#     attr['fk_to_capacity_Manufacturer'] = input('fk_to_capacity_Manufacturer: ')
-#     attr['fk_to_capacity_Manufacturer'] = input('fk_to_capacity_Manufacturer: ')
-    

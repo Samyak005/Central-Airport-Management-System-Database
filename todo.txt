@@ -10,8 +10,10 @@
 - Stopover airport while adding route
 - airport capapcity hardcoded or should user be given choice
 - update distance travelled always
-- add db.roll_backs
+- add db.roll_backs 
 - Emergency contact with passenger
--
--
--
+- find a way to add date constraints
+- add the unique consraint for routes
+- I want to make SEAT of boarding pass as null
+- Mention that economy and business classes, senior citizens etc have different boarding times often
+- Add economy business in class of travel
