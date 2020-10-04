@@ -19,3 +19,4 @@
 - Add economy business in class of travel
 - Anmol: I want to remove commit from subclasses for concurrency issues, let's discuss this
 - Update pilot flying hrs with every journey
+- at least 5 queries & 3 updates 

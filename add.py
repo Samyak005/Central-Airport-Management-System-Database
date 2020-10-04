@@ -368,6 +368,12 @@ def add_boarding_pass_details(cur, con):
     attr["Seat"]=input("Enter seat")
     attr["fk_to_passenger_Aadhar_card_number"]=input("Enter 12 digit Aadhar Card Number")
 
+
+    #############################################################################################
+    num_luggages=int(input("Enter number of luggages you want to link to this boarding pass"))
+    for i in range(num_luggages):
+        add_luggage(cur,con,attr["Barcode number"])
+
     ##########################################################################################
     add_more_details=int(input('''
     Press 1 if you want to add additional details like class_of_travel, Src airport etc.,
@@ -375,9 +381,27 @@ def add_boarding_pass_details(cur, con):
     Press 0 if you have already added these details for another boarding pass on the same PNR'''))
 
     if add_more_details==1:
-        add_pnr_info_deduction(cur,con,attr["fk_PNR_number"])
+        add_luggage(cur,con,attr["fk_PNR_number"])
 
     #########################################################################################
+    #############################################################################################
+    print("List of available special services that can be added are")
+    ss_dict={
+        "A":"Wheelchair",
+        "B":"Disability Assistance",
+        "C":"XL seats",
+        "D":"Priority Boarding"
+    }
+    ss_str=input("Enter special services\nEg: enter AC for Wheelchair and XL seats")
+    for i in range(len(ss_str)):
+        add_ss=ss_dict[ss_str[i]]
+        add_special_services(cur,con,],add_ss)
+
+    ##########################################################################################
+
+
+
+    
         
     keys_str,values_str=get_query_atoms(attr)
     print(keys_str)
@@ -390,6 +414,47 @@ def add_boarding_pass_details(cur, con):
 
     con.commit()
     
+def add_luggage(cur, con,barcode_number):
+    print("inside luggage")
+    table_name="`luggage`"
+
+    attr = {}
+    print('Enter details of the new luggage:')
+
+    attr["Baggage ID"]=input("Enter stuff")
+    attr["fk_to_Barcode number"]=barcode_number
+
+       keys_str,values_str=get_query_atoms(attr)
+    print(keys_str)
+    print(values_str)
+    query_str='INSERT INTO '+table_name+" ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
+
+    print("query str is %s->",query_str)
+
+    cur.execute(query_str)
+
+    con.commit()
+
+def add_special_services(cur, con,barcode_number,special_service_to_add):
+    print("inside special_services")
+    table_name="`special_services`"
+
+    attr = {}
+    print('Enter details of the new special_services:')
+
+    attr["fk_Barcode number"]=barcode_number
+    attr["Special services"]=special_service_to_add
+
+    keys_str,values_str=get_query_atoms(attr)
+    print(keys_str)
+    print(values_str)
+    query_str='INSERT INTO '+table_name+" ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
+
+    print("query str is %s->",query_str)
+
+    cur.execute(query_str)
+
+    con.commit()
 
 def add_emer_contact(cur,con,aadhar_relative):
 
@@ -754,8 +819,3 @@ def add_security(cur,con,aadhar_num):
     cur.execute(query_str)
 
     con.commit()
-#  def add_luggage(cur, con):
-    
-#     attr['Baggage ID'] = input('Baggage ID: ')
-#     attr['fk_to_Barcode number'] = input('fk_to_Barcode number: ')
- 
