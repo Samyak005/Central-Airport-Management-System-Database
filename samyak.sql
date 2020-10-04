@@ -393,10 +393,10 @@ CREATE TABLE `crew_has_worked_together` (
 DROP TABLE IF EXISTS `flight_crew_feedback`;
 
 CREATE TABLE `flight_crew_feedback` (
-  `Pilot captain Aadhar_card_number` int(12),
-  `Pilot first officer Aadhar_card_number` int(12),
-  `flight_attendant Aadhar_card_number` int(12),
-  `flight_engineer Aadhar_card_number` int(12),
+  `Pilot captain Aadhar_card_number` bigint(12),
+  `Pilot first officer Aadhar_card_number` bigint(12),
+  `flight_attendant Aadhar_card_number` bigint(12),
+  `flight_engineer Aadhar_card_number` bigint(12),
   `Feedback given by the passengers for the crew` varchar(255),
   PRIMARY KEY (`Pilot captain Aadhar_card_number`, `Pilot first officer Aadhar_card_number`, `flight_attendant Aadhar_card_number`, `flight_engineer Aadhar_card_number`, `Feedback given by the passengers for the crew`),
 
@@ -424,7 +424,7 @@ CREATE TABLE `boarding_pass special services` (
 DROP TABLE IF EXISTS `Languages spoken by airline employee`;
 
 CREATE TABLE `Languages spoken by airline employee` (
-  `fk_Aadhar_card_number` int(12),
+  `fk_Aadhar_card_number` bigint(12),
   `Language_name` varchar(255),
   PRIMARY KEY (`fk_Aadhar_card_number`, `Language_name`),
   FOREIGN KEY (`fk_Aadhar_card_number`) REFERENCES `airline_crew` (`Aadhar_card_number`) ON DELETE CASCADE ON UPDATE CASCADE
