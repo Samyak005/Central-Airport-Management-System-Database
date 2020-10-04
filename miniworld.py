@@ -2,9 +2,9 @@ import subprocess as sp
 import pymysql
 import pymysql.cursors
 
+from add import add_airline
 
-def add_airline(cur, con):
-    print("inside add_airline function")
+
 
 add_funcs_dict = {
         "Airline":add_airline
@@ -156,7 +156,7 @@ while (1):
 
         with con.cursor() as cur:
             while (1):
-                tmp = sp.call('clear', shell=True)
+                # tmp = sp.call('clear', shell=True)
                 # Here taking example of Employee Mini-world
                 print("1. Add new information")  # Hire an Employee
                 print("2. Option 2")  # Fire an Employee
@@ -175,7 +175,7 @@ while (1):
                     tmp = input("Enter any key to CONTINUE>")
 
     except Exception as e:
-        tmp = sp.call('clear', shell=True)
+        # tmp = sp.call('clear', shell=True)
         print(
             "Connection Refused: Either username or password is incorrect or user doesn't have access to database"
         )
