@@ -30,12 +30,12 @@ def add_display(cur, con):
     print("Add to the table:")
     i = 0
     tables_add = [
-        "Airline",
-        "Passenger", 
-        "Aircraft",
-        "Airport",
-        "Runway",
-        "Terminal",
+        "Airline", #
+        "Passenger", #
+        "Aircraft", #
+        "Airport", #
+        "Runway", #
+        "Terminal", #
         "Route",
         "Boarding Pass",
         "Airline Employees",

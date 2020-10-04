@@ -9,9 +9,9 @@
 - Employee languages spoken
 - Stopover airport while adding route
 - airport capapcity hardcoded or should user be given choice
--
--
--
+- update distance travelled always
+- add db.roll_backs
+- Emergency contact with passenger
 -
 -
 -
