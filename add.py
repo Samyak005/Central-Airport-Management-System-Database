@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 import subprocess as sp
 import pymysql
 import pymysql.cursors
@@ -469,9 +469,16 @@ def add_route(cur, con):
 
     num_stopover = input('Enter number of stopover airports encountered in the route')
     for i in range(num_stopover):
-        print("Enter iata code of airport")
-
+        if add_stopover_airports(cur,con,attr['Route ID'])==-1:
+            return
         
+    ####################################################################
+
+    # ADD CREW
+
+    ###################################################################
+
+    
 
     keys_str, values_str = get_query_atoms(attr)
     print(keys_str)
@@ -494,16 +501,15 @@ def add_route(cur, con):
 
 
 def add_stopover_airports(cur,con,route_id):
-    print("inside add_Route function")
-    table_name = "`Route`"
+    print("inside stopover_airports function")
+    table_name = "`stopover_airports_on_route`"
 
     attr = {}
-    print('Enter details of the new route:')
+    print('Enter details of the new stopover airport:')
 
-    attr['Route ID'] = input('Route ID: ')
-    
+    attr['fk_route_id'] = route_id
+    attr['fk_iata_stopover_airport'] = input("Enter iata code of stopover airport:")
 
-        
 
     keys_str, values_str = get_query_atoms(attr)
     print(keys_str)
@@ -515,14 +521,16 @@ def add_stopover_airports(cur,con,route_id):
 
     try:
         cur.execute(query_str)
-        con.commit()
+        #con.commit()
+        return 0
+
 
     except Exception as e:
         print('Failed to insert into the database.')
         con.rollback()
         print(e)
         input('Press any key to continue.')
-        return
+        return -1
 
 #################################################################################################
 def add_pnr_info_deduction(cur, con, pnr_of_boarding_pass):

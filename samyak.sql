@@ -140,6 +140,8 @@ CREATE TABLE `Route` (
   `Date` DATE NOT NULL, 
   `Scheduled arrival` time,  
   `Scheduled Departure` time,
+  `Actual arrival time` time,
+  `Actual departure time` time,
   `Time duration` time,
   `fk_to_runway_Take off runway id` int,
   `Distance Travelled` int,
@@ -182,7 +184,7 @@ DROP TABLE IF EXISTS `boarding_pass`;
 CREATE TABLE `boarding_pass` (
   `Barcode number` char(12) PRIMARY KEY,
   `fk_PNR_number` char(6) NOT NULL,
-  `Seat` varchar(5),
+  `Seat` varchar(5) NOT NULL,
   `fk_to_passenger_Aadhar_card_number` bigint(12) NOT NULL,
   `fk_to_route_Route ID` int NOT NULL,
 

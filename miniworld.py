@@ -181,12 +181,22 @@ update_funcs_dict = {
         "3":update_airport,#
         "4":update_runway_status,#
         "5":update_airport_crew,#
-        "6":add_language_flight_crew
-        "7":update_boarding_pass_details,#
-        "8":update_airline_crew_personal_details,
-        "9":update_airline_details,#
-        "10":update_atc_freq,
-        "11":update_route_details,#
+        "6":update_route_details,#
+        "7":update_airline_crew_personal_details,
+        "8":update_airline_details,#
+        "9":update_atc_freq,
+}
+
+update_funcs_msg = {
+        "1":"for updating name, gender, address of passenger",#
+        "2":"for updating flight id, owner airline, last check maintenance date aircraft",#
+        "3":"for updating name of airport",#
+        "4":"for updating status of runway",#
+        "5":"for updating name, years of experiences, salary, nationality, employer, gender of airport crew",#
+        "6":"for updating actual arrival time, actual departure time, distance travelled over the route, status of the journey",
+        "7":"for updating airline crew personal details like salary, current employer etc.",#
+        "8":"for updating active_status of the airline, country of wonership",
+        "9":"for updating the frequency at which the air traffic contoller is operating",
 }
 
 # in 11, give status change, time change, 

@@ -28,3 +28,6 @@
 - New attribute rating given added to flight crew feedback
 - Ask for stopover airports in route insertion, ASK
 - Ask for flight crew details in route
+- number of aircrafts possessed by airline is derived
+- make status of runway unique 
+- Actual arrival, deprature time added to route
