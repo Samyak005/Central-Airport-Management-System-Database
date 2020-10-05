@@ -6,16 +6,16 @@ import pymysql.cursors
 
 # analysis_funcs_dict = {
 #         "1":analysis_passenger_special_services,#
-#         "2":analysis_aircraft,#
-#         "3":analysis_airport,#
-#         "4":analysis_runway_status,#
-#         "5":analysis_airport_crew,#
-#         "6":analysis_route_details,#
-#         "7":analysis_airline_crew_personal_details,
-#         "8":analysis_airline_details,#
-#         "9":analysis_atc_freq,
-#         "10":,
-#         "11":
+#         "2":analysis_big_airlines,#
+#         "3":analysis_experienced_pilot,#
+#         "4":analysis_search_name,#
+#         "5":analysis_busiest_airports,#
+#         "6":analysis_loved_airlines,#
+#         "7":analysis_feedback_patterns,
+#         "8":analysis_find_tickets,#
+#         "9":analysis_crashed_survivors,
+#         "10":analysis_airline_pilots,
+#         "11":analysis_favoured_aircrafts
 # }
 
 # analysis_funcs_msg = {
@@ -32,6 +32,113 @@ import pymysql.cursors
 #         "11":"Find most used aircraft across all airlines"
 # }
 
+def display_query_result(query):
+    try:
+        cur.execute(query)
+        con.commit()
+        result = cur.fetchall()
+        
+        if len(result) != 0:
+            header = result[0].keys()
+            rows =  [x.values() for x in result]
+            pprint(tabulate(rows, header, tablefmt = 'grid'))
+        
+        else:
+            print("No rows found!") #length of result is 0
+
+    except Exception as e:
+        pprint("Error!")
+        con.rollback()
+        input("Press any key to continue")
+
 def add_feedback(cur, con):
     print("In Progress\n")
 
+def analysis_passenger_special_services(cor,con):
+    print("Inside update_passenger func")
+
+    query_str='''
+                        '''
+
+def analysis_big_airlines(cor,con):
+    print("Inside analysis_big_airlines")
+
+    
+    limit_var=int(input("Enter 'x' in order to display airlines having a flight crew greater than 'x'"))
+
+    query_str='''
+                        '''
+
+def analysis_experienced_pilot(cor,con):
+    print("Inside analysis_experienced_pilot func")
+
+    query_str='''
+                        '''
+
+def analysis_search_name(cor,con):
+    print("Inside update_passenger func")
+
+    sought_name=input("Enter substring which needs to be found in names of the passengers")
+
+    query_str='''
+                        '''
+
+
+def analysis_busiest_airports(cor,con):
+    print("Inside busiest_airports func")
+
+    ### SHOULD WE TAKE DATE AS INPUT
+    query_str='''
+                        '''
+
+
+def analysis_loved_airlines(cor,con):
+    print("Inside update_passenger func")
+
+
+    query_str='''
+                        '''
+
+def analysis_feedback_patterns(cor,con):
+    print("Inside feedback_passengers")
+
+    query_str='''
+                        '''
+
+def analysis_find_tickets(cor,con):
+    print("Inside update_passenger func")
+
+
+    src_iata=input("Enter iata code of src airport")
+    dest_iata=input("Enter iata code of dest airport")
+
+    date_sought=input("Enter date when the journey needs to be made")
+
+    query_str='''
+                        '''
+
+
+def analysis_crashed_survivors(cor,con):
+    print("Inside update_passenger func")
+
+    crashed_route_id=input("Enter route id of the flight whose passengers need to be displayed")
+    query_str='''
+                        '''
+
+
+def analysis_airline_pilots(cor,con):
+
+    iata_airline=input("Enter iata code of airline whose pilots are to be listed")
+    query_str='''
+                        '''
+
+
+def analysis_favoured_aircrafts(cor,con):
+    print("Inside update_passenger func")
+
+    query_str='''
+                        '''
+    
+    
+
+    
