@@ -4,6 +4,16 @@ import pymysql.cursors
 
 from add import *
 
+# 0 -> airport_employee
+# 1-> airline_employee
+# 2-> passenger
+
+#################################################################################################c
+
+expose_add_funcs=[["","","","","",""],
+            ["","","","","",""],
+            ["","","","","",""]]
+
 add_funcs_dict = {
         "Airline":add_airline,#
         "Passenger":add_passenger,#
@@ -14,14 +24,12 @@ add_funcs_dict = {
         "Route":add_route,#
         "Boarding Pass":add_boarding_pass_details,#
         "Airline Employees":add_airline_crew,#
-        "Airport Employees":add_airport_crew#
-        # "Feedback and rating":add_feedback
+        "Airport Employees":add_airport_crew,#
+        "Feedback and rating":add_feedback
 }
 
 
-
-
-def add_display(cur, con):
+def add_display(cur, con,user_id):
     """
     Function to implement option 1
     """
@@ -52,11 +60,34 @@ def add_display(cur, con):
     else:
         add_funcs_dict[tables_add[choice_to_add-1]](cur, con)
 
-def read_display(cur,con):
-    print("View table:\n")
-    i=0
+#################################################################################################c
 
-    tables_view = [
+expose_read_funcs=[["","","","","",""],
+            ["","","","","",""],
+            ["","","","","",""]]
+
+read_funcs_dict = {
+        "Airline":read_airline,#
+        "Passenger":read_passenger,#
+        "Aircraft":read_aircraft,#
+        "Airport":read_airport,#
+        "Runway":read_runway,#
+        "Terminal":read_terminal,#
+        "Route":read_route,#
+        "Boarding Pass":read_boarding_pass_details,#
+        "Airline Employees":read_airline_crew,#
+        "Airport Employees":read_airport_crew,#
+        "Feedback and rating":read_feedback
+}
+
+
+def read_display(cur, con,user_id):
+    """
+    Function to implement option 1
+    """
+    print("Add to the table:\n")
+    i = 0
+    tables_read = [
         "Airline", #
         "Passenger", #
         "Aircraft", #
@@ -70,33 +101,108 @@ def read_display(cur,con):
         #"Feedback and rating"
     ]
 
-    while i < len(tables_add):
+    while i < len(tables_read):
         i += 1
         print(str(i) + ". " + tables_add[i - 1])
 
-    if choice_to_add > 10 or choice_to_add < 1:
+    choice_to_read=int(input("enter number of table to read starting from 1"))
+    if choice_to_read > 10 or choice_to_read < 1:
         print("Invalid number. Please try again\n")
         return
     else:
-        add_funcs_dict[tables_add[choice_to_add-1]](cur, con)
+        read_funcs_dict[tables_read[choice_to_read-1]](cur, con)
 
-def dispatch(ch,cur, con):
+
+#################################################################################################
+
+
+expose_delete_funcs=[["","","","","",""],
+            ["","","","","",""],
+            ["","","","","",""]]
+
+delete_funcs_dict = {
+        "Airline":delete_airline,#
+        "Passenger":delete_passenger,#
+        "Aircraft":delete_aircraft,#
+        "Airport":delete_airport,#
+        "Runway":delete_runway,#
+        "Terminal":delete_terminal,#
+        "Route":delete_route,#
+        "Boarding Pass":delete_boarding_pass_details,#
+        "Airline Employees":delete_airline_crew,#
+        "Airport Employees":delete_airport_crew,#
+        "Feedback and rating":delete_feedback
+}
+
+
+def delete_display(cur, con,user_id):
+    """
+    Function to implement option 1
+    """
+    print("delete to the table:\n")
+    i = 0
+    tables_delete = [
+        "Airline", #
+        "Passenger", #
+        "Aircraft", #
+        "Airport", #
+        "Runway", #
+        "Terminal", #
+        "Route", 
+        "Boarding Pass", #
+        "Airline Employees",
+        "Airport Employees"
+        #"Feedback and rating"
+    ]
+
+    while i < len(tables_delete):
+        i += 1
+        print(str(i) + ". " + tables_delete[i - 1])
+
+    choice_to_delete=int(input("enter number to delete starting from 1"))
+    if choice_to_delete > 10 or choice_to_delete < 1:
+        print("Invalid number. Please try again\n")
+        return
+    else:
+        delete_funcs_dict[tables_delete[choice_to_delete-1]](cur, con)
+
+
+#################################################################################################
+
+
+def dispatch(ch,cur, con,user_id):
     """
     Function that maps helper functions to option entered
     """
 
     if (ch == 1):
-        add_display(cur, con)
+        add_display(cur, con,user_id)
     elif (ch == 2):
-        view_dispaly(cur, con)
+       # update_display(cur, con,user_id)
     elif (ch == 3):
-        option3()
+       # delete_display(cur, con,user_id)
     elif (ch == 4):
-        option4()
+        read_display(cur, con,user_id)
     else:
         print("Error: Invalid Option")
 
+def display_menu(user_id):
 
+    print("1. Add new information")  # Hire an Employee
+    print("2. Update tables")  # Fire an Employee
+    print("3. Delete data")  # Promote Employee
+    print("4. Read data")  # Employee Statistics
+    print("5. Logout")
+    print("6. Exit")
+    ch = int(input("Enter choice> "))
+    tmp = sp.call('clear', shell=True)
+    if ch == 5:
+        break
+    elif ch == 6:
+        raise SystemExit
+    else:
+        dispatch(ch,cur, con,user_id)
+        tmp = input("Enter any key to CONTINUE>")
 # Global
 while (1):
 
@@ -143,21 +249,7 @@ while (1):
             while (1):
                 # tmp = sp.call('clear', shell=True)
                 # Here taking example of Employee Mini-world
-                print("1. Add new information")  # Hire an Employee
-                print("2. Option 2")  # Fire an Employee
-                print("3. Option 3")  # Promote Employee
-                print("4. Option 4")  # Employee Statistics
-                print("5. Logout")
-                print("6. Exit")
-                ch = int(input("Enter choice> "))
-                tmp = sp.call('clear', shell=True)
-                if ch == 5:
-                    break
-                elif ch == 6:
-                    raise SystemExit
-                else:
-                    dispatch(ch,cur, con)
-                    tmp = input("Enter any key to CONTINUE>")
+                
 
     except Exception as e:
         # tmp = sp.call('clear', shell=True)
