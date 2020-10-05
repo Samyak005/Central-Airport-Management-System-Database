@@ -27,4 +27,4 @@
 - FLight pilot and first officer cannot be same
 - New attribute rating given added to flight crew feedback
 - Ask for stopover airports in route insertion, ASK
-- 
+- Ask for flight crew details in route

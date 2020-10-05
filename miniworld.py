@@ -4,7 +4,7 @@ import pymysql.cursors
 
 from add import *
 
-# 0 -> airport_employee
+# 0 -> central_airport_authority_of_india
 # 1-> airline_employee
 # 2-> passenger
 
@@ -45,8 +45,8 @@ def add_display(cur, con,user_id):
         "Route", 
         "Boarding Pass", #
         "Airline Employees",
-        "Airport Employees"
-        #"Feedback and rating"
+        "Airport Employees",
+        "Feedback and rating"
     ]
 
     while i < len(tables_add):
@@ -168,7 +168,63 @@ def delete_display(cur, con,user_id):
 
 
 #################################################################################################
+#################################################################################################
 
+
+expose_update_funcs=[["","","","","",""],
+            ["","","","","",""],
+            ["","","","","",""]]
+
+update_funcs_dict = {
+        "1":update_passenger,#
+        "2":update_aircraft,#
+        "3":update_airport,#
+        "4":update_runway_status,#
+        "5":update_airport_crew,#
+        "6":add_language_flight_crew
+        "7":update_boarding_pass_details,#
+        "8":update_airline_crew_personal_details,
+        "9":update_airline_details,#
+        "10":update_atc_freq,
+        "11":update_route_details,#
+}
+
+# in 11, give status change, time change, 
+
+
+def update_display(cur, con,user_id):
+    """
+    Function to implement option 1
+    """
+    print("update to the table:\n")
+    i = 0
+    tables_update = [
+        "Airline", #
+        "Passenger", #
+        "Aircraft", #
+        "Airport", #
+        "Runway", #
+        "Terminal", #
+        "Route", 
+        "Boarding Pass", #
+        "Airline Employees",
+        "Airport Employees"
+        #"Feedback and rating"
+    ]
+
+    while i < len(tables_update):
+        i += 1
+        print(str(i) + ". " + tables_update[i - 1])
+
+    choice_to_update=int(input("enter number to update starting from 1"))
+    if choice_to_update > 10 or choice_to_update < 1:
+        print("Invalid number. Please try again\n")
+        return
+    else:
+        update_funcs_dict[tables_update[choice_to_update-1]](cur, con)
+
+
+#################################################################################################
 
 def dispatch(ch,cur, con,user_id):
     """
@@ -203,6 +259,7 @@ def display_menu(user_id):
     else:
         dispatch(ch,cur, con,user_id)
         tmp = input("Enter any key to CONTINUE>")
+
 # Global
 while (1):
 
@@ -245,10 +302,21 @@ while (1):
         #  with the data and the job is done. In T-SQL, a CURSOR
         #   is a similar approach, and might be preferred because it follows the same logic.
 
+        print("Press 0 if you are airport_employee")
+        print("Press 1 if you are airline_employee")
+        print("Press 2 if you are passenger")
+
+        user_id=int(input())
+
         with con.cursor() as cur:
             while (1):
                 # tmp = sp.call('clear', shell=True)
                 # Here taking example of Employee Mini-world
+
+                dispatch(user_id)
+
+                
+
                 
 
     except Exception as e:
