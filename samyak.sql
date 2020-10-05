@@ -134,7 +134,7 @@ CREATE TABLE `Route` (
   `Distance Travelled` int,
   `fk_to_runway_Landing runway ID` int,
   `fk_to_aircraft_registration_num` int,
-  `Status` enum('Departed', 'Boarding','On_route','Delayed','Arrived','Checking','Not_applicable') NOT NULL DEFAULT 'Not_applicable',
+  `Status` enum('Departed', 'Boarding','On_route','Delayed','Arrived','Check-in','Not_applicable') NOT NULL DEFAULT 'Not_applicable',
 
   CONSTRAINT Route_1 FOREIGN KEY (`fk_to_airport_dest_iata_code`) REFERENCES `Airport` (`IATA airport codes`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT Route_2 FOREIGN KEY (`fk_to_airport_src_iata_code`) REFERENCES `Airport` (`IATA airport codes`) ON DELETE CASCADE ON UPDATE CASCADE,

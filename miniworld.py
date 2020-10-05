@@ -242,7 +242,7 @@ expose_analysis_funcs=[["","","","","",""],
             ["","","","","",""]]
 
 analysis_funcs_dict = {
-        "1":analysis_passenger,#
+        "1":analysis_passenger_special_services,#
         "2":analysis_aircraft,#
         "3":analysis_airport,#
         "4":analysis_runway_status,#

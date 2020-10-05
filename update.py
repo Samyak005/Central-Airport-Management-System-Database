@@ -1,30 +1,33 @@
 import subprocess as sp
 import pymysql
 import pymysql.cursors
+import datetime
 
-def get_condition_equation(attr,key_attrs,type_str):
-    
-    query_str = ""
-    dict_len = len(attr.keys())
+def date_less_cur(str):
+    today_date = datetime.date.today()
+    today_date_str = today_date.strftime("%Y-%m-%d")
 
-    for i in range(dict_len):
-        if attr[key_attrs[i]] == '':
-            return ""
+    if str < today_date_str:
+        return 1
+    else:
+        return 0
 
-        query_str += "`"+key_attrs[i]+"`"+" = "
+def date_more_cur(str):
+    today_date = datetime.date.today()
+    today_date_str = today_date.strftime("%Y-%m-%d")
 
-        if type_str[i]=='1':
-            query_str+'''"'''
-        query_str += attr[key_attrs[i]]
-        if type_str[i]=='1':
-            query_str+'''"'''
+    if str > today_date_str:
+        return 1
+    else:
+        return 0
 
-        if i != dict_len-1:
-            query_str+" AND "
+def print_err_date(state):
+    if state == 1:
+        print('The date entered cannot be after current date. Current date: ' + datetime.date.today())
+    else state == -1:
+        print('The date entered cannot be before current date. Current date: ' + datetime.date.today())
 
-    return query_str
-
-def get_updation_equation(attr):
+def get_updation_equation(attr, key_attr):
     
     query_str = ""
     dict_len = len(attr.keys())
@@ -33,6 +36,8 @@ def get_updation_equation(attr):
     for key, value in attr.items():
 
         i += 1
+        if key in key_attr:
+            continue
         if value == '' or value == 'NULL':
             continue
 
@@ -43,8 +48,29 @@ def get_updation_equation(attr):
 
     return query_str
 
+def get_selection_equation(attr, key_attr):
+    
+    query_str = ""
+    list_len = len(key_attr)
+    i = -1
+
+    for key in key_attr:
+        i += 1
+                
+        if value == '':
+            return ""
+
+        query_str += key+" = "+attr[key]
+
+        if i != list_len-1:
+            query_str += " AND "
+
+    return query_str
+
+
 def update_passenger(cur, con):
     print("Inside update_passenger func")
+    print("Press enter without entering any value if you don't want to update a particular value")
     table_name="Passenger"
 
     attr={}
@@ -52,7 +78,7 @@ def update_passenger(cur, con):
     attr["Aadhar_card_number"] = input("Enter Aadhar card number of the passenger you want to update: ")
     tmp_name = input("Enter new name")
 
-    key_attr = [""]
+    key_attr = ["Aadhar_card_number"]
 
     name_list = tmp_name.split(' ')
 
@@ -88,13 +114,296 @@ def update_passenger(cur, con):
     attr["City"] = input("Enter new city of residence")
 
     try:
-        set_values=get_updation_equation(attr)
+        set_values=get_updation_equation(attr, key_attr)
+        if set_values=="":
+            print("Some value must be updated")
+            print("Failed to update database")
+            input("Press any key to continue")
+            return
+        
+        cond_values=get_selection_equation(attr,key_attr)
+        if cond_values=="":
+            print("Value of the key attributes cannot be NULL")
+            print("Failed to update database")
+            input("Press any key to continue")
+            return
+
+        query_str = "UPDATE "+table_name+" SET "+set_values+" WHERE "+ans2+" ; "
+        print(query_str)
+        cur.execute(query_str)
+        con.commit()
+        print('Updation successful')
+        return
+    
+    except Exception as e:
+        print('Failed to update the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return
+
+def update_aircraft(cur, con):
+    print("inside update_aircraft function")
+    print("Press enter without entering any value if you don't want to update a particular value")
+    table_name = "`Aircraft`"
+
+    attr = {}
+
+    key_attr = ["registration_num"]
+
+    attr['registration_num'] = input("Enter registration number of aircraft")
+    print('Enter updated details of the aircraft:')
+    attr['Flight ID'] = input("Enter updated Flight ID")
+    attr['Maintanence check date'] = input(
+        "Enter maintanence check date: [YYYY-MM-DD]")
+    if date_more_cur(attr['Maintanence check date']) == 1:
+        print_err_date(1)
+        con.rollback()
+        return
+    attr['fk_to_airline_owner_airline_IATA_code'] = input(
+        "Enter IATA code of owner airline")
+
+    try:
+        set_values=get_updation_equation(attr, key_attr)
+        if set_values=="":
+            print("Some value must be updated")
+            print("Failed to update database")
+            input("Press any key to continue")
+            return
+
+        cond_values=get_selection_equation(attr,key_attr)
+        if cond_values=="":
+            print("Value of the key attributes cannot be NULL")
+            print("Failed to update database")
+            input("Press any key to continue")
+            return
+
+        query_str = "UPDATE "+table_name+" SET "+set_values+" WHERE "+cond_values+" ; "
+        print(query_str)
+        cur.execute(query_str)
+        con.commit()
+        print('Updation successful')
+        return
+    
+    except Exception as e:
+        print('Failed to update the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return
+    
+def update_airport(cur, con):
+    print("inside update_airport function")
+    print("Press enter if you don't want to update a particular value")
+    table_name = "`Airport`"
+
+    attr = {}
+
+    key_attr = ["IATA airport codes"]
+    
+    print('Enter details of the new airport:')
+
+    attr["IATA airport codes"] = input(" Enter 3 character IATA code * ")
+    
+    attr["Airport Name"] = input("Enter the new name of airport")
+
+    try:
+        set_values=get_updation_equation(attr, key_attr)
+        if set_values=="":
+            print("Some value must be updated")
+            print("Failed to update database")
+            input("Press any key to continue")
+            return
+
+        cond_values=get_selection_equation(attr,key_attr)
+        if cond_values=="":
+            print("Value of the key attributes cannot be NULL")
+            print("Failed to update database")
+            input("Press any key to continue")
+            return
+
+        query_str = "UPDATE "+table_name+" SET "+set_values+" WHERE "+cond_values+" ; "
+        print(query_str)
+        cur.execute(query_str)
+        con.commit()
+        print('Updation successful')
+        return
+    
+    except Exception as e:
+        print('Failed to update the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return
+
+def update_runway_status(cur, con):
+    print("inside update_runway_status function")
+    print("Press enter  without entering any value if you don't want to update a particular value")
+    table_name = "`Runway`"
+
+    attr = {}
+
+    key_attr = ["fk_to_airport_IATA_airport_codes", "Runway ID"]
+    
+    attr["fk_to_airport_IATA_airport_codes"] = input(
+        "Enter IATA airport code of corresponding airport")
+    attr["Runway ID"] = input("Enter runway ID")
+
+    stat_choice = int(
+        input("Enter status 1. assigned\n 2. available\n 3. disfunctional\n"))
+
+    attr["Status"] = ""
+    if stat_choice == 1:
+        attr["Status"] = 'Assigned'
+    elif stat_choice == 2:
+        attr["Status"] = 'Available'
+    elif stat_choice == 3:
+        attr["Status"] = 'Disfunctional'
+    else:
+        attr["Status"] = ''
+
+    try:
+        set_values=get_updation_equation(attr, key_attr)
+        if set_values=="":
+            print("Some value must be updated")
+            print("Failed to update database")
+            input("Press any key to continue")
+            return
+
+        cond_values=get_selection_equation(attr,key_attr)
+        if cond_values=="":
+            print("Value of the key attributes cannot be NULL")
+            print("Failed to update database")
+            input("Press any key to continue")
+            return
+
+        query_str = "UPDATE "+table_name+" SET "+set_values+" WHERE "+cond_values+" ; "
+        print(query_str)
+        cur.execute(query_str)
+        con.commit()
+        print('Updation successful')
+        return
+    
+    except Exception as e:
+        print('Failed to update the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return
+
+def update_airport_crew(cur, con):
+    #Name,yrs_exp, salary, nationality,employer, gender
+    print("inside update_airport_crew function")
+    print("Press enter without entering any value if you don't want to update a particular value")
+    table_name = "`Runway`"
+
+    attr = {}
+
+    key_attr = ["fk_to_airport_IATA_airport_codes", "Runway ID"]
+
+    attr["Aadhar_card_number"] = input("Aadhar card number of the employee you want to update: ")
+
+    tmp_name = input("Enter new name: ")
+
+    name_list = tmp_name.split(' ')
+
+    if len(tmp_name) >= 3:
+        attr['First Name'] = tmp_name[0]
+        attr['Middle Name'] = ' '.join(tmp_name[1:-1])
+        attr['Last Name'] = tmp_name[-1]
+    elif len(tmp_name) == 2:
+        attr['First Name'] = tmp_name[0]
+        attr['Middle Name'] = ''
+        attr['Last Name'] = tmp_name[1]
+    elif len(tmp_name) == 1:
+        attr['First Name'] = tmp_name[0]
+        attr['Middle Name'] = ''
+        attr['Last Name'] = ''
+    else:
+        attr['First Name'] = ''
+        attr['Middle Name'] = ''
+        attr['Last Name'] = ''
+
+    attr["Experience"] = input("New Experience")
+    attr["Salary"] = input("New Salary")
+    attr["Nationality"] = input("New Nationality")
+    attr["Gender"] = input("Gender")
+    attr["fk_to_airport_IATA_code_of_employing_airport"] = input(
+        "airport IATA code of employing airport")
+    
+
+
+
+
+
+##############################################################################################
+def update_route_details(cur, con):
+    print("Inside update_route func")
+    # NOTE: distance travelled should be updated in route
+    table_name="Route"
+
+    attr={}
+
+    key_attr = ["Route ID"]
+
+    attr["Route ID"]=input("Enter route id for which the information needs to be updated")
+    
+
+    print("Press enter without typing any value if you do not want to update value of a particular attribute")
+    
+    attr['Status']=input("Enter one of 'Departed', 'Boarding','On_route','Delayed','Arrived','Checking','Not_applicable' as the status")
+    
+    if attr['Status']=='Departed':
+        print("Hey, user, don't forget to change status of the take-off runway to unoccupied :)")
+        tmp_var=''
+        tmp_var=input("Enter actual departure time of the flight in  [HH:MM] format")
+        # attr["Actual departure time"]=input("Enter actual departure time of the flight in  [HH:MM] format")
+        if tmp_var=='':
+            print("ERROR: User failed to enter a non-empty input for ACTUAL FLIGHT departurel time")
+            return
+        else:
+            attr["Actual departure time"]=tmp_var
+    elif attr['Status']=='Arrived':
+        print("Hey, user, don't forget to change status of the landing runway to unoccupied :)")
+        tmp_var=''
+        tmp_var=input("Enter actual arrival time of the flight in  [HH:MM] format")
+        # attr["Actual departure time"]=input("Enter actual departure time of the flight in  [HH:MM] format")
+        if tmp_var=='':
+            print("ERROR: User failed to enter a non-empty input for ACTUAL FLIGHT arrival time")
+            return
+        else:
+            attr["Actual arrival time"]=tmp_var
+        
+        tmp_var=''
+        tmp_var=input("Enter total distance travelled by flight")
+        # attr["Actual departure time"]=input("Enter actual departure time of the flight in  [HH:MM] format")
+        if tmp_var=='':
+            print("ERROR: User failed to enter OVERALL distance travelled")
+            return
+        else:
+            attr["Distance Travelled"]=tmp_var
+
+        #################################################################################################
+            ## Add distance to aircraft
+            ## Add flying hrs to both pilots
+        ###############################################################################################
+        
+    
+    #      `fk_to_runway_Take off runway id` int,
+    #   `fk_to_runway_Landing runway ID` int,
+    
+    attr["fk_to_runway_Take off runway id"]=input("Enter runway id which has been allotted for take_off")
+    attr["k_to_runway_Landing runway ID"]=input("Enter runway id which has been allotted for LANDING")
+
+    
+     try:
+        set_values=get_updation_equation(attr, key_attr)
         if ans=="":
             print("Some value must be updated")
             print("Failed to update database")
             input("Press any key to continue")
             return
-        query_str = "UPDATE "+table_name+" SET "+ans+" WHERE Aadhar_card_number = "+attr["Aadhar_card_number"]+" ; "
+        query_str = "UPDATE "+table_name+" SET "+ans+" WHERE "+ans2+" ; "
         cur.execute(query_str)
         con.commit()
         print('Updation successful')

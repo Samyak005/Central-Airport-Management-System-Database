@@ -465,7 +465,7 @@ def add_route(cur, con):
     attr['fk_to_aircraft_registration_num'] = input(
         'aircraft registration number (Press enter if information not available):')
     attr['Status'] = input(
-        'Current_Status: [Departed, Boarding, On_route, Delayed, Arrived, Checking, Not_applicable]')
+        'Current_Status: [Departed, Boarding, On_route, Delayed, Arrived, Check-in, Not_applicable]')
 
     num_stopover = input('Enter number of stopover airports encountered in the route')
     for i in range(num_stopover):

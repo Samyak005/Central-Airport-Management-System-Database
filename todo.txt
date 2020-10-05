@@ -32,3 +32,8 @@
 - make status of runway unique 
 - Actual arrival, deprature time added to route
 - Aadhar datatype
+- Add function to make sure that departure time is ahead of arrival time
+- Add colors to make database look better
+-  Add distance to aircraft in add_route_details
+- Add flying hrs to both pilots in add_route_details
+- Add warning if runway is already occupied
