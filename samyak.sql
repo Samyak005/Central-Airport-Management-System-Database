@@ -3,8 +3,15 @@ DROP DATABASE IF EXISTS airport_db;
 CREATE DATABASE airport_db;
 
 USE airport_db;
+-- check(Aadhar_card_number LIKE %d%d%d%d%d%d%d%d%d%d%d%d)
 -- -- ----------------------------------------------------------
+CREATE DOMAIN aadhar_domain NUMERIC(12, 0)
+CONSTRAINT numeric_only CHECK(REGEXP_LIKE(column_name, ''))
+;
 
+CREATE DOMAIN dob_stuff DATE 
+constraint before_check CHECK (dob_stuff < GETDATE())
+;
 -- ---------------------------------------------------------------------
 
 DROP TABLE IF EXISTS `Airline`;
@@ -398,6 +405,8 @@ CREATE TABLE `flight_crew_feedback` (
   `flight_attendant Aadhar_card_number` bigint(12),
   `flight_engineer Aadhar_card_number` bigint(12),
   `Feedback given by the passengers for the crew` varchar(255),
+  `Rating_given` int(2),
+  CHECK (`Rating_given` >= 0 AND `Rating_given` <=10),
   PRIMARY KEY (`Pilot captain Aadhar_card_number`, `Pilot first officer Aadhar_card_number`, `flight_attendant Aadhar_card_number`, `flight_engineer Aadhar_card_number`, `Feedback given by the passengers for the crew`),
 
   FOREIGN KEY(`Pilot captain Aadhar_card_number`) REFERENCES `Pilot` (`fk_to_flight_crew_Aadhar_card_number`)  ON DELETE CASCADE ON UPDATE CASCADE,

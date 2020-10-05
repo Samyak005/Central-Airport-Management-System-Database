@@ -224,7 +224,7 @@ def add_passenger(cur, con):
 
 
     num_emer_contacts=int(input("Enter number of emergency contacts you want to add between 0 and 3"))
-    if num_eme_contacts>3:
+    if num_emer_contacts>3:
         print("Only upto 3 contacts allowed")
     else:
         for i in range(num_emer_contacts):
@@ -398,6 +398,10 @@ def add_route(cur, con):
     attr['fk_to_runway_Landing runway ID'] = input('Landing runway ID (Press enter if information not available):')
     attr['fk_to_aircraft_registration_num'] = input('aircraft registration number (Press enter if information not available):')
     attr['Status'] = input('Status: [Departed, Boarding, On_route, Delayed, Arrived, Checking, Not_applicable]')
+    
+    num_stopover = input('Enter number of stopover')
+    for i in range(num_stopover):
+        attr['fk_iata_stopover_airport'] = input('Enter IATA of stopover airport')
     
     keys_str,values_str=get_query_atoms(attr)
     print(keys_str)

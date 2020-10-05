@@ -22,3 +22,9 @@
 - at least 5 queries & 3 updates 
 - Remeber to write distinct keyword
 - Add languages spoken by employees
+- Make sure that runway is not allotted to two planes at the same time
+- Add language stuff to flight crew
+- FLight pilot and first officer cannot be same
+- New attribute rating given added to flight crew feedback
+- Ask for stopover airports in route insertion, ASK
+- 
