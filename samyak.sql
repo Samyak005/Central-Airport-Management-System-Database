@@ -5,14 +5,14 @@ CREATE DATABASE airport_db;
 USE airport_db;
 -- check(Aadhar_card_number LIKE %d%d%d%d%d%d%d%d%d%d%d%d)
 -- -- ----------------------------------------------------------
-CREATE DOMAIN aadhar_domain NUMERIC(12, 0)
-CONSTRAINT numeric_only CHECK(REGEXP_LIKE(column_name, ''))
-;
+-- CREATE DOMAIN aadhar_domain NUMERIC(12, 0)
+-- CONSTRAINT numeric_only CHECK(REGEXP_LIKE(column_name, ''))
+-- ;
 
-CREATE DOMAIN dob_stuff DATE 
-constraint before_check CHECK (dob_stuff < GETDATE())
-;
--- ---------------------------------------------------------------------
+-- CREATE DOMAIN dob_stuff DATE 
+-- constraint before_check CHECK (dob_stuff < GETDATE())
+-- ;
+-- -- ---------------------------------------------------------------------
 
 DROP TABLE IF EXISTS `Airline`;
 
