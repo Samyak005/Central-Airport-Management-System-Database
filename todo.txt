@@ -31,3 +31,4 @@
 - number of aircrafts possessed by airline is derived
 - make status of runway unique 
 - Actual arrival, deprature time added to route
+- Aadhar datatype

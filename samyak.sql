@@ -100,19 +100,6 @@ CREATE TABLE `Terminal` (
   FOREIGN KEY (`fk_to_airport_IATA_airport_codes`) REFERENCES `Airport` (`IATA airport codes`) ON DELETE CASCADE ON UPDATE CASCADE
 
 );
-
-INSERT INTO `airport_db`.`terminal` (`fk_to_airport_IATA_airport_codes`, `Terminal ID`, `Airplane Handling capacity`, `Floor Area`) VALUES ('DEL', '1', '450', '34753');
-INSERT INTO `airport_db`.`terminal` (`fk_to_airport_IATA_airport_codes`, `Terminal ID`, `Airplane Handling capacity`, `Floor Area`) VALUES ('DEL', '2', '280', '54320');
-INSERT INTO `airport_db`.`terminal` (`fk_to_airport_IATA_airport_codes`, `Terminal ID`, `Airplane Handling capacity`, `Floor Area`) VALUES ('DEL', '3', '800', '76459');
-INSERT INTO `airport_db`.`terminal` (`fk_to_airport_IATA_airport_codes`, `Terminal ID`, `Airplane Handling capacity`, `Floor Area`) VALUES ('MUM', '1', '325', '21457');
-INSERT INTO `airport_db`.`terminal` (`fk_to_airport_IATA_airport_codes`, `Terminal ID`, `Airplane Handling capacity`, `Floor Area`) VALUES ('MUM', '2', '341', '23574');
-INSERT INTO `airport_db`.`terminal` (`fk_to_airport_IATA_airport_codes`, `Terminal ID`, `Airplane Handling capacity`, `Floor Area`) VALUES ('MUM', '3', '560', '87934');
-INSERT INTO `airport_db`.`terminal` (`fk_to_airport_IATA_airport_codes`, `Terminal ID`, `Airplane Handling capacity`, `Floor Area`) VALUES ('HYD', '1', '560', '23572');
-INSERT INTO `airport_db`.`terminal` (`fk_to_airport_IATA_airport_codes`, `Terminal ID`, `Airplane Handling capacity`, `Floor Area`) VALUES ('HYD', '2', '960', '46973');
-INSERT INTO `airport_db`.`terminal` (`fk_to_airport_IATA_airport_codes`, `Terminal ID`, `Airplane Handling capacity`, `Floor Area`) VALUES ('BLR', '1', '650', '23258');
-INSERT INTO `airport_db`.`terminal` (`fk_to_airport_IATA_airport_codes`, `Terminal ID`, `Airplane Handling capacity`, `Floor Area`) VALUES ('BLR', '2', '860', '143766');
-
-
 -- ----------------------------------------------------------
 
 DROP TABLE IF EXISTS `PNR info deduction`;

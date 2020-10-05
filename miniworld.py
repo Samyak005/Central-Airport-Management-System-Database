@@ -121,17 +121,18 @@ expose_delete_funcs=[["","","","","",""],
             ["","","","","",""]]
 
 delete_funcs_dict = {
-        "Airline":delete_airline,#
-        "Passenger":delete_passenger,#
+       # "Airline":delete_airline,#
+      #  "Passenger":delete_passenger,#
         "Aircraft":delete_aircraft,#
-        "Airport":delete_airport,#
-        "Runway":delete_runway,#
-        "Terminal":delete_terminal,#
+     #   "Airport":delete_airport,#
+    #    "Runway":delete_runway,#
+   #     "Terminal":delete_terminal,#
         "Route":delete_route,#
-        "Boarding Pass":delete_boarding_pass_details,#
+  #      "Boarding Pass":delete_boarding_pass_details,#
         "Airline Employees":delete_airline_crew,#
         "Airport Employees":delete_airport_crew,#
-        "Feedback and rating":delete_feedback
+ #       "Feedback and rating":delete_feedback,
+        "Luggage":delete_luggage
 }
 
 
@@ -235,6 +236,60 @@ def update_display(cur, con,user_id):
 
 
 #################################################################################################
+
+expose_analysis_funcs=[["","","","","",""],
+            ["","","","","",""],
+            ["","","","","",""]]
+
+analysis_funcs_dict = {
+        "1":analysis_passenger,#
+        "2":analysis_aircraft,#
+        "3":analysis_airport,#
+        "4":analysis_runway_status,#
+        "5":analysis_airport_crew,#
+        "6":analysis_route_details,#
+        "7":analysis_airline_crew_personal_details,
+        "8":analysis_airline_details,#
+        "9":analysis_atc_freq,
+        "10":,
+        "11":
+}
+
+analysis_funcs_msg = {
+        "1":"Names of all passengers who have WHEELCHAIR ASSISTANCE/Disability assisstance as a special service in their BOARDING PASS",#
+        "2":"NAMES OF ALL AIRLINES whose flight crew is >=x where 'x' is to be inputted from user",#
+        "3":"find the pilot with maximum number of flying hrs",#
+        "4":"Search for all PASSENGERS whose name contains a given substring",#
+        "5":"RANK BUSIEST AIRPORTS by number of scheduled flight departures on a particular day",#
+        "6":"RANK most used airline by sorting as per the number of boarding passes issued for that airline since data collection began",
+        "7":"Feedback of flight crew patterns",#
+        "8":"display all flights between two airports on a given date or on any date",
+        "9":"names of all passengers who were travelling on a particular route/Crashed flight/Flight with a COVID infected patient",
+        "10":"Names of all pilots who work for a given airline",
+        "11":"Find most used aircraft across all airlines"
+}
+
+# in 11, give status change, time change, 
+
+
+def analysis_display(cur, con,user_id):
+    """
+    Function to implement option 1
+    """
+    print("analysis to the table:\n")
+   
+    while i < len(tables_analysis):
+        i += 1
+        print(str(i) + ". " + tables_analysis[i - 1])
+
+    choice_to_analysis=int(input("enter number to analysis starting from 1"))
+    if choice_to_analysis > 10 or choice_to_analysis < 1:
+        print("Invalid number. Please try again\n")
+        return
+    else:
+        analysis_funcs_dict[tables_analysis[choice_to_analysis-1]](cur, con)
+
+#########################################################################################
 
 def dispatch(ch,cur, con,user_id):
     """
