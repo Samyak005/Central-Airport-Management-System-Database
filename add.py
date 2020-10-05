@@ -430,10 +430,10 @@ def add_route(cur, con):
     attr['Status'] = input(
         'Status: [Departed, Boarding, On_route, Delayed, Arrived, Checking, Not_applicable]')
 
-    num_stopover = input('Enter number of stopover')
-    for i in range(num_stopover):
-        attr['fk_iata_stopover_airport'] = input(
-            'Enter IATA of stopover airport')
+    # num_stopover = input('Enter number of stopover')
+    # for i in range(num_stopover):
+    #     attr['fk_iata_stopover_airport'] = input(
+    #         'Enter IATA of stopover airport')
 
     keys_str, values_str = get_query_atoms(attr)
     print(keys_str)
@@ -771,6 +771,33 @@ def add_flight_crew(cur, con, aadhar_num):
         return -1
 
 
+def add_language(cur, con, aadhar_num):
+    print("inside Languages spoken by airline employee")
+    table_name = "`Languages spoken by airline employee`"
+
+    attr = {}
+    attr["fk_Aadhar_card_number"] = aadhar_num
+    attr["Language_name"] = input(
+        'Enter details of the Language spoken by the airline employee:')
+
+    keys_str, values_str = get_query_atoms(attr)
+    print(keys_str)
+    print(values_str)
+    query_str = 'INSERT INTO '+table_name + \
+        " ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
+
+    try:
+        cur.execute(query_str)
+        return 0
+
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return -1
+
+
 def add_airline_crew(cur, con):
 
     print("inside airline_crew")
@@ -810,6 +837,11 @@ def add_airline_crew(cur, con):
     attr["Gender"] = input("Gender: [Male, Female, Others]")
     attr["fk_to_airline_employer_IATA_code"] = input(
         "Airline employer IATA code:")
+
+    num_lang = input('Number of languages spoken by the employee: ')
+    for i in range(num_lang):
+        if add_language(cur, con, attr['Aadhar_card_number']) == -1:
+            return
 
     #############################################################################
     print('''
