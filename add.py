@@ -291,7 +291,7 @@ def add_emer_contact(cur, con, aadhar_relative):
     try:
         cur.execute(query_str)
         offload_commit(con)
-        debug_print("EMergency added")
+        success_print("Emergency contact added")
         return 0
 
     except Exception as e:
@@ -301,7 +301,7 @@ def add_emer_contact(cur, con, aadhar_relative):
         input('Press any key to continue.')
         return -1
 
-# done
+# done #check
 def add_passenger(cur, con):
     #print("inside add_passenger function")
     table_name = "`Passenger`"
@@ -313,18 +313,18 @@ def add_passenger(cur, con):
 
     tmp_name = input("Enter name: ")
 
-    name_list = tmp_name.split(' ')
+    name_list = tmp_name.split(' ')   
 
-    if len(tmp_name) >= 3:
-        attr['First Name'] = tmp_name[0]
-        attr['Middle Name'] = ' '.join(tmp_name[1:-1])
-        attr['Last Name'] = tmp_name[-1]
-    elif len(tmp_name) == 2:
-        attr['First Name'] = tmp_name[0]
+    if len(name_list) >= 3:
+        attr['First Name'] = name_list[0]
+        attr['Middle Name'] = ' '.join(name_list[1:-1])
+        attr['Last Name'] = name_list[-1]
+    elif len(name_list) == 2:
+        attr['First Name'] = name_list[0]
         attr['Middle Name'] = ''
-        attr['Last Name'] = tmp_name[1]
-    elif len(tmp_name) == 1:
-        attr['First Name'] = tmp_name[0]
+        attr['Last Name'] = name_list[1]
+    elif len(name_list) == 1:
+        attr['First Name'] = name_list[0]
         attr['Middle Name'] = ''
         attr['Last Name'] = ''
     else:
@@ -338,11 +338,11 @@ def add_passenger(cur, con):
         con.rollback()
         return
     
-    year = int(attr["DOB"][1:5])
-    if int(DateTime.Now.Year.ToString())-year>60:
-        attr["Senior Citizen"] = True
+    year = int(attr["DOB"][0:4])
+    if 2020-year>60:
+        attr["Senior Citizen"] ="1"
     else:
-        attr["Senior Citizen"] = False
+        attr["Senior Citizen"] = "0"
         
 
     attr["Gender"] = int(input("Enter \n1 for Male \n2 for  Female \n3 for Others\n"))
@@ -388,6 +388,7 @@ def add_passenger(cur, con):
                 if add_emer_contact(cur, con, attr["Aadhar_card_number"]) == -1:
                     return
         con.commit()
+        add_yes_print()
 
     except Exception as e:
         error_print('Failed to insert into the database.')
@@ -1147,16 +1148,16 @@ def add_airline_crew(cur, con):
     ################################################################
     name_list = tmp_name.split(' ')
 
-    if len(tmp_name) >= 3:
-        attr['First Name'] = tmp_name[0]
-        attr['Middle Name'] = ' '.join(tmp_name[1:-1])
-        attr['Last Name'] = tmp_name[-1]
-    elif len(tmp_name) == 2:
-        attr['First Name'] = tmp_name[0]
+    if len(name_list) >= 3:
+        attr['First Name'] = name_list[0]
+        attr['Middle Name'] = ' '.join(name_list[1:-1])
+        attr['Last Name'] = name_list[-1]
+    elif len(name_list) == 2:
+        attr['First Name'] = name_list[0]
         attr['Middle Name'] = ''
-        attr['Last Name'] = tmp_name[1]
-    elif len(tmp_name) == 1:
-        attr['First Name'] = tmp_name[0]
+        attr['Last Name'] = name_list[1]
+    elif len(name_list) == 1:
+        attr['First Name'] = name_list[0]
         attr['Middle Name'] = ''
         attr['Last Name'] = ''
     else:
@@ -1337,20 +1338,20 @@ def add_airport_crew(cur, con):
 
     name_list = tmp_name.split(' ')
 
-    if len(tmp_name) >= 3:
-        attr['First Name'] = tmp_name[0]
-        attr['Middle Name'] = ' '.join(tmp_name[1:-1])
-        attr['Last Name'] = tmp_name[-1]
-    elif len(tmp_name) == 2:
-        attr['First Name'] = tmp_name[0]
+    if len(name_list) >= 3:
+        attr['First Name'] = name_list[0]
+        attr['Middle Name'] = ' '.join(name_list[1:-1])
+        attr['Last Name'] = name_list[-1]
+    elif len(name_list) == 2:
+        attr['First Name'] = name_list[0]
         attr['Middle Name'] = ''
-        attr['Last Name'] = tmp_name[1]
-    elif len(tmp_name) == 1:
-        attr['First Name'] = tmp_name[0]
+        attr['Last Name'] = name_list[1]
+    elif len(name_list) == 1:
+        attr['First Name'] = name_list[0]
         attr['Middle Name'] = ''
         attr['Last Name'] = ''
     else:
-        error_print('Error: Incorrect format of name entered')
+        print('Error: Incorrect format of name entered')
         input('Press any key to continue.')
         return
 

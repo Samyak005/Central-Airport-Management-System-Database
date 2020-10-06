@@ -158,16 +158,16 @@ def update_passenger(cur, con):
 
     name_list = tmp_name.split(' ')
 
-    if len(tmp_name) >= 3:
-        attr['First Name'] = tmp_name[0]
-        attr['Middle Name'] = ' '.join(tmp_name[1:-1])
-        attr['Last Name'] = tmp_name[-1]
-    elif len(tmp_name) == 2:
-        attr['First Name'] = tmp_name[0]
+    if len(name_list) >= 3:
+        attr['First Name'] = name_list[0]
+        attr['Middle Name'] = ' '.join(name_list[1:-1])
+        attr['Last Name'] = name_list[-1]
+    elif len(name_list) == 2:
+        attr['First Name'] = name_list[0]
         attr['Middle Name'] = ''
-        attr['Last Name'] = tmp_name[1]
-    elif len(tmp_name) == 1:
-        attr['First Name'] = tmp_name[0]
+        attr['Last Name'] = name_list[1]
+    elif len(name_list) == 1:
+        attr['First Name'] = name_list[0]
         attr['Middle Name'] = ''
         attr['Last Name'] = ''
     else:
@@ -282,16 +282,16 @@ def update_airport_crew(cur, con):
 
     name_list = tmp_name.split(' ')
 
-    if len(tmp_name) >= 3:
-        attr['First Name'] = tmp_name[0]
-        attr['Middle Name'] = ' '.join(tmp_name[1:-1])
-        attr['Last Name'] = tmp_name[-1]
-    elif len(tmp_name) == 2:
-        attr['First Name'] = tmp_name[0]
+    if len(name_list) >= 3:
+        attr['First Name'] = name_list[0]
+        attr['Middle Name'] = ' '.join(name_list[1:-1])
+        attr['Last Name'] = name_list[-1]
+    elif len(name_list) == 2:
+        attr['First Name'] = name_list[0]
         attr['Middle Name'] = ''
-        attr['Last Name'] = tmp_name[1]
-    elif len(tmp_name) == 1:
-        attr['First Name'] = tmp_name[0]
+        attr['Last Name'] = name_list[1]
+    elif len(name_list) == 1:
+        attr['First Name'] = name_list[0]
         attr['Middle Name'] = ''
         attr['Last Name'] = ''
     else:
@@ -419,16 +419,16 @@ def update_airline_crew_personal_details(cur, con):
 
     name_list = tmp_name.split(' ')
 
-    if len(tmp_name) >= 3:
-        attr['First Name'] = tmp_name[0]
-        attr['Middle Name'] = ' '.join(tmp_name[1:-1])
-        attr['Last Name'] = tmp_name[-1]
-    elif len(tmp_name) == 2:
-        attr['First Name'] = tmp_name[0]
+    if len(name_list) >= 3:
+        attr['First Name'] = name_list[0]
+        attr['Middle Name'] = ' '.join(name_list[1:-1])
+        attr['Last Name'] = name_list[-1]
+    elif len(name_list) == 2:
+        attr['First Name'] = name_list[0]
         attr['Middle Name'] = ''
-        attr['Last Name'] = tmp_name[1]
-    elif len(tmp_name) == 1:
-        attr['First Name'] = tmp_name[0]
+        attr['Last Name'] = name_list[1]
+    elif len(name_list) == 1:
+        attr['First Name'] = name_list[0]
         attr['Middle Name'] = ''
         attr['Last Name'] = ''
     else:
