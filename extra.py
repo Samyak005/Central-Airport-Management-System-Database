@@ -3,6 +3,15 @@ import subprocess as sp
 import pymysql
 import pymysql.cursors
 
+def prRed(skk): print("\033[91m {}\033[00m" .format(skk)) 
+def prGreen(skk): print("\033[92m {}\033[00m" .format(skk)) 
+def prYellow(skk): print("\033[93m {}\033[00m" .format(skk)) 
+def prLightPurple(skk): print("\033[94m {}\033[00m" .format(skk)) 
+def prPurple(skk): print("\033[95m {}\033[00m" .format(skk)) 
+def prCyan(skk): print("\033[96m {}\033[00m" .format(skk)) 
+def prLightGray(skk): print("\033[97m {}\033[00m" .format(skk)) 
+def prBlack(skk): print("\033[98m {}\033[00m" .format(skk)) 
+
 
 # analysis_funcs_dict = {
 #         "1":analysis_passenger_special_services,#
@@ -41,13 +50,13 @@ def display_query_result(query):
         if len(result) != 0:
             header = result[0].keys()
             rows =  [x.values() for x in result]
-            pprint(tabulate(rows, header, tablefmt = 'grid'))
+            print(tabulate(rows, header, tablefmt = 'grid'))
         
         else:
-            print("No rows found!") #length of result is 0
+            prRed("No rows found!") #length of result is 0
 
     except Exception as e:
-        pprint("Error!")
+        prRed("Error!")
         con.rollback()
         input("Press any key to continue")
 
@@ -57,17 +66,53 @@ def add_feedback(cur, con):
 def analysis_passenger_special_services(cor,con):
     print("Inside update_passenger func")
 
-    query_str='''
+    iata_airport_code=input("Enter iata code of airport ")
+
+    query_str='''SELECT `First Name`,`Middle Name`,`Last Name`,`Aadhar_card_number` 
+                FROM `boarding_pass special services`,`Passenger`,`boarding_pass` 
+                WHERE (`Special services`='Wheelchair' OR  `Special services`='Disability Assistance')
+                AND (`Barcode number`=`fk_Barcode number`)
+                AND (`fk_to_passenger_Aadhar_card_number`=`Aadhar_card_number`);
                         '''
+    display_query_result(query_str)
+
 
 def analysis_big_airlines(cor,con):
     print("Inside analysis_big_airlines")
 
     
-    limit_var=int(input("Enter 'x' in order to display airlines having a flight crew greater than 'x'"))
+    limit_var=int(input("Enter 'x' in order to display airlines having a total number of employees greater than 'x'"))
 
-    query_str='''
+# select town, count(town) 
+# from user
+# group by town
+
+# https://www.w3resource.com/sql/aggregate-functions/count-with-group-by.php
+
+# SELECT working_area, COUNT(*) 
+# FROM agents 
+# GROUP BY working_area 
+# ORDER BY 2 ;
+
+    sub1='''SELECT `IATA airline designators`, `Company Name` ,COUNT(*)
+                FROM `Airline`, `airline_crew`
+                GROUP BY `fk_to_airline_employer_IATA_code`  
+                WHERE (`fk_to_airline_employer_IATA_code`=`IATA airline designators`)
+                 AND (COUNT(*) >= '''
+    sub2=str(x)
+    sub3=''')ORDER BY COUNT(*)
                         '''
+    query_str=sub1+sub2+sub3
+
+    # https://www.eversql.com/
+
+    sub2 = '''SELECT `IATA airline designators`, `Company Name`
+                FROM `Airline`
+                WHERE `IATA airline designators` IN (SELECT `fk_to_airline_employer_IATA_code`
+                            FROM `airline_crew`
+                            GROUP BY `fk_to_airline_employer_IATA_code`
+                            HAVING COUNT(*)>=10);'''
+
 
 def analysis_experienced_pilot(cor,con):
     print("Inside analysis_experienced_pilot func")
@@ -129,8 +174,12 @@ def analysis_crashed_survivors(cor,con):
 def analysis_airline_pilots(cor,con):
 
     iata_airline=input("Enter iata code of airline whose pilots are to be listed")
-    query_str='''
-                        '''
+    query_str='''SELECT `Pilot license number`,`First Name`,`Last Name`,`Number of years of Experience`,`Number of flying hours`
+                FROM `Pilot`,`airline_crew`
+                WHERE (`Aadhar_card_number`= `fk_to_flight_crew_Aadhar_card_number`)
+                AND (`fk_to_airline_employer_IATA_code`={0} )    
+
+                        '''.format(iata_airline)
 
 
 def analysis_favoured_aircrafts(cor,con):
