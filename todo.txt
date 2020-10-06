@@ -1,15 +1,15 @@
 - Add restriction on data of ROUTE
-- Add restriction last maintenace date for aircraft
-- Add timezone restriction
-- Latitude restriction, longitude restriction
-- add restricted operations for diff people
-- Emergency contact to be added to passenger
-- Luggage added with boarding pass
-- Special service during boarding pass
+- Add restriction last maintenace date for aircraft --done
+- Add timezone restriction --done
+- Latitude restriction, longitude restriction --done
+- add restricted operations for diff people --done
+- Emergency contact to be added to passenger --done
+- Luggage added with boarding pass --done
+- Special service during boarding pass --done
 - Employee languages spoken
-- Stopover airport while adding route
+- Stopover airport while adding route --done
 - airport capapcity hardcoded or should user be given choice
-- update distance travelled always
+- update distance travelled always --done to be checked on line number 331 in update.py
 - add db.roll_backs 
 - Emergency contact with passenger
 - find a way to add date constraints

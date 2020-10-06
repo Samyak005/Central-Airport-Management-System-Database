@@ -36,6 +36,43 @@ def date_more_cur(str):
     else:
         return 0
 
+def numeric_check(ch):
+    if ch>='0' and ch<='9':
+        return 1
+    else:
+        return 0
+
+def is_valid_time_zone(time_str):
+    # +05:30
+    if len(time_str)!=6:
+        print("Invalid format")
+        return -1
+
+    if numeric_check(time_str[1])+numeric_check(time_str[2])+numeric_check(time_str[4])+numeric_check(time_str[5])!=4:
+        print("Enter only digits for mm and hh")
+        return -1
+
+    hrs=int(time_str[1:3])
+    mins=int(time_str[4:6])
+
+    if time_str[0]!='+' and time_str[0]!='-' and time_str[3]!=':':
+        print("Invalid format")
+        return -1
+
+    if hrs>12:
+        print("hrs not valid")
+        return -1
+    if mins>60:
+        print("mins not valid")
+        return -1
+    
+    return 0
+
+
+
+
+
+
 def print_err_date(state):
     if state == 1:
         print('The date entered cannot be after current date. Current date: ' + datetime.date.today())
@@ -326,9 +363,12 @@ def add_airport(cur, con):
 
     ######################################################
     attr["Time Zone"] = input(
-        " Enter in +hh:mm or -hh:mm format , note mm has to be between 0 and 60 and divisible by 15, hh between +12 and -12 ")
+        " Enter in +hh:mm or -hh:mm format , note mm has to be between 0 and 60 and divisible by 15, hh between 0 and 12 ")
+    if is_valid_time_zone==-1:
+        print("error in input entered by user")
+        return
     ########################################################
-
+    
     attr["Airport Name"] = input("Enter name of airport: ")
     attr["City"] = input("Enter city where airport is situated: ")
     attr["Country"] = input("Enter country where airport is situated: ")
@@ -456,6 +496,10 @@ def add_route(cur, con):
     attr['fk_to_airport_src_iata_code'] = input('source airport iata code: ')
     attr['fk_to_airport_dest_iata_code'] = input(
         'Destination airport iata code: ')
+
+    if attr['fk_to_airport_src_iata_code'] == attr['fk_to_airport_dest_iata_code']:
+        print('source airport iata code can not be same as destination iata code')
+        return
     attr['Date'] = input('Date: [YYYY-MM-DD] (Press enter for today\'s date: ')
 
     if attr['Date'] == '':

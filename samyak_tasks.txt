@@ -1,0 +1,15 @@
+- Count aircraft and put in airlines
+// should not be 0 
+
+- Handle date format : , -
+
+- Habdle thicase, remove quotes accrdoinly, samyak has to handle this manually
+// +05:30 hanle manually 
+
+- Variance add to src airport
+- 3 days within
+- Landing runway id, arrival id variance
+
+- Change employing airport in airline_employees
+- Multiple languages for employees
+- ensure each route gets one pilot and officer

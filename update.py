@@ -330,7 +330,19 @@ def update_route_details(cur, con):
             return
         else:
             attr["Distance Travelled"]=tmp_var
-            query_str = '''UPDATE Aircraft, Route SET Aircraft.`Distance Travelled` = Aircraft.`Distance Travelled` +'+tmp_var+' WHERE `Route ID` ='+attr["Route ID"]+' AND fk_to_aircraft_registration_num = registration_num'''
+            query_str = '''UPDATE Aircraft, Route 
+                            SET Aircraft.`Distance Travelled` = Aircraft.`Distance Travelled` + {0} 
+                            WHERE `Route ID` = {1} AND fk_to_aircraft_registration_num = registration_num'''.format(attr["Distance Travelled"], attr["Route ID"])
+            try:
+                cur.execute(query_str)
+                con.commit()
+            
+            except Exception as e:
+            print('Failed to update the database.')
+            con.rollback()
+            print(e)
+            input('Press any key to continue.')
+            return    
 
 
         #################################################################################################
