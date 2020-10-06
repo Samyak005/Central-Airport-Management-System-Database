@@ -3,16 +3,7 @@ DROP DATABASE IF EXISTS airport_db;
 CREATE DATABASE airport_db;
 
 USE airport_db;
--- check(Aadhar_card_number LIKE %d%d%d%d%d%d%d%d%d%d%d%d)
--- -- ----------------------------------------------------------
--- CREATE DOMAIN aadhar_domain NUMERIC(12, 0)
--- CONSTRAINT numeric_only CHECK(REGEXP_LIKE(column_name, ''))
--- ;
 
--- CREATE DOMAIN dob_stuff DATE 
--- constraint before_check CHECK (dob_stuff < GETDATE())
--- ;
--- -- ---------------------------------------------------------------------
 
 DROP TABLE IF EXISTS `Airline`;
 
@@ -108,7 +99,7 @@ CREATE TABLE `PNR info deduction` (
   `PNR_number` char(6) PRIMARY KEY,
   `Scheduled Boarding Time` time,
   `fk_terminal_num` int,
-  `class_of_travel` enum('Economy', 'Business'),
+  `class_of_travel` enum('Economy', 'Business') DEFAULT 'Economy',
   `fk_to_airport_src_iata_code` char(3),
 
   FOREIGN KEY (`fk_to_airport_src_iata_code`,`fk_terminal_num`) REFERENCES `Terminal` (`fk_to_airport_IATA_airport_codes`, `Terminal ID`)  ON DELETE SET NULL ON UPDATE CASCADE

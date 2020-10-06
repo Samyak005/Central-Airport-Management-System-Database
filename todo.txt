@@ -9,24 +9,23 @@
 - Employee languages spoken
 - Stopover airport while adding route --done
 - airport capapcity hardcoded or should user be given choice
-- update distance travelled always --done to be checked on line number 331 in update.py
-- add db.roll_backs 
-- Emergency contact with passenger
-- find a way to add date constraints
-- add the unique consraint for routes
-- I want to make SEAT of boarding pass as null
+- update distance travelled always --done to be checked #Job 1 in update.py
+- add db.roll_backs --done
+- Emergency contact with passenger --done
+- find a way to add date constraints --done
+- add the unique consraint for routes --discuss
+- I want to make SEAT of boarding pass as null --discuss
 - Mention that economy and business classes, senior citizens etc have different boarding times often
-- Add economy business in class of travel
+- Add economy business in class of travel --done
 - Anmol: I want to remove commit from subclasses for concurrency issues, let's discuss this
 - Update pilot flying hrs with every journey
-- at least 5 queries & 3 updates 
+- at least 5 queries & 3 updates --done
 - Remeber to write distinct keyword
-- Add languages spoken by employees
+- Add languages spoken by employees --done
 - Make sure that runway is not allotted to two planes at the same time
 - Add language stuff to flight crew
 - FLight pilot and first officer cannot be same
 - New attribute rating given added to flight crew feedback
-- Ask for stopover airports in route insertion, ASK
 - Ask for flight crew details in route
 - number of aircrafts possessed by airline is derived
 - make status of runway unique 

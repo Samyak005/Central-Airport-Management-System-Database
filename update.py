@@ -328,6 +328,7 @@ def update_route_details(cur, con):
         if tmp_var=='':
             print("ERROR: User failed to enter OVERALL distance travelled")
             return
+        #Job 1
         else:
             attr["Distance Travelled"]=tmp_var
             query_str = '''UPDATE Aircraft, Route 

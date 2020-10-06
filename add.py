@@ -42,6 +42,31 @@ def numeric_check(ch):
     else:
         return 0
 
+def dep_ahead_arv(arrival_str, depart_str):
+    if len(arrival_str)!=5 or len(depart_str)!=5:
+        print('Invalid format')
+        return -1
+    
+    if numeric_check(arrival_str[0])+numeric_check(arrival_str[1])+numeric_check(arrival_str[3])+numeric_check(arrival_str[4])!=4:
+        print("Enter only digits for mm and hh in arrival time")
+        return -1
+    
+    if numeric_check(depart_str[0])+numeric_check(depart_str[1])+numeric_check(depart_str[3])+numeric_check(depart_str[4])!=4:
+        print("Enter only digits for mm and hh in departure time")
+        return -1
+
+    arrival_hrs = int(arrival_str[0:2])
+    arrival_min = int(arrival_str[3:5])
+    depart_hrs = int(depart_str[0:2])
+    depart_min = int(depart_str[3:5])
+
+    
+    if depart_hrs > arrival_hrs:
+        print('Arrival time can not be ahead of departure time')
+        return -1
+    
+    elif depart_hrs == arrival_hrs and depart_min
+
 def is_valid_time_zone(time_str):
     # +05:30
     if len(time_str)!=6:
@@ -67,11 +92,6 @@ def is_valid_time_zone(time_str):
         return -1
     
     return 0
-
-
-
-
-
 
 def print_err_date(state):
     if state == 1:
@@ -483,6 +503,37 @@ def add_terminal(cur, con):
         input('Press any key to continue.')
         return
 
+def add_stopover_airports(cur,con,route_id):
+    print("inside stopover_airports function")
+    table_name = "`stopover_airports_on_route`"
+
+    attr = {}
+    print('Enter details of the new stopover airport: ')
+
+    attr['fk_route_id'] = route_id
+    attr['fk_iata_stopover_airport'] = input("Enter iata code of stopover airport: ")
+
+
+    keys_str, values_str = get_query_atoms(attr)
+    print(keys_str)
+    print(values_str)
+    query_str = 'INSERT INTO '+table_name + \
+        " ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
+
+    print("query str is %s->", query_str)
+
+    try:
+        cur.execute(query_str)
+        #con.commit()
+        return 0
+
+
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return -1
 
 def add_route(cur, con):
 
@@ -503,7 +554,7 @@ def add_route(cur, con):
     attr['Date'] = input('Date: [YYYY-MM-DD] (Press enter for today\'s date: ')
 
     if attr['Date'] == '':
-        attr['Date'] = datetime.now().strftime('%Y-%m-%d')
+        attr['Date'] = datetime.date.today().strftime('%Y-%m-%d')
 
     if date_less_cur(attr['Date']) == 1:
         print_err_date(-1)
@@ -513,7 +564,8 @@ def add_route(cur, con):
     attr['Scheduled arrival'] = input(
         'Scheduled arrival (Press enter if information not available): [HH:MM]: ')
     attr['Scheduled Departure'] = input(
-        'Scheduled Departure: [HH:MM (Press enter if information not available): ')
+        'Scheduled Departure: [HH:MM] (Press enter if information not available): ')
+    dep_ahead_arv(attr['Scheduled arrival'], attr['Scheduled Departure'])
     attr['Time duration'] = input(
         'Time duration (Press enter if information not available): [HH:MM]: ')
     attr['fk_to_runway_Take off runway id'] = input(
@@ -558,39 +610,6 @@ def add_route(cur, con):
         print(e)
         input('Press any key to continue.')
         return
-
-
-def add_stopover_airports(cur,con,route_id):
-    print("inside stopover_airports function")
-    table_name = "`stopover_airports_on_route`"
-
-    attr = {}
-    print('Enter details of the new stopover airport: ')
-
-    attr['fk_route_id'] = route_id
-    attr['fk_iata_stopover_airport'] = input("Enter iata code of stopover airport: ")
-
-
-    keys_str, values_str = get_query_atoms(attr)
-    print(keys_str)
-    print(values_str)
-    query_str = 'INSERT INTO '+table_name + \
-        " ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
-
-    print("query str is %s->", query_str)
-
-    try:
-        cur.execute(query_str)
-        #con.commit()
-        return 0
-
-
-    except Exception as e:
-        print('Failed to insert into the database.')
-        con.rollback()
-        print(e)
-        input('Press any key to continue.')
-        return -1
 
 #################################################################################################
 def add_pnr_info_deduction(cur, con, pnr_of_boarding_pass):
@@ -727,7 +746,6 @@ def add_boarding_pass_details(cur, con):
         print(e)
         input('Press any key to continue.')
         return
-
 
 #######################################################################################
 
@@ -1019,7 +1037,6 @@ def add_airline_crew(cur, con):
         print(e)
         input('Press any key to continue.')
         return
-
 
 #########################################################################################################
 
