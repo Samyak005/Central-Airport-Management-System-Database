@@ -37,6 +37,42 @@ def print_err_date(state):
     elif state == -1:
         print('The date entered cannot be before current date. Current date: ' + datetime.date.today())
 
+def numeric_check(ch):
+    if ch>='0' and ch<='9':
+        return 1
+    else:
+        return 0
+
+def dep_ahead_arv(arrival_str, depart_str):
+    if len(arrival_str)!=5 or len(depart_str)!=5:
+        print('Invalid format')
+        return -1
+    
+    if numeric_check(arrival_str[0])+numeric_check(arrival_str[1])+numeric_check(arrival_str[3])+numeric_check(arrival_str[4])!=4:
+        print("Enter only digits for mm and hh in arrival time")
+        return -1
+    
+    if numeric_check(depart_str[0])+numeric_check(depart_str[1])+numeric_check(depart_str[3])+numeric_check(depart_str[4])!=4:
+        print("Enter only digits for mm and hh in departure time")
+        return -1
+
+    arrival_hrs = int(arrival_str[0:2])
+    arrival_min = int(arrival_str[3:5])
+    depart_hrs = int(depart_str[0:2])
+    depart_min = int(depart_str[3:5])
+
+    
+    if depart_hrs > arrival_hrs:
+        print('Arrival time can not be ahead of departure time')
+        return -1
+    
+    elif depart_hrs == arrival_hrs and depart_min > arrival_min:
+        print('Arrival time can not be ahead of departure time')
+        return -1
+    
+    else:
+        return 0
+
 def get_updation_equation(attr, key_attr):
     
     query_str = ""
@@ -321,8 +357,14 @@ def update_route_details(cur, con):
             return
         else:
             attr["Actual arrival time"]=tmp_var
+        #job 2
+        depart_query = '''SELECT `Actual departure time` FROM Route WHERE `Route ID` = {0}'''.format(attr["Route ID"])
+        cur.execute(depart_query)
+        attr["Actual departure time"] = cur.fetchall()
+
+        if dep_ahead_arv(attr["Actual arrival time"], attr["Actual departure time"]) == -1:
+            return
         
-        tmp_var=''
         tmp_var=input("Enter total distance travelled by flight")
         # attr["Actual departure time"]=input("Enter actual departure time of the flight in  [HH:MM] format")
         if tmp_var=='':
