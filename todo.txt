@@ -36,3 +36,4 @@
 -  Add distance to aircraft in add_route_details
 - Add flying hrs to both pilots in add_route_details
 - Add warning if runway is already occupied
+- email validation

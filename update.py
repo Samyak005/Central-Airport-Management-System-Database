@@ -381,11 +381,11 @@ def update_route_details(cur, con):
                 con.commit()
             
             except Exception as e:
-            print('Failed to update the database.')
-            con.rollback()
-            print(e)
-            input('Press any key to continue.')
-            return    
+                print("Failed to update the database.")
+                con.rollback()
+                print(e)
+                input('Press any key to continue.')
+                return    
 
 
         #################################################################################################
