@@ -237,7 +237,7 @@ DROP TABLE IF EXISTS `Pilot`;
 
 CREATE TABLE `Pilot` (
   `fk_to_flight_crew_Aadhar_card_number` char(12) PRIMARY KEY NOT NULL,
-  `Pilot license number` int(12) UNIQUE NOT NULL,
+  `Pilot license number` char(12) UNIQUE NOT NULL,
   `Number of flying hours` int,
 
   FOREIGN KEY (`fk_to_flight_crew_Aadhar_card_number`) REFERENCES `flight_crew` (`fk_to_airline_crew_Aadhar_card_number`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -283,9 +283,9 @@ CREATE TABLE `flight_crew_serves_on_route` (
 
 -- ----------------------------------------------------------
 
-DROP TABLE IF EXISTS `On-ground`;
+DROP TABLE IF EXISTS `On_ground`;
 
-CREATE TABLE `On-ground` (
+CREATE TABLE `On_ground` (
   `fk_to_airline_crew_Aadhar_card_number` char(12) PRIMARY KEY,
   `Job title` varchar(255),
   FOREIGN KEY (`fk_to_airline_crew_Aadhar_card_number`) REFERENCES `airline_crew` (`Aadhar_card_number`) ON DELETE CASCADE ON UPDATE CASCADE

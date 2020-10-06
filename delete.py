@@ -63,7 +63,7 @@ def delete_aircraft(cur,con):
         input("Press any key to continue")
         return
 
-    query_str2 = 'UPDATE Airline SET num_aircrafts_owned = num_aircrafts_owned - 1 WHERE fk_to_airline_owner_airline_IATA_code = `IATA airline designators`'
+    query_str2 = 'UPDATE Airline, Aircraft SET num_aircrafts_owned = num_aircrafts_owned - 1 WHERE fk_to_airline_owner_airline_IATA_code = `IATA airline designators`'
     try:
         cur.execute(query_str2)
         con.commit()

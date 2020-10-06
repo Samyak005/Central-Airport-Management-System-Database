@@ -213,7 +213,7 @@ def add_airline(cur, con):
 
 ################################################################################################
 
-# done ----------
+# done ---------- CHECKED
 def add_aircraft(cur, con):
     print("inside add_aircraft function")
     table_name = "`Aircraft`"
@@ -245,7 +245,7 @@ def add_aircraft(cur, con):
     try:
         cur.execute(query_str)
         add_yes_print()
-        con.commit()
+        #con.commit()
 
     except Exception as e:
         error_print('Failed to insert into the database.')
@@ -254,7 +254,7 @@ def add_aircraft(cur, con):
         input('Press any key to continue.')
         return
     
-    query_str2 = 'UPDATE Airline SET num_aircrafts_owned = num_aircrafts_owned + 1 WHERE fk_to_airline_owner_airline_IATA_code = `IATA airline designators`'
+    query_str2 = 'UPDATE Airline, Aircraft SET num_aircrafts_owned = num_aircrafts_owned - 1 WHERE fk_to_airline_owner_airline_IATA_code = `IATA airline designators`'
     try:
         cur.execute(query_str2)
         con.commit()
@@ -267,7 +267,7 @@ def add_aircraft(cur, con):
         return
 
 #####################################################################################
-# done
+# done -> CHECKED
 def add_emer_contact(cur, con, aadhar_relative):
 
     #print("inside emer_contact_func")
@@ -301,7 +301,7 @@ def add_emer_contact(cur, con, aadhar_relative):
         input('Press any key to continue.')
         return -1
 
-# done #check
+# done #checked
 def add_passenger(cur, con):
     #print("inside add_passenger function")
     table_name = "`Passenger`"
@@ -663,7 +663,7 @@ def add_route(cur, con):
         return
 
     #################################################
-    attr['Date'] = input('Date: [YYYY-MM-DD] (Press enter for today\'s date: ')
+    attr['Date'] = input('Date: [YYYY-MM-DD] (Press enter for today\'s date): ')
 
     if attr['Date'] == '':
         attr['Date'] = datetime.date.today().strftime('%Y-%m-%d')
@@ -923,7 +923,7 @@ def add_boarding_pass_details(cur, con):
 def add_on_ground_emp(cur, con, aadhar_num):
 
     debug_print("inside add_on_ground_emp")
-    table_name = "`On-ground`"
+    table_name = "`On_ground`"
 
     attr = {}
     print('Enter details of the add_on_ground_emp: ')
@@ -941,7 +941,7 @@ def add_on_ground_emp(cur, con, aadhar_num):
     try:
         cur.execute(query_str)
         offload_commit(con)
-        success_print("On-ground employee inserted")
+        success_print("On_ground employee inserted")
         return 0
 
     except Exception as e:
@@ -1074,7 +1074,26 @@ def add_flight_crew(cur, con, aadhar_num):
         cur.execute(query_str)
         offload_commit(con)
         success_print("Flight crew added")
-        return 0
+        
+        print('''
+        Press 1 to add pilot
+        \n
+        Press 2 to add flight attendant
+        \n
+        Press 3 to add flight engineer''')
+        emp_class = int(input())
+
+        if emp_class == 1:
+            if add_pilot(cur, con, attr["fk_to_airline_crew_Aadhar_card_number"]) == -1:
+                return -1
+        elif emp_class == 2:
+            if add_flight_attendant(cur, con, attr["fk_to_airline_crew_Aadhar_card_number"]) == -1:
+                return -1
+        else:
+            if add_flight_engineer(cur, con, attr["fk_to_airline_crew_Aadhar_card_number"]) == -1:
+                return -1
+
+    #########################################################################
 
     except Exception as e:
         error_print('Failed to insert into the database.')
@@ -1084,26 +1103,8 @@ def add_flight_crew(cur, con, aadhar_num):
         return -1
 
     #########################################################################
-    print('''
-    Press 1 to add pilot
-    \n
-    Press 2 to add flight attendant
-    \n
-    Press 3 to add flight engineer''')
 
-    emp_class = int(input())
 
-    if emp_class == 1:
-        if add_pilot(cur, con, attr["fk_to_airline_crew_Aadhar_card_number"]) == -1:
-            return -1
-    elif emp_class == 2:
-        if add_flight_attendant(cur, con, attr["fk_to_airline_crew_Aadhar_card_number"]) == -1:
-            return -1
-    else:
-        if add_flight_engineer(cur, con, attr["fk_to_airline_crew_Aadhar_card_number"]) == -1:
-            return -1
-
-    #########################################################################
 
 #done
 def add_language(cur, con, aadhar_num):
@@ -1144,7 +1145,7 @@ def add_airline_crew(cur, con):
 
     attr["Aadhar_card_number"] = input("Aadhar_card_number: ")
 
-    tmp_name = input("Enter name")
+    tmp_name = input("Enter name: ")
     ################################################################
     name_list = tmp_name.split(' ')
 
@@ -1171,14 +1172,14 @@ def add_airline_crew(cur, con):
     attr["Nationality"] = input("Nationality: ")
     
     ######################################################################
-    attr["DOB"] = input("DOB: [YYYY-MM-DD]")
+    attr["DOB"] = input("DOB: [YYYY-MM-DD]: ")
     if date_more_cur(attr['DOB']) == 1:
         print_err_date(1)
         con.rollback()
         return
     ################################################################
-    attr["Gender"] = input("Gender: [Male, Female, Others]")
-    attr["fk_to_airline_employer_IATA_code"] = input("Airline employer IATA code:")
+    attr["Gender"] = input("Gender: [Male, Female, Others]: ")
+    attr["fk_to_airline_employer_IATA_code"] = input("Airline employer IATA code: ")
     keys_str, values_str = get_query_atoms(attr)
     #print(keys_str)
     #print(values_str)
@@ -1191,7 +1192,7 @@ def add_airline_crew(cur, con):
         cur.execute(query_str)
         offload_commit(con)
         add_yes_print()
-        num_lang = input('Enter Number of languages spoken by the employee: ')
+        num_lang = int(input('Enter Number of languages spoken by the employee: '))
         for i in range(num_lang):
             if add_language(cur, con, attr['Aadhar_card_number']) == -1:
                 return
@@ -1200,11 +1201,11 @@ def add_airline_crew(cur, con):
         print('''
         Press 1 if employee is part of FLIGHT CREW
         \n
-        Press 2 if employee is part of On-ground team''')
+        Press 2 if employee is part of On_ground team''')
 
         emp_class = int(input())
 
-        if emp_class == 1:
+        if emp_class == 2:
             if add_on_ground_emp(cur, con, attr["Aadhar_card_number"]) == -1:
                 return
         else:

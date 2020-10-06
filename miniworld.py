@@ -31,7 +31,7 @@ def decorate(color_str):
 
 #################################################################################################c
 
-expose_add_funcs=[["Airline","Passenger","Airport","Runway","Route"],
+expose_add_funcs=[["Airline","Passenger","Airport","Runway","Route","Terminal"],
             ["Passenger","Aircraft","Route","Boarding Pass","Airline Employees"],
             ["Feedback and rating"]]
 
