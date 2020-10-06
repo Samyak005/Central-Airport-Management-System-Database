@@ -16,7 +16,8 @@ colors_dict_1 = {
 }
 
 def offload_commit(con):
-    con.commit()
+    #con.commit()
+    return
 
 def debug_print(msg):
     decorate_output("REVERSE")
@@ -164,7 +165,7 @@ def get_query_atoms(attr):
     return (keys_str, values_str)
 
 ############################################################################################
-# Done
+# Done-------------
 def add_airline(cur, con):
     #print("inside add_airline function")
     table_name = "`Airline`"
@@ -190,7 +191,7 @@ def add_airline(cur, con):
 
     keys_str, values_str = get_query_atoms(attr)
 
-   # print('Table Name:' + keys_str)
+    # print('Table Name:' + keys_str)
     #print(values_str)
 
     query_str = 'INSERT INTO '+table_name + \
@@ -212,7 +213,7 @@ def add_airline(cur, con):
 
 ################################################################################################
 
-# done
+# done ----------
 def add_aircraft(cur, con):
     print("inside add_aircraft function")
     table_name = "`Aircraft`"
@@ -289,8 +290,8 @@ def add_emer_contact(cur, con, aadhar_relative):
 
     try:
         cur.execute(query_str)
-        cur.commit()
-        add_yes_print()
+        offload_commit(con)
+        debug_print("EMergency added")
         return 0
 
     except Exception as e:
@@ -377,7 +378,7 @@ def add_passenger(cur, con):
 
     try:
         cur.execute(query_str)
-        con.commit()
+        offload_commit(con)
         num_emer_contacts = int(input("Enter number of emergency contacts you want to add between 0 and 3: "))
         if num_emer_contacts > 3:
             error_print("ERROR: Only upto 3 contacts allowed")
@@ -386,6 +387,7 @@ def add_passenger(cur, con):
             for i in range(num_emer_contacts):
                 if add_emer_contact(cur, con, attr["Aadhar_card_number"]) == -1:
                     return
+        con.commit()
 
     except Exception as e:
         error_print('Failed to insert into the database.')
@@ -476,7 +478,7 @@ def add_runway(cur, con):
     ######################################################
 
     keys_str, values_str = get_query_atoms(attr)
-   # print(keys_str)
+    # print(keys_str)
     #print(values_str)
     query_str = 'INSERT INTO '+table_name + \
         " ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
@@ -552,8 +554,8 @@ def add_stopover_airports(cur,con,route_id):
 
     try:
         cur.execute(query_str)
-        con.commit()
-        add_yes_print()
+        offload_commit(con)
+        #add_yes_print()
         return 0
 
 
@@ -587,8 +589,8 @@ def add_flight_crew_serves_on_route(cur,con,route_id,aadhar_num):
 
     try:
         cur.execute(query_str)
-        con.commit()
-        add_yes_print()
+        offload_commit(con)
+        #add_yes_print()
         return 0
         
     except Exception as e:
@@ -632,8 +634,8 @@ def add_crew_has_worked_together(cur,con,a1,a2,a3,a4):
 
     try:
         cur.execute(query_str)
-        db.commit()
-        add_yes_print()
+        offload_commit(con)
+        #add_yes_print()
         return 0
         
     except Exception as e:
@@ -699,7 +701,7 @@ def add_route(cur, con):
 
     try:
         cur.execute(query_str)
-        con.commit()
+        offload_commit(con)
         add_yes_print()
         ######################################################################
         num_stopover = input('Enter number of stopover airports encountered in the route: ')
@@ -739,7 +741,7 @@ def add_route(cur, con):
         if add_crew_has_worked_together(cur,con,attr['Pilot captain Aadhar_card_number'],aadhar_first_officer,
             attr['Chief_flight_attendant Aadhar_card_number'],aadhar_engineer)==-1:
             return
-
+        con.commit()
     ###################################################################
     except Exception as e:
         error_print('Failed to insert into the database.')
@@ -775,7 +777,7 @@ def add_pnr_info_deduction(cur, con, pnr_of_boarding_pass):
 
     try:
         cur.execute(query_str)
-        con.commit()        
+        offload_commit(con)       
         return 0
 
     except Exception as e:
@@ -806,7 +808,7 @@ def add_special_services(cur, con, barcode_number, special_service_to_add):
 
     try:
         cur.execute(query_str)
-        con.commit()
+        offload_commit(con)
         success_print("Special services inserted")
         return 0
 
@@ -838,7 +840,7 @@ def add_luggage(cur, con, barcode_number):
 
     try:
         cur.execute(query_str)
-        con.commit()
+        offload_commit(con)
         success_print("Luggage inserted")
         return 0
 
@@ -872,9 +874,9 @@ def add_boarding_pass_details(cur, con):
 
     try:
         cur.execute(query_str)
-        con.commit()
+        offload_commit(con)
         add_yes_print()
-            #############################################################################################
+        #############################################################################################
         num_luggages = int(input("Enter number of luggages you want to link to this boarding pass: "))
         for i in range(num_luggages):
             if add_luggage(cur, con, attr["Barcode number"]) == -1:
@@ -906,7 +908,7 @@ def add_boarding_pass_details(cur, con):
                 return
 
         ##########################################################################################
-        return
+        con.commit()
 
     except Exception as e:
         print('Failed to insert into the database.')
@@ -1186,7 +1188,28 @@ def add_airline_crew(cur, con):
 
     try:
         cur.execute(query_str)
+        offload_commit(con)
         add_yes_print()
+        num_lang = input('Enter Number of languages spoken by the employee: ')
+        for i in range(num_lang):
+            if add_language(cur, con, attr['Aadhar_card_number']) == -1:
+                return
+
+        #############################################################################
+        print('''
+        Press 1 if employee is part of FLIGHT CREW
+        \n
+        Press 2 if employee is part of On-ground team''')
+
+        emp_class = int(input())
+
+        if emp_class == 1:
+            if add_on_ground_emp(cur, con, attr["Aadhar_card_number"]) == -1:
+                return
+        else:
+            if add_flight_crew(cur, con, attr["Aadhar_card_number"]) == -1:
+                return
+       
         con.commit()
 
     except Exception as e:
@@ -1196,25 +1219,6 @@ def add_airline_crew(cur, con):
         input('Press any key to continue.')
         return
 
-    num_lang = input('Enter Number of languages spoken by the employee: ')
-    for i in range(num_lang):
-        if add_language(cur, con, attr['Aadhar_card_number']) == -1:
-            return
-
-    #############################################################################
-    print('''
-    Press 1 if employee is part of FLIGHT CREW
-    \n
-    Press 2 if employee is part of On-ground team''')
-
-    emp_class = int(input())
-
-    if emp_class == 1:
-        if add_on_ground_emp(cur, con, attr["Aadhar_card_number"]) == -1:
-            return
-    else:
-        if add_flight_crew(cur, con, attr["Aadhar_card_number"]) == -1:
-            return
 
     #########################################################################
 
@@ -1374,7 +1378,29 @@ def add_airport_crew(cur, con):
     #print("query str is %s->", query_str)
     try:
         cur.execute(query_str)
+        offload_commit(con)
         add_yes_print()
+        #############################################################################
+        print('''
+        Press 1 if employee is Air traffic controller
+        \n
+        Press 2 if employee is part of Management
+        \n
+        Press 3 if employee is part of Security''')
+
+        emp_class = int(input())
+
+        if emp_class == 1:
+            if add_air_traffic_controller(cur, con, attr["Aadhar_card_number"]) == -1:
+                return
+        elif emp_class == 2:
+            if add_mo_executives(cur, con, attr["Aadhar_card_number"]) == -1:
+                return
+        else:
+            if add_security(cur, con, attr["Aadhar_card_number"]) == -1:
+                return
+
+        #########################################################################
         con.commit()
 
     except Exception as e:
@@ -1383,25 +1409,4 @@ def add_airport_crew(cur, con):
         print(e)
         input('Press any key to continue.')
         return
-    #############################################################################
-    print('''
-    Press 1 if employee is Air traffic controller
-    \n
-    Press 2 if employee is part of Management
-    \n
-    Press 3 if employee is part of Security''')
-
-    emp_class = int(input())
-
-    if emp_class == 1:
-        if add_air_traffic_controller(cur, con, attr["Aadhar_card_number"]) == -1:
-            return
-    elif emp_class == 2:
-        if add_mo_executives(cur, con, attr["Aadhar_card_number"]) == -1:
-            return
-    else:
-        if add_security(cur, con, attr["Aadhar_card_number"]) == -1:
-            return
-
-    #########################################################################
 
