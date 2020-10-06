@@ -200,7 +200,7 @@ DROP TABLE IF EXISTS `emer_contact`;
 
 CREATE TABLE `emer_contact` (
   `Name` varchar(255),
-  `Phone No` int(10) UNIQUE NOT NULL,
+  `Phone No` bigint(10) UNIQUE NOT NULL,
   `fk_to_passenger_Aadhar_card_number` char(12),
   PRIMARY KEY (`Name`, `fk_to_passenger_Aadhar_card_number`),
 
