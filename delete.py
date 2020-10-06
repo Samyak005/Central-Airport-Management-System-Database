@@ -61,7 +61,19 @@ def delete_aircraft(cur,con):
         print("Failed to delete from database")
         print(">>>>>>>>>>>>>", e)
         input("Press any key to continue")
-    return
+        return
+
+    query_str2 = 'UPDATE Airline SET num_aircrafts_owned = num_aircrafts_owned - 1 WHERE fk_to_airline_owner_airline_IATA_code = `IATA airline designators`'
+    try:
+        cur.execute(query_str2)
+        con.commit()
+
+    except Exception as e:
+        print('Failed to decrement number of aricrafts owned by airline the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return
 
 def delete_luggage(cur,con):
     print("Inside delete_luggage func")

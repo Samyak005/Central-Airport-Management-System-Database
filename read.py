@@ -13,7 +13,7 @@ def print_query(query, con, cur):
         if len(result) != 0:
             header = result[0].keys()
             rows =  [x.values() for x in result]
-            print(tabulate(rows, header, tablefmt = 'grid'))
+            print(tabulate(rows, header, tablefmt = 'psql'))
         
         else:
             print("Not found!") #length of result is 0

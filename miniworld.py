@@ -1,8 +1,29 @@
 import subprocess as sp
 import pymysql
 import pymysql.cursors
+import sys
+
 
 from add import *
+from extra import *
+from read import *
+from delete import *
+from update import *
+
+colors_dict = {
+    "BLUE": "\033[1;34m",
+    "RED": "\033[1;31m",
+    "CYAN": "\033[1;36m",
+    "GREEN": "\033[0;32m",
+    "RESET": "\033[0;0m",
+    "BOLD": "\033[;1m",
+    "REVERSE": "\033[;7m",
+    "ERROR":"\033[;7m"+"\033[1;31m"
+}
+
+def decorate(color_str):
+    #print("Decorated")
+    sys.stdout.write(colors_dict[color_str])
 
 # 0 -> central_airport_authority_of_india
 # 1-> airline_employee
@@ -10,9 +31,9 @@ from add import *
 
 #################################################################################################c
 
-expose_add_funcs=[["","","","","",""],
-            ["","","","","",""],
-            ["","","","","",""]]
+expose_add_funcs=[["Airline","Passenger","Airport","Runway","Route"],
+            ["Passenger","Aircraft","Route","Boarding Pass","Airline Employees"],
+            ["Feedback and rating"]]
 
 add_funcs_dict = {
         "Airline":add_airline,#
@@ -30,10 +51,9 @@ add_funcs_dict = {
 
 
 def add_display(cur, con,user_id):
-    """
-    Function to implement option 1
-    """
-    print("Add to the table:\n")
+   
+    decorate("BLUE")
+    print("Select the entity whom you would like to insert in the Database:\n")
     i = 0
     tables_add = [
         "Airline", #
@@ -49,76 +69,66 @@ def add_display(cur, con,user_id):
         "Feedback and rating"
     ]
 
-    while i < len(tables_add):
-        i += 1
-        print(str(i) + ". " + tables_add[i - 1])
+    decorate("RED")
+    for i in range(len(expose_add_funcs[user_id])):
+        print(f"Press {i} for insertion in {expose_add_funcs[user_id][i]}")
+    decorate("RESET")
 
-    choice_to_add=int(input("enter number to add starting from 1"))
-    if choice_to_add > 10 or choice_to_add < 1:
+    choice_to_add=int(input("enter choice > "))
+    if choice_to_add >=len(expose_add_funcs[user_id]) or choice_to_add < 0:
         print("Invalid number. Please try again\n")
         return
     else:
-        add_funcs_dict[tables_add[choice_to_add-1]](cur, con)
+        add_funcs_dict[expose_add_funcs[user_id][choice_to_add]](cur, con)
 
 #################################################################################################c
 
-expose_read_funcs=[["","","","","",""],
-            ["","","","","",""],
-            ["","","","","",""]]
-
-read_funcs_dict = {
-        "Airline":read_airline,#
-        "Passenger":read_passenger,#
-        "Aircraft":read_aircraft,#
-        "Airport":read_airport,#
-        "Runway":read_runway,#
-        "Terminal":read_terminal,#
-        "Route":read_route,#
-        "Boarding Pass":read_boarding_pass_details,#
-        "Airline Employees":read_airline_crew,#
-        "Airport Employees":read_airport_crew,#
-        "Feedback and rating":read_feedback
-}
-
-
-def read_display(cur, con,user_id):
-    """
-    Function to implement option 1
-    """
-    print("Add to the table:\n")
-    i = 0
-    tables_read = [
-        "Airline", #
-        "Passenger", #
-        "Aircraft", #
-        "Airport", #
-        "Runway", #
-        "Terminal", #
-        "Route", 
-        "Boarding Pass", #
-        "Airline Employees",
-        "Airport Employees"
-        #"Feedback and rating"
+expose_read_funcs=[
+    ["Airline","Passenger","Airport","Runway","Terminal","Boarding Pass","Route"],
+    ["Route","Airline Employees","Aircraft","Boarding Pass","Feedback and rating"],
+    ["Route","Airline","Airport"]
     ]
 
-    while i < len(tables_read):
-        i += 1
-        print(str(i) + ". " + tables_add[i - 1])
+# read_funcs_dict = {
+#         "Airline":read_airline,#
+#         "Passenger":read_passenger,#
+#         "Aircraft":read_aircraft,#
+#         "Airport":read_airport,#
+#         "Runway":read_runway,#
+#         "Terminal":read_terminal,#
+#         "Route":read_route,#
+#         "Boarding Pass":read_boarding_pass_details,#
+#         "Airline Employees":read_airline_crew,#
+#         "Airport Employees":read_airport_crew,#
+#         "Feedback and rating":read_feedback
+# }
 
-    choice_to_read=int(input("enter number of table to read starting from 1"))
-    if choice_to_read > 10 or choice_to_read < 1:
+def read_display(cur, con,user_id):
+       
+    decorate("BLUE")
+    print("Select the entity whoose entries you want to view:\n")
+    i = 0
+
+    decorate("RED")
+    for i in range(len(expose_read_funcs[user_id])):
+        print(f"Press {i} for reading of {expose_read_funcs[user_id][i]}")
+    decorate("RESET")
+
+    choice_to_read=int(input("enter choice > "))
+    if choice_to_read >=len(expose_read_funcs[user_id]) or choice_to_read < 0:
         print("Invalid number. Please try again\n")
         return
     else:
-        read_funcs_dict[tables_read[choice_to_read-1]](cur, con)
+        read_data(cur, con,expose_read_funcs[user_id][choice_to_read] )
+
 
 
 #################################################################################################
 
 
-expose_delete_funcs=[["","","","","",""],
-            ["","","","","",""],
-            ["","","","","",""]]
+expose_delete_funcs=[["Airport Employees"],
+            ["Aircraft","Route","Airline Employees","Luggage"],
+            []]
 
 delete_funcs_dict = {
        # "Airline":delete_airline,#
@@ -135,46 +145,36 @@ delete_funcs_dict = {
         "Luggage":delete_luggage
 }
 
-
 def delete_display(cur, con,user_id):
-    """
-    Function to implement option 1
-    """
-    print("delete to the table:\n")
+       
+    if user_id==2:
+        print("This user has no permissions to delete from database")
+        return
+
+    decorate("BLUE")
+    print("Select the entity whose entries you want to delete:\n")
     i = 0
-    tables_delete = [
-        "Airline", #
-        "Passenger", #
-        "Aircraft", #
-        "Airport", #
-        "Runway", #
-        "Terminal", #
-        "Route", 
-        "Boarding Pass", #
-        "Airline Employees",
-        "Airport Employees"
-        #"Feedback and rating"
-    ]
 
-    while i < len(tables_delete):
-        i += 1
-        print(str(i) + ". " + tables_delete[i - 1])
+    decorate("RED")
+    for i in range(len(expose_delete_funcs[user_id])):
+        print(f"Press {i} for deletion from {expose_delete_funcs[user_id][i]}")
+    decorate("RESET")
 
-    choice_to_delete=int(input("enter number to delete starting from 1"))
-    if choice_to_delete > 10 or choice_to_delete < 1:
+    choice_to_delete=int(input("enter choice > "))
+    if choice_to_delete >=len(expose_delete_funcs[user_id]) or choice_to_delete < 0:
         print("Invalid number. Please try again\n")
         return
     else:
-        delete_funcs_dict[tables_delete[choice_to_delete-1]](cur, con)
+        delete_funcs_dict[expose_delete_funcs[user_id][choice_to_delete]](cur, con)
 
 
 #################################################################################################
 #################################################################################################
 
 
-expose_update_funcs=[["","","","","",""],
-            ["","","","","",""],
-            ["","","","","",""]]
+expose_update_funcs=[["3","4","5","6","9"],
+            ["1","2","6","7","8"],
+            []]
 
 update_funcs_dict = {
         "1":update_passenger,#
@@ -185,7 +185,7 @@ update_funcs_dict = {
         "6":update_route_details,#
         "7":update_airline_crew_personal_details,
         "8":update_airline_details,#
-        "9":update_atc_freq,
+        "9":update_atc_freq
 }
 
 update_funcs_msg = {
@@ -197,67 +197,61 @@ update_funcs_msg = {
         "6":"for updating actual arrival time, actual departure time, distance travelled over the route, status of the journey",
         "7":"for updating airline crew personal details like salary, current employer etc.",#
         "8":"for updating active_status of the airline, country of wonership",
-        "9":"for updating the frequency at which the air traffic contoller is operating",
+        "9":"for updating the frequency at which the air traffic contoller is operating"
 }
 
 # in 11, give status change, time change, 
 
 
 def update_display(cur, con,user_id):
-    """
-    Function to implement option 1
-    """
-    print("update to the table:\n")
+    if user_id==2:
+        print("This user has no permissions to update database")
+        return
+    decorate("BLUE")
+    print("Select option as per what you want to update:\n")
     i = 0
-    tables_update = [
-        "Airline", #
-        "Passenger", #
-        "Aircraft", #
-        "Airport", #
-        "Runway", #
-        "Terminal", #
-        "Route", 
-        "Boarding Pass", #
-        "Airline Employees",
-        "Airport Employees"
-        #"Feedback and rating"
-    ]
 
-    while i < len(tables_update):
-        i += 1
-        print(str(i) + ". " + tables_update[i - 1])
+    decorate("RED")
+    print("Decorated")
+    len_use=len(expose_update_funcs[user_id])
+    print(f"len is {len_use}")
+    for i in range(len_use):
+        print(f"Press {i} for {update_funcs_msg[expose_update_funcs[user_id][i]]}")
+    decorate("RESET")
 
-    choice_to_update=int(input("enter number to update starting from 1"))
-    if choice_to_update > 10 or choice_to_update < 1:
+    choice_to_update=int(input("enter choice > "))
+    if choice_to_update >=len(expose_update_funcs[user_id]) or choice_to_update < 0:
         print("Invalid number. Please try again\n")
         return
     else:
-        update_funcs_dict[tables_update[choice_to_update-1]](cur, con)
+        update_funcs_dict[expose_update_funcs[user_id][choice_to_update]](cur, con)
+
 
 
 #################################################################################################
 
-expose_analysis_funcs=[["","","","","",""],
-            ["","","","","",""],
-            ["","","","","",""]]
+expose_analysis_funcs=[["1","2","3","4","5","6","9","10","11"],
+            ["1","2","5","7","10","11"],
+            ["2","3","5","6","8","11"]]
+
 
 analysis_funcs_dict = {
         "1":analysis_passenger_special_services,#
-        "2":analysis_aircraft,#
-        "3":analysis_airport,#
-        "4":analysis_runway_status,#
-        "5":analysis_airport_crew,#
-        "6":analysis_route_details,#
-        "7":analysis_airline_crew_personal_details,
-        "8":analysis_airline_details,#
-        "9":analysis_atc_freq,
-        "10":,
-        "11":
+        "2":analysis_big_airlines,#
+        "3":analysis_experienced_pilot,#
+        "4":analysis_search_name,#
+        "5":analysis_busiest_airports,#
+        "6":analysis_loved_airlines,#
+        "7":analysis_feedback_patterns,
+        "8":analysis_find_tickets,#
+        "9":analysis_crashed_survivors,
+        "10":analysis_airline_pilots,
+        "11":analysis_favoured_aircrafts
 }
 
 analysis_funcs_msg = {
         "1":"Names of all passengers who have WHEELCHAIR ASSISTANCE/Disability assisstance as a special service in their BOARDING PASS",#
-        "2":"NAMES OF ALL AIRLINES whose flight crew is >=x where 'x' is to be inputted from user",#
+        "2":"Names OF ALL AIRLINES whose flight crew is >=x where 'x' is to be inputted from user",#
         "3":"find the pilot with maximum number of flying hrs",#
         "4":"Search for all PASSENGERS whose name contains a given substring",#
         "5":"RANK BUSIEST AIRPORTS by number of scheduled flight departures on a particular day",#
@@ -269,25 +263,24 @@ analysis_funcs_msg = {
         "11":"Find most used aircraft across all airlines"
 }
 
-# in 11, give status change, time change, 
-
-
 def analysis_display(cur, con,user_id):
-    """
-    Function to implement option 1
-    """
-    print("analysis to the table:\n")
-   
-    while i < len(tables_analysis):
-        i += 1
-        print(str(i) + ". " + tables_analysis[i - 1])
+       
+    decorate("BLUE")
+    print("Select option:\n")
+    i = 0
 
-    choice_to_analysis=int(input("enter number to analysis starting from 1"))
-    if choice_to_analysis > 10 or choice_to_analysis < 1:
+    decorate("RED")
+    for i in range(len(expose_analysis_funcs[user_id])):
+        print(f"Press {i} for query {analysis_funcs_msg[expose_analysis_funcs[user_id][i]]}")
+    decorate("RESET")
+
+    choice_to_analysis=int(input("enter choice > "))
+    if choice_to_analysis >=len(expose_analysis_funcs[user_id]) or choice_to_analysis < 0:
         print("Invalid number. Please try again\n")
         return
     else:
-        analysis_funcs_dict[tables_analysis[choice_to_analysis-1]](cur, con)
+        analysis_funcs_dict[expose_analysis_funcs[user_id][choice_to_analysis]](cur, con)
+
 
 #########################################################################################
 
@@ -299,27 +292,31 @@ def dispatch(ch,cur, con,user_id):
     if (ch == 1):
         add_display(cur, con,user_id)
     elif (ch == 2):
-       # update_display(cur, con,user_id)
+        update_display(cur, con,user_id)
     elif (ch == 3):
-       # delete_display(cur, con,user_id)
+       delete_display(cur, con,user_id)
     elif (ch == 4):
         read_display(cur, con,user_id)
+    elif (ch == 5):
+        analysis_display(cur, con,user_id)
     else:
         print("Error: Invalid Option")
 
-def display_menu(user_id):
+def display_menu(cur,con,user_id):
 
-    print("1. Add new information")  # Hire an Employee
-    print("2. Update tables")  # Fire an Employee
-    print("3. Delete data")  # Promote Employee
-    print("4. Read data")  # Employee Statistics
-    print("5. Logout")
-    print("6. Exit")
+    decorate("CYAN")
+    print("Select operation you want to perform")
+    print("1. Add new information")
+    print("2. Update tables")
+    print("3. Delete data")
+    print("4. Read data")  
+    print("5. Analysis data")  
+    print("6. Logout")
+    decorate("RESET")
+
     ch = int(input("Enter choice> "))
-    tmp = sp.call('clear', shell=True)
-    if ch == 5:
-        break
-    elif ch == 6:
+    #tmp = sp.call('clear', shell=True)
+    if ch == 6:
         raise SystemExit
     else:
         dispatch(ch,cur, con,user_id)
@@ -333,8 +330,11 @@ while (1):
     tmp = sp.call('clear', shell=True)
 
     # Can be skipped if you want to hard core username and password
-    username = input("Username: ")
-    password = input("Password: ")
+    '''username = input("Username: ")
+    password = input("Password: ")'''
+    username="root"
+    password="blahblah"
+
 
     try:
         # Set db name accordingly which have been create by you
@@ -366,24 +366,20 @@ while (1):
         #  loop like FOR or WHILE to iterate through one item at a time, do something
         #  with the data and the job is done. In T-SQL, a CURSOR
         #   is a similar approach, and might be preferred because it follows the same logic.
-
+        decorate("CYAN")
         print("Press 0 if you are airport_employee")
         print("Press 1 if you are airline_employee")
         print("Press 2 if you are passenger")
+        decorate("RESET")
 
         user_id=int(input())
 
         with con.cursor() as cur:
             while (1):
-                # tmp = sp.call('clear', shell=True)
-                # Here taking example of Employee Mini-world
-
-                dispatch(user_id)
+                tmp = sp.call('clear', shell=True)
+                display_menu(cur,con,user_id)
 
                 
-
-                
-
     except Exception as e:
         # tmp = sp.call('clear', shell=True)
         print(
@@ -391,61 +387,3 @@ while (1):
         )
         print(">>>", e)
         tmp = input("Enter any key to CONTINUE>")
-
-
-
-
-# ### SAMPLE CODE  https://github.com/PyMySQL/PyMySQL
-# import pymysql.cursors
-
-# # Connect to the database
-# connection = pymysql.connect(host='localhost',
-#                              user='user',
-#                              password='passwd',
-#                              db='db',
-#                              charset='utf8mb4',
-#                              cursorclass=pymysql.cursors.DictCursor)
-
-# try:
-#     with connection.cursor() as cursor:
-#         # Create a new record
-#         sql = "INSERT INTO `users` (`email`, `password`) VALUES (%s, %s)"
-#         cursor.execute(sql, ('webmaster@python.org', 'very-secret'))
-
-#     # connection is not autocommit by default. So you must commit to save
-#     # your changes.
-#     connection.commit()
-
-#     with connection.cursor() as cursor:
-#         # Read a single record
-#         sql = "SELECT `id`, `password` FROM `users` WHERE `email`=%s"
-#         cursor.execute(sql, ('webmaster@python.org',))
-#         result = cursor.fetchone()
-#         print(result)
-# finally:
-#     connection.close()
-
-# # -----------------------------------------------------------------------------
-
-# # sample queries
-# import datetime
-# import mysql.connector
-
-# cnx = mysql.connector.connect(user='scott', database='employees')
-# cursor = cnx.cursor()
-
-# query = ("SELECT first_name, last_name, hire_date FROM employees "
-# "WHERE hire_date BETWEEN %s AND %s")
-
-# hire_start = datetime.date(1999, 1, 1)
-
-# hire_end = datetime.date(1999, 12, 31)
-
-# cursor.execute(query, (hire_start, hire_end))
-
-# for (first_name, last_name, hire_date) in cursor:
-#     print("{}, {} was hired on {:%d %b %Y}".format(
-#         last_name, first_name, hire_date))
-
-# cursor.close()
-# cnx.close()

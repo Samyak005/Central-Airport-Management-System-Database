@@ -31,3 +31,6 @@ https://stackoverflow.com/questions/47328402/how-to-store-mysql-query-result-int
 
 #
 https://stackoverflow.com/questions/39163776/how-to-get-rows-affected-in-a-update-statement-by-pymsql
+
+# Using tabulate
+python3 -m pip install tabulate

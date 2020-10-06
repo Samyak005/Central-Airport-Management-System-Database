@@ -39,7 +39,7 @@ def date_more_cur(str):
 def print_err_date(state):
     if state == 1:
         print('The date entered cannot be after current date. Current date: ' + datetime.date.today())
-    else state == -1:
+    elif state == -1:
         print('The date entered cannot be before current date. Current date: ' + datetime.date.today())
 
 def get_query_atoms(attr):
@@ -213,6 +213,18 @@ def add_aircraft(cur, con):
         print(e)
         input('Press any key to continue.')
         return
+    
+    query_str2 = 'UPDATE Airline SET num_aircrafts_owned = num_aircrafts_owned + 1 WHERE fk_to_airline_owner_airline_IATA_code = `IATA airline designators`'
+    try:
+        cur.execute(query_str2)
+        con.commit()
+
+    except Exception as e:
+        print('Failed to increment number of aricrafts owned by airline the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return
 
 
 def add_passenger(cur, con):
@@ -260,6 +272,10 @@ def add_passenger(cur, con):
         attr['Gender'] = 'Female'
     elif attr['Gender'] == 3:
         attr['Gender'] = 'Others'
+    else:
+        print("Invalid number inserted. Please try again")
+        con.rollback()
+        return
 
     attr["House Number"] = input("Enter house number of residence: ")
     attr["Building"] = input("Enter building number of residence: ")

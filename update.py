@@ -34,7 +34,7 @@ def date_more_cur(str):
 def print_err_date(state):
     if state == 1:
         print('The date entered cannot be after current date. Current date: ' + datetime.date.today())
-    else state == -1:
+    elif state == -1:
         print('The date entered cannot be before current date. Current date: ' + datetime.date.today())
 
 def get_updation_equation(attr, key_attr):
@@ -147,7 +147,8 @@ def update_passenger(cur, con):
         attr['Gender'] = 'Female'
     elif attr['Gender'] == 3:
         attr['Gender'] = 'Others'
-    else attr['Gender'] = ''
+    else:
+        attr['Gender'] = ''
     
     attr["House Number"] = input("Enter new house number of residence")
     attr["Building"] = input("Enter new building number of residence")
@@ -273,7 +274,8 @@ def update_airport_crew(cur, con):
         attr['Gender'] = 'Female'
     elif attr['Gender'] == 3:
         attr['Gender'] = 'Others'
-    else attr['Gender'] = ''
+    else:
+        attr['Gender'] = ''
     attr["fk_to_airport_IATA_code_of_employing_airport"] = input(
         "airport IATA code of employing airport: ")
     
@@ -328,6 +330,8 @@ def update_route_details(cur, con):
             return
         else:
             attr["Distance Travelled"]=tmp_var
+            query_str = '''UPDATE Aircraft, Route SET Aircraft.`Distance Travelled` = Aircraft.`Distance Travelled` +'+tmp_var+' WHERE `Route ID` ='+attr["Route ID"]+' AND fk_to_aircraft_registration_num = registration_num'''
+
 
         #################################################################################################
             ## Add distance to aircraft
@@ -389,7 +393,8 @@ def update_airline_crew_personal_details(cur, con):
         attr['Gender'] = 'Female'
     elif attr['Gender'] == 3:
         attr['Gender'] = 'Others'
-    else attr['Gender'] = ''
+    else:
+        attr['Gender'] = ''
     attr["fk_to_airline_employer_IATA_code"] = input(
         "Airline employer IATA code: ")
 

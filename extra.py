@@ -3,15 +3,6 @@ import subprocess as sp
 import pymysql
 import pymysql.cursors
 
-def prRed(skk): print("\033[91m {}\033[00m" .format(skk)) 
-def prGreen(skk): print("\033[92m {}\033[00m" .format(skk)) 
-def prYellow(skk): print("\033[93m {}\033[00m" .format(skk)) 
-def prLightPurple(skk): print("\033[94m {}\033[00m" .format(skk)) 
-def prPurple(skk): print("\033[95m {}\033[00m" .format(skk)) 
-def prCyan(skk): print("\033[96m {}\033[00m" .format(skk)) 
-def prLightGray(skk): print("\033[97m {}\033[00m" .format(skk)) 
-def prBlack(skk): print("\033[98m {}\033[00m" .format(skk)) 
-
 
 # analysis_funcs_dict = {
 #         "1":analysis_passenger_special_services,#
@@ -41,7 +32,7 @@ def prBlack(skk): print("\033[98m {}\033[00m" .format(skk))
 #         "11":"Find most used aircraft across all airlines"
 # }
 
-def display_query_result(query):
+def display_query_result(cur,con,query):
     try:
         cur.execute(query)
         con.commit()
@@ -50,13 +41,13 @@ def display_query_result(query):
         if len(result) != 0:
             header = result[0].keys()
             rows =  [x.values() for x in result]
-            print(tabulate(rows, header, tablefmt = 'grid'))
+            print(tabulate(rows, header, tablefmt = 'psql'))
         
         else:
-            prRed("No rows found!") #length of result is 0
+            print("No rows found!") #length of result is 0
 
     except Exception as e:
-        prRed("Error!")
+        print("Error!")
         con.rollback()
         input("Press any key to continue")
 
@@ -66,7 +57,7 @@ def add_feedback(cur, con):
 def analysis_passenger_special_services(cur,con):
     print("Inside update_passenger func")
 
-    iata_airport_code=input("Enter iata code of airport ")
+    # iata_airport_code=input("Enter iata code of airport ")
 
     query_str='''SELECT `First Name`,`Middle Name`,`Last Name`,`Aadhar_card_number` 
                 FROM `boarding_pass special services`,`Passenger`,`boarding_pass` 
@@ -74,7 +65,7 @@ def analysis_passenger_special_services(cur,con):
                 AND (`Barcode number`=`fk_Barcode number`)
                 AND (`fk_to_passenger_Aadhar_card_number`=`Aadhar_card_number`);
                         '''
-    display_query_result(query_str)
+    display_query_result(cur, con, query_str)
 
 
 def analysis_big_airlines(cur,con):
@@ -94,32 +85,34 @@ def analysis_big_airlines(cur,con):
     # GROUP BY working_area 
     # ORDER BY 2 ;
 
-    sub1='''SELECT `IATA airline designators`, `Company Name` ,COUNT(*)
-                FROM `Airline`, `airline_crew`
-                GROUP BY `fk_to_airline_employer_IATA_code`  
-                WHERE (`fk_to_airline_employer_IATA_code`=`IATA airline designators`)
-                 AND (COUNT(*) >= '''
-    sub2=str(limit_var)
-    sub3=''')ORDER BY COUNT(*)
-                        '''
-    query_str=sub1+sub2+sub3
+    # sub1='''SELECT `IATA airline designators`, `Company Name` ,COUNT(*)
+    #             FROM `Airline`, `airline_crew`
+    #             GROUP BY `fk_to_airline_employer_IATA_code`  
+    #             WHERE (`fk_to_airline_employer_IATA_code`=`IATA airline designators`)
+    #              AND (COUNT(*) >=  '''
+    # sub2=str(limit_var)
+    # sub3=''' )ORDER BY COUNT(*) 
+    #                     '''
+    # query_str=sub1+sub2+sub3
 
     # https://www.eversql.com/
 
-    query_str2 = '''SELECT `IATA airline designators`, `Company Name`
+    query_str = '''SELECT `IATA airline designators`, `Company Name`
                 FROM `Airline`
                 WHERE `IATA airline designators` IN (SELECT `fk_to_airline_employer_IATA_code`
                             FROM `airline_crew`
                             GROUP BY `fk_to_airline_employer_IATA_code`
-                            HAVING COUNT(*)>=10);'''
+                            HAVING COUNT(*)>={0});'''.format(str(limit_var))
     
-    query_str3='''SELECT `IATA airline designators`, `Company Name`
-                FROM `Airline`
-                WHERE  EXISTS (SELECT `fk_to_airline_employer_IATA_code`
-                            FROM `airline_crew`
-                            WHERE `IATA airline designators`=`fk_to_airline_employer_IATA_code`
-                            GROUP BY `fk_to_airline_employer_IATA_code`
-                            HAVING COUNT(*)>=10);'''
+    # query_str3='''SELECT `IATA airline designators`, `Company Name`
+    #             FROM `Airline`
+    #             WHERE  EXISTS (SELECT `fk_to_airline_employer_IATA_code`
+    #                         FROM `airline_crew`
+    #                         WHERE `IATA airline designators`=`fk_to_airline_employer_IATA_code`
+    #                         GROUP BY `fk_to_airline_employer_IATA_code`
+    #                         HAVING COUNT(*)>=10);'''
+    
+    display_query_result(cur,con,query_str)
 
 
 def analysis_experienced_pilot(cur,con):
@@ -130,12 +123,14 @@ def analysis_experienced_pilot(cur,con):
     # WHERE Salary > ALL ( SELECT Salary
     # FROM EMPLOYEE
     # WHERE Dno = 5 );
-    query_str='''SELECT `Pilot license number`,`First Name`,`Last Name`,`Number of flying hours`,`fk_to_airline_employer_IATA_code` AS `EMPLOYER AIRLINE`
-                  FROM   `Pilot`,   ``airline_crew``  
-                  WHERE (`Aadhar_card_number`=`fk_to_flight_crew_Aadhar_card_number`) 
-                  AND  `Number of flying hours` >= ( SELECT MAX(`Number of flying hours`)
-                                                    FROM  `Pilot`);
-                      '''
+    query_str='''SELECT `Pilot license number`,`First Name`,`Last Name`,`Number of flying hours`,`fk_to_airline_employer_IATA_code`
+                    AS `Employer Airline`
+                    FROM   `Pilot`,   `airline_crew`  
+                    WHERE (`Aadhar_card_number`=`fk_to_flight_crew_Aadhar_card_number`) 
+                    AND  `Number of flying hours` >= ( SELECT MAX(`Number of flying hours`)
+                                                    FROM  `Pilot`);'''
+
+    display_query_result(cur, con, query_str)
 
 def analysis_search_name(cur,con):
     print("Inside update_passenger func")
@@ -148,7 +143,7 @@ def analysis_search_name(cur,con):
                 FROM PASSENGER
                 WHERE (`First Name` LIKE '%{0}%') OR (`Middle Name` LIKE '%{0}%') OR (`Last Name` LIKE '%{0}%');
                         '''.format(sought_name)
-
+    display_query_result(cur, con, query_str)
 
 def analysis_busiest_airports(cur,con):
     print("Inside busiest_airports func")
@@ -156,11 +151,11 @@ def analysis_busiest_airports(cur,con):
     ### SHOULD WE TAKE DATE AS INPUT
     query_str='''SELECT `IATA airport codes`,`Airport Name`,`City`,COUNT(*) AS `Number of Scheduled Departures`
                 FROM `Route`, `Airport`
-                GROUP BY `fk_to_airline_employer_IATA_code`  
-                WHERE (`IATA airport codes`=`fk_to_airport_IATA_airport_codes`)
+                GROUP BY `fk_to_airport_src_iata_code`  
+                WHERE (`IATA airport codes`=`fk_to_airport_src_iata_code`)
                 ORDER BY `Number of Scheduled Departures` DESC;
                 '''
-
+    display_query_result(cur, con, query_str)
 
 def analysis_loved_airlines(cur,con):
     print("Inside update_passenger func")
@@ -169,14 +164,14 @@ def analysis_loved_airlines(cur,con):
     query_str='''
                         '''
 
-# def analysis_feedback_patterns(cur,con):
-#     print("Inside feedback_passengers")
+def analysis_feedback_patterns(cur,con):
+    print("Inside feedback_passengers")
 
-#     query_str='''
-#                         '''
+    query_str='''
+                        '''
 
 def analysis_find_tickets(cur,con):
-    print("Inside update_passenger func")
+    print("Inside analysis_find_tickets func")
 
 
     src_iata=input("Enter iata code of src airport")
@@ -197,6 +192,7 @@ def analysis_find_tickets(cur,con):
                 AND   (`fk_to_aircraft_registration_num`=registration_num) 
                                     ;
                         '''.format(src_iata,dest_iata,date_sought)
+    display_query_result(cur, con, query_str)    
 
 
 def analysis_crashed_survivors(cur,con):
@@ -209,6 +205,8 @@ def analysis_crashed_survivors(cur,con):
                 AND(`fk_to_route_Route ID`={0})
                         '''.format(crashed_route_id)
 
+    display_query_result(cur, con, query_str)
+
 
 def analysis_airline_pilots(cur,con):
 
@@ -219,6 +217,8 @@ def analysis_airline_pilots(cur,con):
                 AND (`fk_to_airline_employer_IATA_code`={0} )    
 
                         '''.format(iata_airline)
+
+    display_query_result(cur, con, query_str)
 
 
 def analysis_favoured_aircrafts(cur,con):
@@ -233,6 +233,4 @@ def analysis_favoured_aircrafts(cur,con):
                 ORDER BY `Total occurrences` DESC;
                         '''
     
-    
-
-    
+    display_query_result(cur, con, query_str)
