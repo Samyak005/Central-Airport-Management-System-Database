@@ -213,7 +213,7 @@ CREATE TABLE `emer_contact` (
 DROP TABLE IF EXISTS `luggage`;
 
 CREATE TABLE `luggage` (
-  `Baggage ID` int PRIMARY KEY,
+  `Baggage ID` bigint(10) PRIMARY KEY,
   `fk_to_Barcode number` char(12),
 
   FOREIGN KEY (`fk_to_Barcode number`) REFERENCES `boarding_pass` (`Barcode number`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -366,8 +366,8 @@ CREATE TABLE `crew_has_worked_together` (
   `Pilot first officer Aadhar_card_number` char(12),
   `flight_attendant Aadhar_card_number` char(12),
   `flight_engineer Aadhar_card_number` char(12),
-  -- `Avg_competence_rating` float,
-  -- CHECK (`Avg_competence_rating` >= 0 AND `Avg_competence_rating` <=10),
+  `Avg_competence_rating` float,
+  CHECK (`Avg_competence_rating` >= 0 AND `Avg_competence_rating` <=10),
   `Number of Languages spoken overall` int,
   PRIMARY KEY (`Pilot captain Aadhar_card_number`, `Pilot first officer Aadhar_card_number`, `flight_attendant Aadhar_card_number`, `flight_engineer Aadhar_card_number`),
 
@@ -377,6 +377,8 @@ CREATE TABLE `crew_has_worked_together` (
   FOREIGN KEY(`flight_engineer Aadhar_card_number`) REFERENCES `flight_engineer` (`fk_to_flight_crew_Aadhar_card_number`) ON DELETE CASCADE ON UPDATE CASCADE
 
 );
+
+-- ALTER TABLE `crew_has_worked_together`  ADD  `Avg_competence_rating`  float CHECK (`Avg_competence_rating` >= 0 AND `Avg_competence_rating` <=10) ; 
 
 
 -- ----------------------------------------------------------

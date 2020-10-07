@@ -4,12 +4,12 @@ INSERT INTO `airport_db`.`Airline` (`IATA Airline designators`, `Company Name`, 
 INSERT INTO `airport_db`.`Airline` (`IATA Airline designators`, `Company Name`, `num_Aircrafts_owned`, `is_active`, `country_of_ownership`) VALUES ('UK', 'Air Vistara', '5', '1', 'India');
 INSERT INTO `airport_db`.`Airline` (`IATA Airline designators`, `Company Name`, `num_Aircrafts_owned`, `is_active`, `country_of_ownership`) VALUES ('G8', 'Go Airways', '2', '1', 'India');
 
-INSERT INTO `airport_db`.`capacity_of_Aircraft` (`Manufacturer`, `Model`, `Capacity`) VALUES ('Boeing', '747', '370');
-INSERT INTO `airport_db`.`capacity_of_Aircraft` (`Manufacturer`, `Model`, `Capacity`) VALUES ('Boeing', '737', '189');
-INSERT INTO `airport_db`.`capacity_of_Aircraft` (`Manufacturer`, `Model`, `Capacity`) VALUES ('Airbus', '320', '170');
-INSERT INTO `airport_db`.`capacity_of_Aircraft` (`Manufacturer`, `Model`, `Capacity`) VALUES ('Airbus', '330', '360');
-INSERT INTO `airport_db`.`capacity_of_Aircraft` (`Manufacturer`, `Model`, `Capacity`) VALUES ('Airbus', '340', '390');
-INSERT INTO `airport_db`.`capacity_of_Aircraft` (`Manufacturer`, `Model`, `Capacity`) VALUES ('Boeing', '777', '370');
+INSERT INTO `airport_db`.`capacity_of_aircraft` (`Manufacturer`, `Model`, `Capacity`) VALUES ('Boeing', '747', '370');
+INSERT INTO `airport_db`.`capacity_of_aircraft` (`Manufacturer`, `Model`, `Capacity`) VALUES ('Boeing', '737', '189');
+INSERT INTO `airport_db`.`capacity_of_aircraft` (`Manufacturer`, `Model`, `Capacity`) VALUES ('Airbus', '320', '170');
+INSERT INTO `airport_db`.`capacity_of_aircraft` (`Manufacturer`, `Model`, `Capacity`) VALUES ('Airbus', '330', '360');
+INSERT INTO `airport_db`.`capacity_of_aircraft` (`Manufacturer`, `Model`, `Capacity`) VALUES ('Airbus', '340', '390');
+INSERT INTO `airport_db`.`capacity_of_aircraft` (`Manufacturer`, `Model`, `Capacity`) VALUES ('Boeing', '777', '370');
 
 INSERT INTO `airport_db`.`Aircraft` (`registration_num`, `fk_to_capacity_Manufacturer`, `fk_to_capacity_Model`, `Distance Travelled`, `Flight ID`, `Maintanence check date`, `fk_to_Airline_owner_Airline_IATA_code`) VALUES ('212', 'Airbus', '320', '4576786', '10', '2020-09-28', '6E');
 INSERT INTO `airport_db`.`Aircraft` (`registration_num`, `fk_to_capacity_Manufacturer`, `fk_to_capacity_Model`, `Distance Travelled`, `Flight ID`, `Maintanence check date`, `fk_to_Airline_owner_Airline_IATA_code`) VALUES ('234', 'Airbus', '320', '986655', '9', '2020-09-21', '6E');

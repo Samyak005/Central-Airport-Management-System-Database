@@ -36,3 +36,16 @@ https://stackoverflow.com/questions/39163776/how-to-get-rows-affected-in-a-updat
 
 # Using tabulate
 python3 -m pip install tabulate
+
+# Viewing all tables in database
+select table_name from information_schema.tables where table_schema = 'airport_db';
+
+Select AVG(Aadhar_card_number) from Passenger where Gender='Male';
+SELECT fk_to_capacity_Manufacturer,COUNT(*) from Aircraft Group By fk_to_capacity_Manufacturer;
+SELECT fk_to_capacity_Model,COUNT(*) from Aircraft Group By fk_to_capacity_Model;
+SELECT fk_to_capacity_Model,COUNT(*) from Aircraft Group By fk_to_capacity_Model ORDER BY COUNT(*);
+
+SELECT fk_to_capacity_Model,COUNT( fk_to_airline_owner_airline_IATA_code) from Aircraft Group By fk_to_capacity_Model ORDER BY COUNT(*);
+SELECT fk_to_capacity_Model,COUNT(DISTINCT fk_to_airline_owner_airline_IATA_code) from Aircraft Group By fk_to_capacity_Model ORDER BY COUNT(*);
+
+Select * FROM Aircraft ORDER BY `Flight ID` desc;

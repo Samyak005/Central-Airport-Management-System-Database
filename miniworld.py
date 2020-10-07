@@ -84,8 +84,8 @@ def add_display(cur, con,user_id):
 #################################################################################################c
 
 expose_read_funcs=[
-    ["Airline","Passenger","Airport","Runway","Terminal","Boarding Pass","Route"],
-    ["Route","Airline Employees","Aircraft","Boarding Pass","Feedback and rating"],
+    ["Airline","Passenger","Airport","Runway","Terminal","boarding_pass","Route"],
+    ["Route","Airport Employees/CREWS","Aircraft","boarding_pass","Feedback and rating"],
     ["Route","Airline","Airport"]
     ]
 

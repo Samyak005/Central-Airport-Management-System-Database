@@ -12,6 +12,8 @@ DROP TABLE IF EXISTS `Airline`;
 DROP TABLE IF EXISTS `airline_crew`;
 DROP TABLE IF EXISTS `flight_crew`;
 DROP TABLE IF EXISTS `Pilot`;
+
+###################################################
 DROP TABLE IF EXISTS `flight_attendant`;
 DROP TABLE IF EXISTS `flight_engineer`;
 DROP TABLE IF EXISTS `On_ground`;
@@ -38,13 +40,12 @@ DROP TABLE IF EXISTS `Route`;
 DROP TABLE IF EXISTS `stopover_airports_on_route`;
 DROP TABLE IF EXISTS `flight_crew_serves_on_route`;
 DROP TABLE IF EXISTS `crew_has_worked_together`;
+DROP TABLE IF EXISTS `flight_crew_feedback`;
 
 # ####################################################
 # Phase 5
 
-DROP TABLE IF EXISTS `boarding_pass`;
 DROP TABLE IF EXISTS `PNR info deduction`;
+DROP TABLE IF EXISTS `boarding_pass`;
 DROP TABLE IF EXISTS `luggage`;
 DROP TABLE IF EXISTS `boarding_pass special services`;
-
-DROP TABLE IF EXISTS `flight_crew_feedback`;

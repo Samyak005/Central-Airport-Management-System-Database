@@ -2,6 +2,8 @@ import datetime
 import subprocess as sp
 import pymysql
 import pymysql.cursors
+from tabulate import tabulate # pip install tabulate
+
 
 
 # analysis_funcs_dict = {
@@ -47,7 +49,7 @@ def display_query_result(cur,con,query):
             print("No rows found!") #length of result is 0
 
     except Exception as e:
-        print("Error!")
+        print(e)
         con.rollback()
         input("Press any key to continue")
 
