@@ -212,9 +212,9 @@ def update_display(cur, con,user_id):
     i = 0
 
     decorate("RED")
-    print("Decorated")
+    # print("Decorated")
     len_use=len(expose_update_funcs[user_id])
-    print(f"len is {len_use}")
+    # print(f"len is {len_use}")
     for i in range(len_use):
         print(f"Press {i} for {update_funcs_msg[expose_update_funcs[user_id][i]]}")
     decorate("RESET")
@@ -230,8 +230,8 @@ def update_display(cur, con,user_id):
 
 #################################################################################################
 
-expose_analysis_funcs=[["1","2","3","4","5","6","9","10","11"],
-            ["1","2","5","7","10","11"],
+expose_analysis_funcs=[["1","2","3","4","5","6","8","9","10","11"],
+            ["1","2","5","7","8","10","11"],
             ["2","3","5","6","8","11"]]
 
 

@@ -46,7 +46,7 @@ def display_query_result(cur,con,query):
             print(tabulate(rows, header, tablefmt = 'psql'))
         
         else:
-            print("No rows found!") #length of result is 0
+            print("Alas! -> No rows found!") #length of result is 0
 
     except Exception as e:
         print(e)
@@ -56,6 +56,7 @@ def display_query_result(cur,con,query):
 def add_feedback(cur, con):
     print("In Progress\n")
 
+# Done
 def analysis_passenger_special_services(cur,con):
     print("Inside update_passenger func")
 
@@ -69,35 +70,12 @@ def analysis_passenger_special_services(cur,con):
                         '''
     display_query_result(cur, con, query_str)
 
-
+# CHECKED
 def analysis_big_airlines(cur,con):
-    print("Inside analysis_big_airlines")
+    #print("Inside analysis_big_airlines")
 
     
-    limit_var=int(input("Enter 'x' in order to display airlines having a total number of employees greater than 'x'"))
-
-    # select town, count(town) 
-    # from user
-    # group by town
-
-    # https://www.w3resource.com/sql/aggregate-functions/count-with-group-by.php
-
-    # SELECT working_area, COUNT(*) 
-    # FROM agents 
-    # GROUP BY working_area 
-    # ORDER BY 2 ;
-
-    # sub1='''SELECT `IATA airline designators`, `Company Name` ,COUNT(*)
-    #             FROM `Airline`, `airline_crew`
-    #             GROUP BY `fk_to_airline_employer_IATA_code`  
-    #             WHERE (`fk_to_airline_employer_IATA_code`=`IATA airline designators`)
-    #              AND (COUNT(*) >=  '''
-    # sub2=str(limit_var)
-    # sub3=''' )ORDER BY COUNT(*) 
-    #                     '''
-    # query_str=sub1+sub2+sub3
-
-    # https://www.eversql.com/
+    limit_var=int(input("Enter 'x' in order to display airlines having a total number of employees greater than 'x': "))
 
     query_str = '''SELECT `IATA airline designators`, `Company Name`
                 FROM `Airline`
@@ -106,17 +84,9 @@ def analysis_big_airlines(cur,con):
                             GROUP BY `fk_to_airline_employer_IATA_code`
                             HAVING COUNT(*)>={0});'''.format(str(limit_var))
     
-    # query_str3='''SELECT `IATA airline designators`, `Company Name`
-    #             FROM `Airline`
-    #             WHERE  EXISTS (SELECT `fk_to_airline_employer_IATA_code`
-    #                         FROM `airline_crew`
-    #                         WHERE `IATA airline designators`=`fk_to_airline_employer_IATA_code`
-    #                         GROUP BY `fk_to_airline_employer_IATA_code`
-    #                         HAVING COUNT(*)>=10);'''
-    
     display_query_result(cur,con,query_str)
 
-
+# CHECKED
 def analysis_experienced_pilot(cur,con):
     print("Inside analysis_experienced_pilot func")
 
@@ -134,52 +104,62 @@ def analysis_experienced_pilot(cur,con):
 
     display_query_result(cur, con, query_str)
 
+#done
 def analysis_search_name(cur,con):
-    print("Inside update_passenger func")
+    #print("Inside update_passenger func")
 
         # % replaces an arbitrary number of zero or more characters, and the underscure (_) replaces a single character. 
 
-    sought_name=input("Enter substring which needs to be found in names of the passengers")
+    sought_name=input("Enter substring which needs to be found in names of the passengers: ")
 
     query_str='''SELECT `Aadhar_card_number` ,`First Name`,`Middle Name`,`Last Name`
-                FROM PASSENGER
+                FROM Passenger
                 WHERE (`First Name` LIKE '%{0}%') OR (`Middle Name` LIKE '%{0}%') OR (`Last Name` LIKE '%{0}%');
                         '''.format(sought_name)
     display_query_result(cur, con, query_str)
 
+#done
 def analysis_busiest_airports(cur,con):
     print("Inside busiest_airports func")
 
     ### SHOULD WE TAKE DATE AS INPUT
     query_str='''SELECT `IATA airport codes`,`Airport Name`,`City`,COUNT(*) AS `Number of Scheduled Departures`
                 FROM `Route`, `Airport`
-                GROUP BY `fk_to_airport_src_iata_code`  
                 WHERE (`IATA airport codes`=`fk_to_airport_src_iata_code`)
-                ORDER BY `Number of Scheduled Departures` DESC;
+                GROUP BY `fk_to_airport_src_iata_code`  
+                ORDER BY COUNT(*)  DESC;
                 '''
     display_query_result(cur, con, query_str)
 
+#done
 def analysis_loved_airlines(cur,con):
     print("Inside update_passenger func")
 
 
-    query_str='''
+    query_str='''SELECT `IATA airline designators`,`Company Name`,COUNT(*) as    `love_quotient`
+                FROM `Airline`,`Aircraft`,`boarding_pass`,`Route`
+                WHERE (`IATA airline designators`=`fk_to_airline_owner_airline_IATA_code`) AND (`registration_num`=`fk_to_aircraft_registration_num`)
+                AND(`fk_to_route_Route ID`=`Route ID`)
+                GROUP BY `IATA airline designators`
+                ORDER BY COUNT(*) DESC;
                         '''
+    display_query_result(cur, con, query_str)
+
 
 def analysis_feedback_patterns(cur,con):
     print("Inside feedback_passengers")
 
     query_str='''
                         '''
-
+#done
 def analysis_find_tickets(cur,con):
-    print("Inside analysis_find_tickets func")
+    #print("Inside analysis_find_tickets func")
 
 
-    src_iata=input("Enter iata code of src airport")
-    dest_iata=input("Enter iata code of dest airport")
+    src_iata=input("Enter iata code of src airport (Eg:DEL) : ")
+    dest_iata=input("Enter iata code of dest airport (Eg:MUM) : ")
 
-    date_sought=input("Enter date when the journey needs to be made")
+    date_sought=input("Enter date when the journey needs to be made [YYYY-MM-DD] Eg:(2020-10-06): ")
 
     query_str='''SELECT `fk_to_airport_src_iata_code` AS 'Source airport' ,
                         `fk_to_airport_dest_iata_code` AS 'Destination Airport',
@@ -188,19 +168,20 @@ def analysis_find_tickets(cur,con):
                         `Flight ID`,
                         `Scheduled arrival` 
                 FROM `Route`,`Aircraft`
-                WHERE (`fk_to_airport_src_iata_code`={0})
-                AND   (`fk_to_airport_dest_iata_code`={1})
-                AND   (`Date`={2})
+                WHERE (`fk_to_airport_src_iata_code`="{0}")
+                AND   (`fk_to_airport_dest_iata_code`="{1}")
+                AND (`Date`="{2}")
                 AND   (`fk_to_aircraft_registration_num`=registration_num) 
                                     ;
                         '''.format(src_iata,dest_iata,date_sought)
+    #print(f"DEBUG: query is {query_str}")
     display_query_result(cur, con, query_str)    
 
-
+# DONE
 def analysis_crashed_survivors(cur,con):
     print("Inside update_passenger func")
 
-    crashed_route_id=input("Enter route id of the flight whose passengers need to be displayed")
+    crashed_route_id=input("Enter route id of the flight whose passengers need to be displayed: ")
     query_str='''SELECT `First Name`,`Last Name`, `Aadhar_card_number`,`Barcode number`,`Seat`
                 FROM `boarding_pass`,`Passenger`
                 WHERE (`fk_to_passenger_Aadhar_card_number`=`Aadhar_card_number`)
@@ -209,22 +190,22 @@ def analysis_crashed_survivors(cur,con):
 
     display_query_result(cur, con, query_str)
 
-
+# DONE
 def analysis_airline_pilots(cur,con):
 
-    iata_airline=input("Enter iata code of airline whose pilots are to be listed")
+    iata_airline=input("Enter iata code of airline whose pilots are to be listed: ")
     query_str='''SELECT `Pilot license number`,`First Name`,`Last Name`,`Number of years of Experience`,`Number of flying hours`
                 FROM `Pilot`,`airline_crew`
                 WHERE (`Aadhar_card_number`= `fk_to_flight_crew_Aadhar_card_number`)
-                AND (`fk_to_airline_employer_IATA_code`={0} )    
+                AND (`fk_to_airline_employer_IATA_code`="{0}" )    
 
                         '''.format(iata_airline)
 
     display_query_result(cur, con, query_str)
 
-
+# DONE
 def analysis_favoured_aircrafts(cur,con):
-    print("Inside update_passenger func")
+    #print("Inside update_passenger func")
     #https://stackoverflow.com/a/2421441
     query_str='''SELECT `fk_to_capacity_Manufacturer` AS `Manufacturer`,
                         `fk_to_capacity_Model` AS `Model`,

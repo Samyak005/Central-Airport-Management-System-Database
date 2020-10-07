@@ -49,3 +49,29 @@ SELECT fk_to_capacity_Model,COUNT( fk_to_airline_owner_airline_IATA_code) from A
 SELECT fk_to_capacity_Model,COUNT(DISTINCT fk_to_airline_owner_airline_IATA_code) from Aircraft Group By fk_to_capacity_Model ORDER BY COUNT(*);
 
 Select * FROM Aircraft ORDER BY `Flight ID` desc;
+
+UPDATE Route ,Runway SET Runway.`Status`="Assigned" WHERE `Runway ID`=`fk_to_runway_Take off runway id`
+        AND `Route ID`=6
+        AND `fk_to_airport_src_iata_code`=`fk_to_airport_IATA_airport_codes`;
+
+SELECT fk_to_airline_employer_IATA_code,COUNT(*) FROM airline_crew GROUP BY fk_to_airline_employer_IATA_code;
+
+
+SELECT `IATA airline designators`,`Company Name`,COUNT(*) as    `love_quotient`
+FROM `Airline`,`Aircraft`,`boarding_pass`,`Route`
+WHERE (`IATA airline designators`=`fk_to_airline_owner_airline_IATA_code`) AND (`registration_num`=`fk_to_aircraft_registration_num`)
+AND(`fk_to_route_Route ID`=`Route ID`)
+GROUP BY `IATA airline designators`
+ORDER BY COUNT(*) DESC;
+
+SELECT `fk_to_airport_src_iata_code` AS 'Source airport' ,
+                        `fk_to_airport_dest_iata_code` AS 'Destination Airport',
+                        `Date`,
+                        `fk_to_airline_owner_airline_IATA_code` AS 'Airline',
+                        `Flight ID`,
+                        `Scheduled arrival` 
+                FROM `Route`,`Aircraft`
+                WHERE (`fk_to_airport_src_iata_code`="DEL")
+                AND   (`fk_to_airport_dest_iata_code`="MUM")
+                AND   (`fk_to_aircraft_registration_num`=registration_num) 
+                                    ;

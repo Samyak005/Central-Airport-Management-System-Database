@@ -70,6 +70,7 @@ def numeric_check(ch):
 
 def dep_ahead_arv(arrival_str, depart_str):
     decorate_stuff('ERROR')
+    print(f"DEBUG:Arrival is {arrival_str}\nDeparture is {depart_str}")
 
     if len(arrival_str)!=5 or len(depart_str)!=5:
         print('Invalid format')
@@ -195,7 +196,7 @@ def try_except_block(attr, key_attr, cur, con,table_name):
         input('Press any key to continue.')
         return    
 
-
+#checked
 def update_passenger(cur, con):
     print("Inside update_passenger func")
     table_name="Passenger"
@@ -216,18 +217,18 @@ def update_passenger(cur, con):
         attr['Last Name'] = name_list[-1]
     elif len(name_list) == 2:
         attr['First Name'] = name_list[0]
-        attr['Middle Name'] = ''
+        attr['Middle Name'] = '-'
         attr['Last Name'] = name_list[1]
     elif len(name_list) == 1:
         attr['First Name'] = name_list[0]
-        attr['Middle Name'] = ''
-        attr['Last Name'] = ''
+        attr['Middle Name'] = '-'
+        attr['Last Name'] = '-'
     else:
         attr['First Name'] = ''
         attr['Middle Name'] = ''
         attr['Last Name'] = ''
     
-    attr["Gender"] = input("Enter Gender \n1. Male \n2. Female \n3. Others\n")
+    attr["Gender"] = int(input("Enter Gender \n1. Male \n2. Female \n3. Others\n ENTER HERE >"))
 
     if attr['Gender'] == 1:
         attr['Gender'] = 'Male'
@@ -266,9 +267,9 @@ def update_aircraft(cur, con):
 
     try_except_block(attr, key_attr, cur, con,table_name)    
     
-    
+  #checked  
 def update_airport(cur, con):
-    print("inside update_airport function")
+    #print("inside update_airport function")
     table_name = "`Airport`"
 
     attr = {}
@@ -277,14 +278,14 @@ def update_airport(cur, con):
     
     print('Enter details of the new airport: ')
 
-    attr["IATA airport codes"] = input(" Enter 3 character IATA code * ")
-    print("Press enter  without entering any value if you don't want to update a particular value")
+    attr["IATA airport codes"] = input(" Enter 3 character IATA code * :")
+    print("Press enter  without entering any value if you don't want to update a particular value :")
     
     attr["Airport Name"] = input("Enter the new name of airport: ")
 
     try_except_block(attr, key_attr, cur, con,table_name)    
     
-
+#checked
 def update_runway_status(cur, con):
     print("inside update_runway_status function")
     table_name = "`Runway`"
@@ -299,7 +300,7 @@ def update_runway_status(cur, con):
     print("Press enter  without entering any value if you don't want to update a particular value")
 
     stat_choice = int(
-        input("Enter status as 1 for  assigned\n 2 for available\n 3 for disfunctional\n"))
+        input("Enter status as\n 1 for assigned\n 2 for available\n 3 for disfunctional\n >"))
 
     attr["Status"] = ""
     if stat_choice == 1:
@@ -313,10 +314,10 @@ def update_runway_status(cur, con):
 
     try_except_block(attr, key_attr, cur, con,table_name)    
     
-
+#checked
 def update_airport_crew(cur, con):
     #Name,yrs_exp, salary, nationality,employer, gender
-    print("inside update_airport_crew function")
+    #print("inside update_airport_crew function")
     table_name = "`Airport Employees/CREWS`"
 
     attr = {}
@@ -336,12 +337,12 @@ def update_airport_crew(cur, con):
         attr['Last Name'] = name_list[-1]
     elif len(name_list) == 2:
         attr['First Name'] = name_list[0]
-        attr['Middle Name'] = ''
+        attr['Middle Name'] = '-'
         attr['Last Name'] = name_list[1]
     elif len(name_list) == 1:
         attr['First Name'] = name_list[0]
-        attr['Middle Name'] = ''
-        attr['Last Name'] = ''
+        attr['Middle Name'] = '-'
+        attr['Last Name'] = '-'
     else:
         attr['First Name'] = ''
         attr['Middle Name'] = ''
@@ -350,7 +351,7 @@ def update_airport_crew(cur, con):
     attr["Experience"] = input("New total number of years of Experience: ")
     attr["Salary"] = input("New Salary: ")
     attr["Nationality"] = input("New Nationality: ")
-    attr["Gender"] = input("Enter Gender \n1. Male \n2. Female \n3. Others\n")
+    attr["Gender"] = input("Enter Gender \n1. Male \n2. Female \n3. Others\n ENTER HERE >")
 
     if attr['Gender'] == 1:
         attr['Gender'] = 'Male'
@@ -385,7 +386,11 @@ def update_route_details(cur, con):
     attr['Status']=input("Enter one of 'Departed', 'Boarding','On_route','Delayed','Arrived','Checking','Not_applicable' as the status: ")
     
     if attr['Status']=='Departed':
-        print("Hey, user, don't forget to change status of the take-off runway to unoccupied :)")
+        #print("Hey, user, don't forget to change status of the take-off runway to unoccupied :)")
+        query_update=f'''UPDATE Route ,Runway SET Runway.`Status`="Available" WHERE `Runway ID`=`fk_to_runway_Take off runway id`
+        AND `Route ID`={attr["Route ID"]}
+        AND `fk_to_airport_src_iata_code`=`fk_to_airport_IATA_airport_codes`;'''
+        cur.execute(query_update)
         tmp_var=''
         tmp_var=input("Enter actual departure time of the flight in  [HH:MM] format: ")
         # attr["Actual departure time"]=input("Enter actual departure time of the flight in  [HH:MM] format")
@@ -396,6 +401,10 @@ def update_route_details(cur, con):
             attr["Actual departure time"]=tmp_var
     elif attr['Status']=='Arrived':
         print("Hey, user, don't forget to change status of the landing runway to unoccupied :)")
+        query_update=f'''UPDATE Route ,Runway SET Runway.`Status`="Available" WHERE `Runway ID`=`fk_to_runway_Landing runway ID`
+        AND `Route ID`={attr["Route ID"]}
+        cur.execute(query_update)
+        AND `fk_to_airport_src_iata_code`=`fk_to_airport_IATA_airport_codes`;'''
         tmp_var=''
         tmp_var=input("Enter actual arrival time of the flight in  [HH:MM] format: ")
         # attr["Actual departure time"]=input("Enter actual departure time of the flight in  [HH:MM] format")
@@ -405,12 +414,14 @@ def update_route_details(cur, con):
         else:
             attr["Actual arrival time"]=tmp_var
         #job 2
-        depart_query = '''SELECT `Actual departure time` FROM Route WHERE `Route ID` = {0}'''.format(attr["Route ID"])
-        cur.execute(depart_query)
-        attr["Actual departure time"] = cur.fetchall()
+        # depart_query = '''SELECT `Actual departure time` FROM Route WHERE `Route ID` = {0};'''.format(attr["Route ID"])
+        # cur.execute(depart_query)
+        # temp = cur.fetchall()
+        # attr["Actual departure time"] = temp.strftime("%H:%M")
+        # print(attr["Actual departure time"])
 
-        if dep_ahead_arv(attr["Actual arrival time"], attr["Actual departure time"]) == -1:
-            return
+        # if dep_ahead_arv(attr["Actual arrival time"], attr["Actual departure time"]) == -1:
+        #     return
         
         tmp_var=input("Enter total distance travelled by flight: ")
         # attr["Actual departure time"]=input("Enter actual departure time of the flight in  [HH:MM] format")
@@ -442,7 +453,7 @@ def update_route_details(cur, con):
         
     
     attr["fk_to_runway_Take off runway id"]=input("Enter runway id which has been allotted for take_off: ")
-    attr["k_to_runway_Landing runway ID"]=input("Enter runway id which has been allotted for LANDING: ")
+    attr["fk_to_runway_Landing runway ID"]=input("Enter runway id which has been allotted for LANDING: ")
 
     
     try_except_block(attr, key_attr, cur, con,table_name)    
@@ -486,7 +497,7 @@ def update_airline_crew_personal_details(cur, con):
         "Updated Number of years of Experience: ")
     attr["Salary"] = input("Salary: ")
     attr["Nationality"] = input("Nationality: ")
-    attr["Gender"] = input("Enter Gender \n1. Male \n2. Female \n3. Others\n")
+    attr["Gender"] = int(input("Enter Gender \n1. Male \n2. Female \n3. Others\n ENTER HERE >"))
 
     if attr['Gender'] == 1:
         attr['Gender'] = 'Male'
@@ -510,7 +521,7 @@ def update_airline_details(cur, con):
     key_attr = ["IATA airline designators"]
 
     attr['IATA airline designators'] = input(
-        'Enter 2-character IATA airline designator code * :')
+        'Enter 2-character IATA airline designator code * : ')
     
     print('Enter new details of the airline_crew entry: ')
     print("Press enter without typing any value if you do not want to update value of a particular attribute")
@@ -530,6 +541,7 @@ def update_airline_details(cur, con):
     attr['country_of_ownership'] = input('Enter country of ownership of airline: ')
 
     try_except_block(attr, key_attr, cur, con,table_name)
+
 def update_atc_freq(cur, con):
     print("inside update_atc_freq function")
     table_name = "`air_traffic_controller`"
