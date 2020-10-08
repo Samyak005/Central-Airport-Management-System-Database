@@ -25,6 +25,7 @@ File structure :
 * Proper colour coding was done for easy debugging of CLI
 * In `miniworld.py`, dictionary or a map was maintained for implementing functions related to addition, deletion, updation (Do check this nice implementation)
 
+## We have broken the .SQL file which was supposed to create the database and populate it into 6 subfiles.
 ### Instructions to create the database and to populate it with sample data
 ```
 $ mysql -h 127.0.0.1 -u root --port=5005 -p < phase0.sql
