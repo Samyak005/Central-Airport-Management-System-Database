@@ -13,17 +13,17 @@ This database has or can be extended to have a lot of functionality like:
 * Retrieving information for different segments of users: passengers, airport staff, crew, or members of specific departments, authorities, business partners, or police.
 
 File structure : 
-1. `extra.py` -> contains the non-CRUD functional operations to be performed on the database
-2. `read.py` -> prints the tables in a tabulated manner
-3. `update.py` -> performs update operations on the database
-4. `miniworld.py` -> contains main loop and connections to pymysql. Also contains function headers
-5. `add.py` -> adds tuples in various tables
-6. `delete.py` -> deletes tuples in various tables
+* `extra.py` -> contains the non-CRUD functional operations to be performed on the database
+* `read.py` -> prints the tables in a tabulated manner
+* `update.py` -> performs update operations on the database
+* `miniworld.py` -> contains main loop and connections to pymysql. Also contains function headers
+* `add.py` -> adds tuples in various tables
+* `delete.py` -> deletes tuples in various tables
 
 # Extra details
-1. According to `sequence.md` sql queries were divided into 5 phases which have been written in corresponding sql files
-2. Proper colour coding was done for easy debugging of CLI
-3. In `miniworld.py`, dictionary or a map was maintained for implementing functions related to addition, deletion, updation (Do check this nice implementation)
+* According to `sequence.md` sql queries were divided into 5 phases which have been written in corresponding sql files
+* Proper colour coding was done for easy debugging of CLI
+* In `miniworld.py`, dictionary or a map was maintained for implementing functions related to addition, deletion, updation (Do check this nice implementation)
 
 ### Instructions to create the database and to populate it with sample data
 ```
