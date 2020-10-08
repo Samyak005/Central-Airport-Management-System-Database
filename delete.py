@@ -1,6 +1,33 @@
 import subprocess as sp
 import pymysql
 import pymysql.cursors
+import sys
+
+colors_dict3 = {
+    "BLUE": "\033[1;34m",
+    "RED": "\033[1;31m",
+    "CYAN": "\033[1;36m",
+    "GREEN": "\033[0;32m",
+    "RESET": "\033[0;0m",
+    "BOLD": "\033[;1m",
+    "REVERSE": "\033[;7m",
+    "ERROR": "\033[;7m"+"\033[1;31m"
+}
+
+
+def decorate3(color_str):
+    # print("Decorated")
+    sys.stdout.write(colors_dict3[color_str])
+
+def del_print(msg):
+    decorate3("GREEN")
+    print(msg)
+    decorate3("RESET")
+
+def err_print_msg(msg):
+    decorate3("ERROR")
+    print(msg)
+    decorate3("RESET")
 
 def get_deletion_equation(attr,key_attrs,type_str):
     
@@ -17,7 +44,7 @@ def get_deletion_equation(attr,key_attrs,type_str):
 
         if type_str[i]=='1':
             query_str+'''"'''
-        query_str += attr[key_attrs[i]]
+        query_str +="'" +attr[key_attrs[i]]+"'"
         if type_str[i]=='1':
             query_str+'''"'''
 
@@ -26,8 +53,9 @@ def get_deletion_equation(attr,key_attrs,type_str):
 
     return query_str
 
+# DONE
 def delete_aircraft(cur,con):
-    print("Inside delete_aircraft func")
+    #print("Inside delete_aircraft func")
     table_name="Aircraft"
 
     attr={}
@@ -48,9 +76,12 @@ def delete_aircraft(cur,con):
         query_str = "DELETE FROM "+table_name+" WHERE "+ans+" ; "
         cur.execute(query_str)
         con.commit()
-
+        res_cnt=cur.rowcount
+        if res_cnt == 0:
+            del_print("No such aircraft exists")
         ############################################
-        print("Deleted aircraft")
+        else:
+            del_print("Deleted aircraft")
         ###########################################
 
 
@@ -58,8 +89,8 @@ def delete_aircraft(cur,con):
 
     except Exception as e:
         con.rollback()
-        print("Failed to delete from database")
-        print(">>>>>>>>>>>>>", e)
+        err_print_msg("Failed to delete from database")
+        err_print_msg(">>>>>>>>>>>>>", e)
         input("Press any key to continue")
         return
 
@@ -69,14 +100,15 @@ def delete_aircraft(cur,con):
         con.commit()
 
     except Exception as e:
-        print('Failed to decrement number of aricrafts owned by airline the database.')
+        err_print_msg('Failed to decrement number of aricrafts owned by airline the database.')
         con.rollback()
-        print(e)
+        err_print_msg(e)
         input('Press any key to continue.')
         return
 
+# Done
 def delete_luggage(cur,con):
-    print("Inside delete_luggage func")
+    #print("Inside delete_luggage func")
     table_name="luggage" 
 
     attr={}
@@ -98,8 +130,12 @@ def delete_luggage(cur,con):
         cur.execute(query_str)
         con.commit()
 
+        res_cnt=cur.rowcount
+        if res_cnt == 0:
+            del_print("No such luggage exists")
         ############################################
-        print("Deleted luggage")
+        else:
+            del_print("Deleted luggage")
         ###########################################
 
 
@@ -107,13 +143,13 @@ def delete_luggage(cur,con):
 
     except Exception as e:
         con.rollback()
-        print("Failed to delete from database")
-        print(">>>>>>>>>>>>>", e)
+        err_print_msg("Failed to delete from database")
+        err_print_msg(">>>>>>>>>>>>>", e)
         input("Press any key to continue")
     return
 
+#done
 def delete_airline_crew(cur,con):
-    print("Inside delete_airline_crew func")
     table_name="airline_crew" 
 
     attr={}
@@ -132,11 +168,16 @@ def delete_airline_crew(cur,con):
             input("Press any key to continue")
             return
         query_str = "DELETE FROM "+table_name+" WHERE "+ans+" ; "
+
         cur.execute(query_str)
         con.commit()
 
+        res_cnt=cur.rowcount
+        if res_cnt == 0:
+            del_print("No such airline employee exists")
         ############################################
-        print("Deleted airline employee")
+        else:
+            del_print("Deleted airline employee")
         ###########################################
 
 
@@ -144,14 +185,15 @@ def delete_airline_crew(cur,con):
 
     except Exception as e:
         con.rollback()
-        print("Failed to delete from database")
-        print(">>>>>>>>>>>>>", e)
+        err_print_msg("Failed to delete from database")
+        err_print_msg(">>>>>>>>>>>>>", e)
         input("Press any key to continue")
     return
 
+# DONE
 def delete_airport_crew(cur,con):
-    print("Inside delete_airport_crew func")
-    table_name="airport_crew" 
+    #print("Inside delete_airport_crew func")
+    table_name="`Airport Employees/CREWS`" 
 
     attr={}
 
@@ -169,11 +211,15 @@ def delete_airport_crew(cur,con):
             input("Press any key to continue")
             return
         query_str = "DELETE FROM "+table_name+" WHERE "+ans+" ; "
+
         cur.execute(query_str)
         con.commit()
-
+        res_cnt=cur.rowcount
+        if res_cnt == 0:
+            del_print("No such airport employee exists")
         ############################################
-        print("Deleted airport employee")
+        else:
+            del_print("Deleted airport employee")
         ###########################################
 
 
@@ -181,13 +227,13 @@ def delete_airport_crew(cur,con):
 
     except Exception as e:
         con.rollback()
-        print("Failed to delete from database")
-        print(">>>>>>>>>>>>>", e)
+        err_print_msg("Failed to delete from database")
+        err_print_msg(">>>>>>>>>>>>>", e)
         input("Press any key to continue")
     return
-
+#done
 def delete_route(cur,con):
-    print("Inside delete_route func")
+    #print("Inside delete_route func")
     table_name="Route" 
 
     attr={}
@@ -209,8 +255,12 @@ def delete_route(cur,con):
         cur.execute(query_str)
         con.commit()
 
+        res_cnt=cur.rowcount
+        if res_cnt == 0:
+            del_print("No such route exists")
         ############################################
-        print("Deleted route")
+        else:
+            del_print("Deleted route")
         ###########################################
 
 
@@ -218,7 +268,7 @@ def delete_route(cur,con):
 
     except Exception as e:
         con.rollback()
-        print("Failed to delete from database")
-        print(">>>>>>>>>>>>>", e)
+        err_print_msg("Failed to delete from database")
+        err_print_msg(">>>>>>>>>>>>>", e)
         input("Press any key to continue")
     return
