@@ -317,12 +317,12 @@ def display_menu(cur, con, user_id):
 while (1):
 
    # Run the command described by args. Wait for command to complete, then return the returncode attribute.
-   # https://stackoverflow.com/a/3172690/6427607
+    # https://stackoverflow.com/a/3172690/6427607
     tmp = sp.call('clear', shell=True)
 
     # Can be skipped if you want to hard core username and password
-    '''username = input("Username: ")
-    password = input("Password: ")'''
+    username = input("Username: ")
+    password = input("Password: ")
     # username = "root"
     # password = "blahblah"
 

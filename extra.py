@@ -53,8 +53,7 @@ def display_query_result(cur,con,query):
         con.rollback()
         input("Press any key to continue")
 
-def add_feedback(cur, con):
-    print("In Progress\n")
+
 
 # Done
 def analysis_passenger_special_services(cur,con):

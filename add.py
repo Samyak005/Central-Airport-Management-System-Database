@@ -203,7 +203,6 @@ def add_airline(cur, con):
     query_str = 'INSERT INTO '+table_name + \
         " ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
 
-    print("query str is %s->", query_str)
 
     try:
         cur.execute(query_str)
@@ -246,7 +245,6 @@ def add_aircraft(cur, con):
     query_str = 'INSERT INTO '+table_name + \
         " ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
 
-    print("query str is %s->", query_str)
 
     try:
         cur.execute(query_str)
@@ -380,7 +378,6 @@ def add_passenger(cur, con):
     query_str = 'INSERT INTO '+table_name + \
         " ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
 
-    print("query str is %s->", query_str)
 
     try:
         cur.execute(query_str)
@@ -442,7 +439,6 @@ def add_airport(cur, con):
     query_str = 'INSERT INTO '+table_name + \
         " ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
 
-    print("query str is %s->", query_str)
 
     try:
         cur.execute(query_str)
@@ -490,7 +486,6 @@ def add_runway(cur, con):
     query_str = 'INSERT INTO '+table_name + \
         " ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
 
-    print("query str is %s->", query_str)
 
     try:
         cur.execute(query_str)
@@ -524,7 +519,6 @@ def add_terminal(cur, con):
     query_str = 'INSERT INTO '+table_name + \
         " ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
 
-    print("query str is %s->", query_str)
 
     try:
         cur.execute(query_str)
@@ -557,7 +551,7 @@ def add_stopover_airports(cur,con,route_id):
     query_str = 'INSERT INTO '+table_name + \
         " ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
 
-    print("in stopover query str is %s->", query_str)
+    #print("in stopover query str is %s->", query_str)
 
     try:
         cur.execute(query_str)
@@ -849,7 +843,6 @@ def add_luggage(cur, con, barcode_number):
     query_str = 'INSERT INTO '+table_name + \
         " ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
 
-    print("query str is %s->", query_str)
 
     try:
         cur.execute(query_str)
@@ -883,7 +876,6 @@ def add_boarding_pass_details(cur, con):
     query_str = 'INSERT INTO '+table_name + \
         " ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
 
-    print("query str is %s->", query_str)
 
     try:
         cur.execute(query_str)
@@ -1424,3 +1416,37 @@ def add_airport_crew(cur, con):
         input('Press any key to continue.')
         return
 
+def add_feedback(cur, con):
+
+    debug_print("inside Pilot")
+    table_name = "`flight_crew_feedback`"
+
+    attr = {}
+    print('Enter details of the feedback: ')
+    attr["Pilot captain Aadhar_card_number"] = input("Enter concerned Captain's Pilot aadhar number: ")
+    attr["Pilot first officer Aadhar_card_number"] = input("Enter concerned First Officer aadhar number: ")
+    attr["flight_attendant Aadhar_card_number"] = input("Enter concerned Flight attendant aadhar number: ")
+    attr["flight_engineer Aadhar_card_number"] = input("Enter concerned Flight engineer's aadhar number: ")
+    attr["Feedback given by the passengers for the crew"] = input("Enter single line feedback: ")
+
+    #########################################################################
+    keys_str, values_str = get_query_atoms(attr)
+    #print(keys_str)
+    #print(values_str)
+    query_str = 'INSERT INTO '+table_name + \
+        " ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
+
+    # print("query str is %s->", query_str)
+
+    try:
+        cur.execute(query_str)
+        con.commit()
+        success_print("added Feedback")
+        return 0
+
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        error_print(e)
+        input('Press any key to continue.')
+        return -1

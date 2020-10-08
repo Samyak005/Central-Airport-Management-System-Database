@@ -166,7 +166,7 @@ def try_except_block(attr, key_attr, cur, con, table_name):
             return
 
         query_str = "UPDATE "+table_name+" SET "+set_values+" WHERE "+cond_values+" ; "
-        print(f"Query_STR IS ", query_str)
+        #print(f"Query_STR IS ", query_str)
         cur.execute(query_str)
         con.commit()
         res_len = cur.rowcount
