@@ -1,7 +1,7 @@
 # Airport Management System 
 
 
-The database is a **CENTRAL AIRPORTS MANAGEMENT DATABASE*** and its users are the personnel at the airport, the air travellers and their relatives. This database is well-connected to the rest of the airport modules: airline databases, revenue management, and air traffic management. 
+The database is a **CENTRAL AIRPORTS MANAGEMENT DATABASE** and its users are the personnel at the airport, the air travellers and their relatives. This database is well-connected to the rest of the airport modules: airline databases, revenue management, and air traffic management. 
 
 This database has or can be extended to have a lot of functionality like:
 
@@ -21,7 +21,7 @@ File structure :
 * `delete.py` -> deletes tuples in various tables
 
 # Extra details
-* According to `sequence.md` sql queries were divided into 5 phases which have been written in corresponding sql files
+* According to `sequence.txt` sql queries were divided into 5 phases which have been written in corresponding sql files
 * Proper colour coding was done for easy debugging of CLI
 * In `miniworld.py`, dictionary or a map was maintained for implementing functions related to addition, deletion, updation (Do check this nice implementation)
 

@@ -28,14 +28,14 @@ https://dba.stackexchange.com/a/42541
 # iterating over the result of a query
 https://stackoverflow.com/questions/28530508/select-query-in-pymysql
 
-# incorporating pandas
-https://stackoverflow.com/questions/47328402/how-to-store-mysql-query-result-into-pandas-dataframe-with-pymysql
 
 #
 https://stackoverflow.com/questions/39163776/how-to-get-rows-affected-in-a-update-statement-by-pymsql
 
 # Using tabulate
+```
 python3 -m pip install tabulate
+```
 
 # Viewing all tables in database
 select table_name from information_schema.tables where table_schema = 'airport_db';
