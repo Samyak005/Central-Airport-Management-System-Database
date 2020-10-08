@@ -1,39 +1,14 @@
 - Add restriction on data of ROUTE
-- Add restriction last maintenace date for aircraft --done
-- Add timezone restriction --done
-- Latitude restriction, longitude restriction --done
-- add restricted operations for diff people --done
-- Emergency contact to be added to passenger --done
-- Luggage added with boarding pass --done
-- Special service during boarding pass --done
-- Employee languages spoken
-- Stopover airport while adding route --done
-- airport capapcity hardcoded or should user be given choice
-- update distance travelled always --done to be checked #Job 1 in update.py
-- add db.roll_backs --done
-- Emergency contact with passenger --done
-- find a way to add date constraints --done
-- add the unique consraint for routes --discuss
-- I want to make SEAT of boarding pass as null --discuss
-- Mention that economy and business classes, senior citizens etc have different boarding times often
-- Add economy business in class of travel --done
-- Anmol: I want to remove commit from subclasses for concurrency issues, let's discuss this
 - Update pilot flying hrs with every journey
-- at least 5 queries & 3 updates --done
 - Remeber to write distinct keyword
-- Add languages spoken by employees --done
-- Make sure that runway is not allotted to two planes at the same time
-- Add language stuff to flight crew
 - FLight pilot and first officer cannot be same
 - New attribute rating given added to flight crew feedback
-- Ask for flight crew details in route
 - number of aircrafts possessed by airline is derived
-- make status of runway unique 
-- Actual arrival, deprature time added to route
-- Aadhar datatype
 - Add function to make sure that departure time is ahead of arrival time -- done check add.py and update.py #job 2
-- Add colors to make database look better
--  Add distance to aircraft in add_route_details
+- Add distance to aircraft in add_route_details
 - Add flying hrs to both pilots in add_route_details
-- Add warning if runway is already occupied
-- email validation
+
+- miniworld.py-> remove of hardcoding of password
+- read.py
+- delete.py - CHECKED
+- extras.py -> feedback

@@ -56,20 +56,20 @@ def part3():
     print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
     return
 
-def date_less_cur(str):
+def date_less_cur(date_str):
     today_date = datetime.date.today()
     today_date_str = today_date.strftime("%Y-%m-%d")
 
-    if str < today_date_str:
+    if date_str < today_date_str:
         return 1
     else:
         return 0
 
-def date_more_cur(str):
+def date_more_cur(date_str):
     today_date = datetime.date.today()
     today_date_str = today_date.strftime("%Y-%m-%d")
 
-    if str > today_date_str:
+    if date_str > today_date_str:
         return 1
     else:
         return 0
@@ -139,9 +139,9 @@ def is_valid_time_zone(time_str):
 
 def print_err_date(state):
     if state == 1:
-        print('The date entered cannot be after current date. Current date: ' + datetime.date.today())
+        print('The date entered cannot be after current date. Current date: ' + str(datetime.date.today()))
     elif state == -1:
-        print('The date entered cannot be before current date. Current date: ' + datetime.date.today())
+        print('The date entered cannot be before current date. Current date: ' + str(datetime.date.today()))
 
 def get_query_atoms(attr):
     keys_str = ""
@@ -161,6 +161,12 @@ def get_query_atoms(attr):
         if i != dict_len-1:
             keys_str += ", "
             values_str += ", "
+    
+    if keys_str[-2]==',':
+        keys_str=keys_str[:-2]
+
+    if values_str[-2]==',':
+        values_str=values_str[:-2]
 
     return (keys_str, values_str)
 
@@ -286,7 +292,7 @@ def add_emer_contact(cur, con, aadhar_relative):
     query_str = 'INSERT INTO '+table_name + \
         " ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
 
-    print("query str is %s->", query_str)
+    #print("query str is %s->", query_str)
 
     try:
         cur.execute(query_str)
@@ -551,11 +557,12 @@ def add_stopover_airports(cur,con,route_id):
     query_str = 'INSERT INTO '+table_name + \
         " ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
 
-    #print("query str is %s->", query_str)
+    print("in stopover query str is %s->", query_str)
 
     try:
         cur.execute(query_str)
         offload_commit(con)
+        print("Stopover executed")
         #add_yes_print()
         return 0
 
@@ -623,7 +630,8 @@ def add_crew_has_worked_together(cur,con,a1,a2,a3,a4):
     
     cur.execute(query_init)    
     result = cur.fetchall()
-    attr["Number of Languages spoken overall"]=len(result)
+    print("Result len is {result}")
+    attr["Number of Languages spoken overall"]=str(len(result))
 
     keys_str, values_str = get_query_atoms(attr)
     # print(keys_str)
@@ -692,20 +700,25 @@ def add_route(cur, con):
 
       
 
-    keys_str, values_str = get_query_atoms(attr)
     #print(keys_str)
     #print(values_str)
+    
+
+    #print("query str is %s->", query_str)
+    attr['Pilot captain Aadhar_card_number'] = input('Enter Pilot captain\'s Aadhar card number: ')
+    attr['Chief_flight_attendant Aadhar_card_number'] = input('Enter Chief flight attendant\'s Aadhar card number: ')
+
+    keys_str, values_str = get_query_atoms(attr)
     query_str = 'INSERT INTO '+table_name + \
         " ( "+keys_str+" ) VALUES"+" ( "+values_str+" );"
 
-    #print("query str is %s->", query_str)
 
     try:
         cur.execute(query_str)
         offload_commit(con)
         add_yes_print()
         ######################################################################
-        num_stopover = input('Enter number of stopover airports encountered in the route: ')
+        num_stopover = int(input('Enter number of stopover airports encountered in the route: '))
         for i in range(num_stopover):
             if add_stopover_airports(cur,con,attr['Route ID'])==-1:
                 return
@@ -713,12 +726,11 @@ def add_route(cur, con):
         # ADD CREW
 
         # Take Captain input
-        attr['Pilot captain Aadhar_card_number'] = input('Enter Pilot captain\'s Aadhar card number: ')
+        
         if add_flight_crew_serves_on_route(cur,con,attr['Route ID'],attr['Pilot captain Aadhar_card_number'] )==-1:
                 return
 
         # Take chief flight attendant input
-        attr['Chief_flight_attendant Aadhar_card_number'] = input('Enter Chief flight attendant\'s Aadhar card number: ')
         if add_flight_crew_serves_on_route(cur,con,attr['Route ID'],attr['Chief_flight_attendant Aadhar_card_number'])==-1:
                 return
 

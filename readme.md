@@ -75,3 +75,26 @@ SELECT `fk_to_airport_src_iata_code` AS 'Source airport' ,
                 AND   (`fk_to_airport_dest_iata_code`="MUM")
                 AND   (`fk_to_aircraft_registration_num`=registration_num) 
                                     ;
+
+# checking simultaneous updation
+Update Route SET Status='Delayed' WHERE `Route ID`=1;
+Update Runway SET Status='Assigned' WHERE `Runway ID`=0 AND `fk_to_airport_IATA_airport_codes`=BLR ;
+Update Runway SET Status='Assigned' WHERE `Runway ID`=0 AND `fk_to_airport_IATA_airport_codes`=DEL ;
+
+
+SELECT * FROM Route WHERE `Route ID`=1;
+SELECT * FROM Aircraft WHERE `registration_num`=345;
+SELECT * FROM Pilot WHERE  `fk_to_flight_crew_Aadhar_card_number`=427691459617;
+SELECT * FROM Runway WHERE `Runway ID`=0;
+
+# Captain -> 139446154652 
+# Attednat->341648440548
+# Pilot  -> 271274517218
+# Engineer-> 186480088941
+# Another flight attendant ->996366605513
+# air_reg=124
+
+# Route-26
+SELECT * FROM Route where `Route ID`=26;
+SELECT * FROM `flight_crew_serves_on_route` WHERE `fk_to_route_Route ID`=26;
+SELECT * FROM stopover_airports_on_route;

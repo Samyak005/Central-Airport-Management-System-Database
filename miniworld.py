@@ -26,12 +26,6 @@ def decorate(color_str):
     # print("Decorated")
     sys.stdout.write(colors_dict[color_str])
 
-# 0 -> central_airport_authority_of_india
-# 1-> airline_employee
-# 2-> passenger
-
-# c
-
 
 expose_add_funcs = [["Airline", "Passenger", "Airport", "Runway", "Route", "Terminal"],
                     ["Passenger", "Aircraft", "Route",
@@ -84,9 +78,8 @@ def add_display(cur, con, user_id):
     else:
         add_funcs_dict[expose_add_funcs[user_id][choice_to_add]](cur, con)
 
-# c
 
-
+###########################################################################################################
 expose_read_funcs = [
     ["Airline", "Passenger", "Airport", "Runway",
         "Terminal", "boarding_pass", "Route"],
@@ -94,20 +87,6 @@ expose_read_funcs = [
         "boarding_pass", "Feedback and rating"],
     ["Route", "Airline", "Airport"]
 ]
-
-# read_funcs_dict = {
-#         "Airline":read_airline,#
-#         "Passenger":read_passenger,#
-#         "Aircraft":read_aircraft,#
-#         "Airport":read_airport,#
-#         "Runway":read_runway,#
-#         "Terminal":read_terminal,#
-#         "Route":read_route,#
-#         "Boarding Pass":read_boarding_pass_details,#
-#         "Airline Employees":read_airline_crew,#
-#         "Airport Employees":read_airport_crew,#
-#         "Feedback and rating":read_feedback
-# }
 
 
 def read_display(cur, con, user_id):
@@ -198,7 +177,7 @@ update_funcs_dict = {
 
 update_funcs_msg = {
     "1": "for updating name, gender, address of passenger",
-    "2": "for updating flight id, owner airline, last check maintenance date aircraft",
+    "2": "for updating flight id, last check maintenance date aircraft",
     "3": "for updating name of airport",
     "4": "for updating status of runway",
     "5": "for updating name, years of experiences, salary, nationality, employer, gender of airport crew",
@@ -297,9 +276,7 @@ def analysis_display(cur, con, user_id):
 #########################################################################################
 
 def dispatch(ch, cur, con, user_id):
-    """
-    Function that maps helper functions to option entered
-    """
+    
 
     if (ch == 1):
         add_display(cur, con, user_id)
@@ -347,15 +324,10 @@ while (1):
     '''username = input("Username: ")
     password = input("Password: ")'''
     username = "root"
-    password = "ChiefB"
+    password = "blahblah"
 
     try:
-        # Set db name accordingly which have been create by you
-        # Set host to the server's address if you don't want to use local SQL server
-
-        # Establish a connection to the MySQL database. Accepts several arguments:
-        # Constructor for creating a connection to the database.
-
+  
         # # Connect to the database
         con = pymysql.connect(host='localhost',  # host – Host where the database server is located
                               user=username,  # Username to log in as
@@ -394,8 +366,6 @@ while (1):
 
     except Exception as e:
         # tmp = sp.call('clear', shell=True)
-        print(
-            "Connection Refused: Either username or password is incorrect or user doesn't have access to database"
-        )
+        print("Connection Refused: Either username or password is incorrect or user doesn't have access to database")
         print(">>>", e)
         tmp = input("Enter any key to CONTINUE>")
