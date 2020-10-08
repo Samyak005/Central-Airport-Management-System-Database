@@ -1,23 +1,23 @@
 # Phase 1
 
-DROP TABLE IF EXISTS `Passenger`;
-DROP TABLE IF EXISTS `emer_contact`;
+`Passenger`;
+`emer_contact`;
 
 # ####################################################
 # Phase 2
 
-DROP TABLE IF EXISTS `capacity_of_aircraft`;
-DROP TABLE IF EXISTS `Aircraft`;
-DROP TABLE IF EXISTS `Airline`;
-DROP TABLE IF EXISTS `airline_crew`;
-DROP TABLE IF EXISTS `flight_crew`;
-DROP TABLE IF EXISTS `Pilot`;
+`capacity_of_aircraft`;
+`Aircraft`;
+`Airline`;
+`airline_crew`;
+`flight_crew`;
+`Pilot`;
 
 ###################################################
-DROP TABLE IF EXISTS `flight_attendant`;
-DROP TABLE IF EXISTS `flight_engineer`;
-DROP TABLE IF EXISTS `On_ground`;
-DROP TABLE IF EXISTS `Languages spoken by airline employee`;
+`flight_attendant`;
+`flight_engineer`;
+`On_ground`;
+`Languages spoken by airline employee`;
 
 
 
@@ -25,27 +25,27 @@ DROP TABLE IF EXISTS `Languages spoken by airline employee`;
 # Phase 3
 
 
-DROP TABLE IF EXISTS `Airport`;
-DROP TABLE IF EXISTS `Runway`;
-DROP TABLE IF EXISTS `Terminal`;
-DROP TABLE IF EXISTS `Airport Employees/CREWS`;
-DROP TABLE IF EXISTS `mo_executives`;
-DROP TABLE IF EXISTS `Security`;
-DROP TABLE IF EXISTS `air_traffic_controller`;
+`Airport`;
+`Runway`;
+`Terminal`;
+`Airport Employees/CREWS`;
+`mo_executives`;
+`Security`;
+`air_traffic_controller`;
 
 # ####################################################
 # Phase 4
 
-DROP TABLE IF EXISTS `Route`;
-DROP TABLE IF EXISTS `stopover_airports_on_route`;
-DROP TABLE IF EXISTS `flight_crew_serves_on_route`;
-DROP TABLE IF EXISTS `crew_has_worked_together`;
-DROP TABLE IF EXISTS `flight_crew_feedback`;
+`Route`;
+`stopover_airports_on_route`;
+`flight_crew_serves_on_route`;
+`crew_has_worked_together`;
+`flight_crew_feedback`;
 
 # ####################################################
 # Phase 5
 
-DROP TABLE IF EXISTS `PNR info deduction`;
-DROP TABLE IF EXISTS `boarding_pass`;
-DROP TABLE IF EXISTS `luggage`;
-DROP TABLE IF EXISTS `boarding_pass special services`;
+`PNR info deduction`;
+`boarding_pass`;
+`luggage`;
+`boarding_pass special services`;
