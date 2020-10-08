@@ -624,7 +624,7 @@ def add_crew_has_worked_together(cur,con,a1,a2,a3,a4):
     
     cur.execute(query_init)    
     result = cur.fetchall()
-    print("Result len is {result}")
+    #print("Result len is {result}")
     attr["Number of Languages spoken overall"]=str(len(result))
 
     keys_str, values_str = get_query_atoms(attr)

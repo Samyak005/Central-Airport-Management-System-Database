@@ -59,8 +59,9 @@ def numeric_check(ch):
 
 
 def dep_ahead_arv(arrival_str, depart_str):
-    decorate_stuff('ERROR')
-    print(f"DEBUG:Arrival is {arrival_str}\nDeparture is {depart_str}")
+    #decorate_stuff('ERROR')
+    #print(f"DEBUG:Arrival is {arrival_str}\nDeparture is {depart_str}")
+    #decorate_stuff
 
     if len(arrival_str) != 5 or len(depart_str) != 5:
         print('Invalid format')
