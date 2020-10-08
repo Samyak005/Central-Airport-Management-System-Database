@@ -146,7 +146,7 @@ def get_selection_equation(attr, key_attr):
 
 
 def try_except_block(attr, key_attr, cur, con, table_name):
-    print('INSIDE try_except_block')
+    #print('INSIDE try_except_block')
     try:
         set_values = get_updation_equation(attr, key_attr)
         decorate_stuff('ERROR')
@@ -192,7 +192,7 @@ def try_except_block(attr, key_attr, cur, con, table_name):
 
 # DONE +++
 def update_passenger(cur, con):
-    print("Inside update_passenger func")
+    #print("Inside update_passenger func")
     table_name = "Passenger"
 
     attr = {}
@@ -243,7 +243,7 @@ def update_passenger(cur, con):
 
 
 def update_aircraft(cur, con):
-    print("inside update_aircraft function")
+    #print("inside update_aircraft function")
     table_name = "`Aircraft`"
 
     attr = {}
@@ -287,7 +287,7 @@ def update_airport(cur, con):
 
 # checked
 def update_runway_status(cur, con):
-    print("inside update_runway_status function")
+    #print("inside update_runway_status function")
     table_name = "`Runway`"
 
     attr = {}
@@ -373,7 +373,7 @@ def update_airport_crew(cur, con):
 
 ##############################################################################################
 def update_route_details(cur, con):
-    print("Inside update_route_details function")
+    #print("Inside update_route_details function")
     # NOTE: distance travelled should be updated in route
     table_name = "Route"
 
@@ -488,7 +488,7 @@ def update_route_details(cur, con):
 
 #DONE+++++
 def update_airline_crew_personal_details(cur, con):
-    print("inside update_airline_crew_personal_details function")
+    #print("inside update_airline_crew_personal_details function")
     table_name = "`airline_crew`"
 
     attr = {}

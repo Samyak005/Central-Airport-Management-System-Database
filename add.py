@@ -21,7 +21,7 @@ def offload_commit(con):
 
 def debug_print(msg):
     decorate_output("REVERSE")
-    print(msg)
+    #print(msg)
     decorate_output("RESET")
 
 def error_print(msg):
@@ -221,7 +221,7 @@ def add_airline(cur, con):
 
 # done ---------- CHECKED
 def add_aircraft(cur, con):
-    print("inside add_aircraft function")
+    debug_print("inside add_aircraft function")
     table_name = "`Aircraft`"
 
     attr = {}
@@ -802,7 +802,7 @@ def add_pnr_info_deduction(cur, con, pnr_of_boarding_pass):
 
 # Done
 def add_special_services(cur, con, barcode_number, special_service_to_add):
-    print("inside special_services")
+    #print("inside special_services")
     table_name = "`special_services`"
 
     attr = {}

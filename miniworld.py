@@ -323,8 +323,8 @@ while (1):
     # Can be skipped if you want to hard core username and password
     '''username = input("Username: ")
     password = input("Password: ")'''
-    username = "root"
-    password = "blahblah"
+    # username = "root"
+    # password = "blahblah"
 
     try:
   

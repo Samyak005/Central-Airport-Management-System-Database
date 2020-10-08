@@ -1,10 +1,7 @@
 # Airport Management System 
-## TEAM SEQUEL EXTRACT
-- Anmol Agarwal
-- Pratyush Priyadarshi
-- Samyak Jain
 
-The database is a CENTRAL AIRPORTS MANAGEMENT DATABASE and its users are the personnel at the airport, the air travellers and their relatives. This database is well-connected to the rest of the airport modules: airline databases, revenue management, and air traffic management. 
+
+The database is a **CENTRAL AIRPORTS MANAGEMENT DATABASE*** and its users are the personnel at the airport, the air travellers and their relatives. This database is well-connected to the rest of the airport modules: airline databases, revenue management, and air traffic management. 
 
 This database has or can be extended to have a lot of functionality like:
 
@@ -23,15 +20,10 @@ File structure :
 5. `add.py` -> adds tuples in various tables
 6. `delete.py` -> deletes tuples in various tables
 
-
-1. According to sequence.md sql queries were divided into 5 phases which have been written in corresponding sql files
+# Extra details
+1. According to `sequence.md` sql queries were divided into 5 phases which have been written in corresponding sql files
 2. Proper colour coding was done for easy debugging of CLI
-3. In miniworld.py, dictionary or a map was maintained for implementing functions related to addition, deletion, updation (Do check this nice implementation)
-
-### Instructions to create the database and to populate it with sample data
-```
-$ mysql -h 127.0.0.1 -u root --port=5005 -p < phase0.sql
-$ mysql -h 127.0.0.1 -u root --port=5005 -p < phase1.sql
+3. In `miniworld.py`, dictionary or a map was maintained for implementing functions related to addition, deletion, updation (Do check this nice implementation)
 
 ### Instructions to create the database and to populate it with sample data
 ```
@@ -61,6 +53,10 @@ We have divided the prospective users into three categories and have exposed par
 * Airline employees
 * Passengers
 
+# NOTE
+Whenever you change the status of a ROUTE as `Flight Arrived`, then automatically the ROUTE hrs are added to `number of flying hrs` of the pilot who piloted the flight. The distance covered in the journey also gets added to the `aircraft's total distance covered`.
+
+
 ## OPERATIONS ON DATABASE
 # Retrieval Operations
 
@@ -78,7 +74,7 @@ We have divided the prospective users into three categories and have exposed par
 * Find most used aircraft across all airlines
 
 ## SEARCH
-* Search for all PASSENGERS whose name contains “Kumar”
+* Search for all PASSENGERS whose name contains `user inputted substring`
 
 ## ANALYSIS : 
 * RANK BUSIEST AIRPORTS by number of scheduled flight departures on a particular day
@@ -103,3 +99,7 @@ We have divided the prospective users into three categories and have exposed par
 * Deletion of a plane which is no longer active
 * Deletion of an inactive/fired employee
 
+## Project by `TEAM SEQUEL EXTRACT`
+- Anmol Agarwal
+- Pratyush Priyadarshi
+- Samyak Jain
