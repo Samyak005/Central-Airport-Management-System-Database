@@ -100,6 +100,9 @@ Whenever you change the status of a ROUTE as `Flight Arrived`, then automaticall
 * Deletion of a plane which is no longer active
 * Deletion of an inactive/fired employee
 
+
+### Documentation related to phases 1, 2 and 3 can be found in the adjoining folders.
+
 ## Project by `TEAM SEQUEL EXTRACT`
 - Anmol Agarwal
 - Pratyush Priyadarshi
